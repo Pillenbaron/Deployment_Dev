@@ -62,12 +62,12 @@
     <Compile Include="Classes\Model\ProjectData.cs" />
     <Compile Include="Classes\Model\VersionData.cs" />
     <Compile Include="Classes\ViewModel\MainViewModel.cs" />
-    <Compile Include="Classes\View\ConfigWindowView.cs" />
-    <Compile Include="Classes\View\ConfigWindowViewCommand.cs" />
-    <Compile Include="Classes\View\ConfigWindowViewControl.xaml.cs">
-      <DependentUpon>ConfigWindowViewControl.xaml</DependentUpon>
+    <Compile Include="Classes\View\ConfigView\ConfigView.cs" />
+    <Compile Include="Classes\View\ConfigView\ConfigViewCommand.cs" />
+    <Compile Include="Classes\View\ConfigView\ConfigViewControl.xaml.cs">
+      <DependentUpon>ConfigViewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Classes\View\ConfigWindowViewPackage.cs" />
+    <Compile Include="Classes\View\ConfigView\ConfigViewPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -78,15 +78,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Classes\View\Resources\ToolWindow1Command.png" />
-    <Content Include="Classes\View\Resources\ToolWindow1Package.ico" />
-    <VSCTCompile Include="Classes\View\ConfigWindowViewPackage.vsct">
+    <VSCTCompile Include="Classes\View\ConfigView\ConfigViewPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
+    <Content Include="Classes\View\ConfigView\Resources\ConfigViewCommand.png" />
+    <Content Include="Classes\View\ConfigView\Resources\ConfigViewPackage.ico" />
     <Content Include="index.html" />
     <Content Include="stylesheet.css" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="C1.WPF.FlexGrid.4, Version=4.0.20151.455, Culture=neutral, PublicKeyToken=2aa4ec5576d6c3ce, processorArchitecture=MSIL" />
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -198,16 +199,20 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Classes\View\VSPackage.resx">
-      <MergeWithCTO>true</MergeWithCTO>
-      <ManifestResourceName>VSPackage</ManifestResourceName>
-    </EmbeddedResource>
+    <Folder Include="Classes\Service\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Classes\View\ConfigWindowViewControl.xaml">
+    <Page Include="Classes\View\ConfigView\ConfigViewControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Classes\View\ConfigView\VSPackage.resx">
+      <MergeWithCTO>true</MergeWithCTO>
+      <ManifestResourceName>VSPackage</ManifestResourceName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Licenses.licx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

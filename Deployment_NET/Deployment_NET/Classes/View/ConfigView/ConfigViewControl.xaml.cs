@@ -1,10 +1,8 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="ToolWindow1Control.xaml.cs" company="Company">
+// <copyright file="ConfigViewControl.xaml.cs" company="awinta GmbH">
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
-
-using EnvDTE;
 
 namespace awinta.Deployment_NET.View
 {
@@ -13,23 +11,18 @@ namespace awinta.Deployment_NET.View
     using System.Windows.Controls;
 
     /// <summary>
-    /// Interaction logic for ToolWindow1Control.
+    /// Interaction logic for ConfigViewControl.
     /// </summary>
-    public partial class ToolWindow1Control : UserControl
+    public partial class ConfigViewControl : UserControl
     {
-
-        private ViewModel.MainViewModel viewModel = null;
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="ToolWindow1Control"/> class.
+        /// Initializes a new instance of the <see cref="ConfigViewControl"/> class.
         /// </summary>
-        public ToolWindow1Control(DTE Service)
+        public ConfigViewControl()
         {
             this.InitializeComponent();
 
-            viewModel = new Deployment_NET.ViewModel.MainViewModel(Service);
-
-            this.DataContext = viewModel;
+            //this.DataContext = new ViewModel.MainViewModel();
 
         }
 
@@ -44,7 +37,7 @@ namespace awinta.Deployment_NET.View
         {
             MessageBox.Show(
                 string.Format(System.Globalization.CultureInfo.CurrentUICulture, "Invoked '{0}'", this.ToString()),
-                "ToolWindow1");
+                "ConfigView");
         }
     }
 }

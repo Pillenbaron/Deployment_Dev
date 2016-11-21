@@ -22,7 +22,7 @@
 
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
-  <Commands package="guidToolWindow1Package">
+  <Commands package="guidConfigViewPackage">
     <!-- Inside this section we have different sub-sections: one for the menus, another
     for the menu groups, one for the buttons (the actual commands), one for the combos
     and the last one for the bitmaps used. Each element is identified by a command id that
@@ -42,11 +42,11 @@
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-      <Button guid="guidToolWindow1PackageCmdSet" id="ToolWindow1CommandId" priority="0x0100" type="Button">
+      <Button guid="guidConfigViewPackageCmdSet" id="ConfigViewCommandId" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>ToolWindow1</ButtonText>
+          <ButtonText>ConfigView</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -58,20 +58,20 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages" href="Resources\ToolWindow1Command.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
+      <Bitmap guid="guidImages" href="Resources\ConfigViewCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
     </Bitmaps>
   </Commands>
 
   <Symbols>
     <!-- This is the package guid. -->
-    <GuidSymbol name="guidToolWindow1Package" value="{13ed06b7-ca1d-4a12-92f1-649f6aa49758}" />
+    <GuidSymbol name="guidConfigViewPackage" value="{9d081cfc-92a5-4c1c-8154-4154daa48e30}" />
 
     <!-- This is the guid used to group the menu commands together -->
-    <GuidSymbol name="guidToolWindow1PackageCmdSet" value="{6f541698-3804-4905-830a-489358c824c5}">
-      <IDSymbol name="ToolWindow1CommandId" value="0x0100" />
+    <GuidSymbol name="guidConfigViewPackageCmdSet" value="{474584a9-6d02-41f7-a806-494a7ae0f332}">
+      <IDSymbol name="ConfigViewCommandId" value="0x0100" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidImages" value="{7748a05b-e6fd-48c7-b15d-fb5de5a64c2b}" >
+    <GuidSymbol name="guidImages" value="{85a68b29-d5d8-4686-8d92-92ca7dc1c22e}" >
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />

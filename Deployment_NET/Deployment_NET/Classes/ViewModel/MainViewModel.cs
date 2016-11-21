@@ -75,7 +75,7 @@ namespace awinta.Deployment_NET.ViewModel
 
             for (int i = 1; i <= projects.Count; i++)
             {
-
+                
                 var Query = from ProjectProperty in projects.Item(i).Properties.ToDictionary().AsEnumerable()
                             where usedProperties.Contains(ProjectProperty.Key)
                             select ProjectProperty;
@@ -119,7 +119,12 @@ namespace awinta.Deployment_NET.ViewModel
             for (int i = 1; i <= projects.Count; i++)
             {
 
+                var Project = this.Data.FirstOrDefault(x => x.Name == projects.Item(i).Name);
 
+                if (Project != null)
+                {
+                    
+                }
 
             }
 

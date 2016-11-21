@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="ToolWindow1Package.cs" company="Company">
+// <copyright file="ConfigViewPackage.cs" company="Company">
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -38,20 +38,20 @@ namespace awinta.Deployment_NET.View
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(ConfigWindowView))]
-    [Guid(ConfigWindowViewPackage.PackageGuidString)]
+    [ProvideToolWindow(typeof(ConfigView))]
+    [Guid(ConfigViewPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
-    public sealed class ConfigWindowViewPackage : Package
+    public sealed class ConfigViewPackage : Package
     {
         /// <summary>
-        /// ToolWindow1Package GUID string.
+        /// ConfigViewPackage GUID string.
         /// </summary>
-        public const string PackageGuidString = "13ed06b7-ca1d-4a12-92f1-649f6aa49758";
+        public const string PackageGuidString = "9d081cfc-92a5-4c1c-8154-4154daa48e30";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigWindowView"/> class.
+        /// Initializes a new instance of the <see cref="ConfigView"/> class.
         /// </summary>
-        public ConfigWindowViewPackage()
+        public ConfigViewPackage()
         {
             // Inside this method you can place any initialization code that does not require
             // any Visual Studio service because at this point the package object is created but
@@ -67,7 +67,7 @@ namespace awinta.Deployment_NET.View
         /// </summary>
         protected override void Initialize()
         {
-            ConfigWindowViewCommand.Initialize(this);
+            ConfigViewCommand.Initialize(this);
             base.Initialize();
         }
 

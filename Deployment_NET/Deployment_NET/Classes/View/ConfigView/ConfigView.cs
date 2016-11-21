@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="ToolWindow1.cs" company="Company">
+// <copyright file="ConfigView.cs" company="Company">
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -21,20 +21,20 @@ namespace awinta.Deployment_NET.View
     /// implementation of the IVsUIElementPane interface.
     /// </para>
     /// </remarks>
-    [Guid("75ca5ed2-f982-4264-95d1-9eb3e390bd7b")]
-    public class ConfigWindowView : ToolWindowPane
+    [Guid("ac75cb62-5e37-4769-82a4-0fa0289cf2af")]
+    public class ConfigView : ToolWindowPane
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigWindowView"/> class.
+        /// Initializes a new instance of the <see cref="ConfigView"/> class.
         /// </summary>
-        public ConfigWindowView() : base(null)
+        public ConfigView() : base(null)
         {
-            this.Caption = "ToolWindow1";
+            this.Caption = "ConfigView";
 
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
-            this.Content = new ConfigWindowViewControl();
+            this.Content = new ConfigViewControl();
         }
     }
 }
