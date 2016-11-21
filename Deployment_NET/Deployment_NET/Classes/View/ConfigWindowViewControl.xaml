@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="awinta.Deployment_NET.View.ConfigWindowViewControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             Background="{DynamicResource VsBrush.Window}"
+             Foreground="{DynamicResource VsBrush.WindowText}"
+             mc:Ignorable="d"
+             Name="MyToolWindow" Width="400" Height="300">
+    <Grid>
+        <Label x:Name="label" Content="Dateiversion:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="Hauptversion" Text="{Binding Path=Hauptversion}" HorizontalAlignment="Left" Height="26" Margin="95,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50"/>
+        <TextBox x:Name="Nebenversion" Text="{Binding Path=Nebenversion}" HorizontalAlignment="Left" Height="26" Margin="150,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50"/>
+        <TextBox x:Name="Buildnummer" Text="{Binding Path=Buildnummer}" HorizontalAlignment="Left" Height="26" Margin="205,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50"/>
+        <TextBox x:Name="Revision" Text="{Binding Path=Revision}" HorizontalAlignment="Left" Height="26" Margin="260,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50"/>
+        <DataGrid x:Name="dataGrid" AutoGenerateColumns="False"  ItemsSource="{Binding Path=Data}" Margin="10,41,10,10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Titel" Binding="{Binding Path=Titel}"/>
+                <DataGridTextColumn Header="AssemblyVersion" Binding="{Binding Path=AssemblyVersion}"/>
+                <DataGridTextColumn Header="Dateiversion" Binding="{Binding Path=Dateiversion}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
