@@ -35,9 +35,9 @@ namespace awinta.Deployment_NET.ViewModel
 
         private DTE service = null;
 
-        private awinta.Deployment_NET.Solution.Model.VersionData version;
+        private Solution.Model.VersionData version;
 
-        public awinta.Deployment_NET.Solution.Model.VersionData Version
+        public Solution.Model.VersionData Version
         {
             get { return version; }
             set
@@ -84,7 +84,7 @@ namespace awinta.Deployment_NET.ViewModel
 
         public void Load()
         {
-
+            //service.Solution.SolutionBuild.SolutionConfigurations.
             Projects projects = service.Solution.Projects;
 
             for (int i = 1; i <= projects.Count; i++)
@@ -139,7 +139,7 @@ namespace awinta.Deployment_NET.ViewModel
                 {
 
                     for (int i2 = 1; i2 <= projects.Item(i).Properties.Count; i++)
-                    {                        
+                    {
 
                         switch (projects.Item(i).Properties.Item(i2).Name)
                         {
@@ -190,6 +190,60 @@ namespace awinta.Deployment_NET.ViewModel
         {
 
 
+
+        }
+
+        public void BuildSolution()
+        {
+
+            SolutionBuild solBuild = service.Solution.SolutionBuild;
+            service.Events.BuildEvents.OnBuildDone += _BuildDone;
+            solBuild.ActiveConfiguration.Activate();
+            solBuild.Build();
+            solBuild.ActiveConfiguration.Collection
+        }
+
+        #endregion
+
+        #region _Events
+
+        public void _BuildDone(vsBuildScope Scope, vsBuildAction Action)
+        {
+
+            try
+            {
+
+                if (Scope == vsBuildScope.vsBuildScopeSolution)
+                {
+
+                    switch (Action)
+                    {
+                        case vsBuildAction.vsBuildActionBuild:
+                            break;
+                        case vsBuildAction.vsBuildActionRebuildAll:
+                            break;
+                        case vsBuildAction.vsBuildActionClean:
+                            break;
+                        case vsBuildAction.vsBuildActionDeploy:
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+
+            }
+            finally
+            {
+
+                service.Events.BuildEvents.OnBuildDone -= _BuildDone;
+
+            }
 
         }
 
