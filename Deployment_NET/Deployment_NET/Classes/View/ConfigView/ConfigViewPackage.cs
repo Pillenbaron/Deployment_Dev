@@ -15,6 +15,7 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
+using EnvDTE;
 
 namespace awinta.Deployment_NET.View
 {
@@ -67,10 +68,17 @@ namespace awinta.Deployment_NET.View
         /// </summary>
         protected override void Initialize()
         {
+            Service.ServiceLocator.Add(this.GetService(typeof(DTE)));
             ConfigViewCommand.Initialize(this);
             base.Initialize();
         }
+        protected override void Dispose(bool disposing)
+        {
 
+            Service.ServiceLocator.Destroy();
+
+            base.Dispose(disposing);
+        }
         #endregion
     }
 }

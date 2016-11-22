@@ -22,7 +22,7 @@ namespace awinta.Deployment_NET.View
         {
             this.InitializeComponent();
 
-            //this.DataContext = new ViewModel.MainViewModel();
+            this.DataContext = new ViewModel.MainViewModel();
 
         }
 

@@ -73,6 +73,11 @@
 
         public VersionData() { }
 
+        public override string ToString()
+        {
+            return $"{Hauptversion}.{Nebenversion}.{Buildnummer}.{Revision}";
+        }
+
     }
 
 }

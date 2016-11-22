@@ -102,6 +102,7 @@ namespace awinta.Deployment_NET.View
 
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+            
         }
     }
 }

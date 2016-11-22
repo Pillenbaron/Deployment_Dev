@@ -2,6 +2,7 @@
 using EnvDTE;
 using System.Linq;
 using awinta.Deployment_NET.Extensions;
+using System.Windows.Input;
 
 namespace awinta.Deployment_NET.ViewModel
 {
@@ -59,31 +60,44 @@ namespace awinta.Deployment_NET.ViewModel
         }
 
         #endregion
-        
-        public MainViewModel(DTE Service)
+
+        #region Commands
+
+        public ICommand LoadCommand { get; set; }
+        public ICommand SaveCommand { get; set; }
+        public ICommand DeployCommand { get; set; }
+        #endregion
+
+        public MainViewModel()
         {
 
-            service = Service;
+            LoadCommand = new Commands.DefaultCommand(Load);
+            SaveCommand = new Commands.DefaultCommand(Save);
+            DeployCommand = new Commands.DefaultCommand(Deploy);
+
+            service = Service.ServiceLocator.GetInstance<DTE>();
             data = new ObservableCollection<Solution.Model.ProjectData>();
 
         }
 
-        public bool Load()
+        #region Methode
+
+        public void Load()
         {
 
             Projects projects = service.Solution.Projects;
 
             for (int i = 1; i <= projects.Count; i++)
             {
-                
+
                 var Query = from ProjectProperty in projects.Item(i).Properties.ToDictionary().AsEnumerable()
                             where usedProperties.Contains(ProjectProperty.Key)
                             select ProjectProperty;
-                
+
                 var Dictionary = Query.ToDictionary(x => x.Key, x => x.Value);
 
-                string[] AssemblyVersion = Dictionary[MainViewModel.assemblyVersion].Split('.');
-                string[] DateiVersion = Dictionary[assemblyFileVersion].Split('.');
+                string[] assemblyVersionTemp = Dictionary[assemblyVersion].Split('.');
+                string[] dateiVersionTemp = Dictionary[assemblyFileVersion].Split('.');
 
                 var CurrentProject = new Solution.Model.ProjectData()
                 {
@@ -96,10 +110,10 @@ namespace awinta.Deployment_NET.ViewModel
                         Beschreibung = Dictionary[description],
                         Firma = Dictionary[company],
                         Produkt = Dictionary[product],
-                        Copyright = copyright,
-                        Marke = trademark,
-                        AssemblyVersion = new Solution.Model.VersionData(AssemblyVersion[0], AssemblyVersion[1], AssemblyVersion[2], AssemblyVersion[3]),
-                        Dateiversion = new Solution.Model.VersionData(AssemblyVersion[0], AssemblyVersion[1], AssemblyVersion[2], AssemblyVersion[3])
+                        Copyright = Dictionary[copyright],
+                        Marke = Dictionary[trademark],
+                        AssemblyVersion = new Solution.Model.VersionData(assemblyVersionTemp[0], assemblyVersionTemp[1], assemblyVersionTemp[2], assemblyVersionTemp[3]),
+                        Dateiversion = new Solution.Model.VersionData(dateiVersionTemp[0], dateiVersionTemp[1], dateiVersionTemp[2], dateiVersionTemp[3])
                     }
                 };
 
@@ -107,7 +121,7 @@ namespace awinta.Deployment_NET.ViewModel
 
             }
 
-            return Data.Count > 0;
+            //return Data.Count > 0;
 
         }
 
@@ -123,7 +137,49 @@ namespace awinta.Deployment_NET.ViewModel
 
                 if (Project != null)
                 {
-                    
+
+                    for (int i2 = 1; i2 <= projects.Item(i).Properties.Count; i++)
+                    {                        
+
+                        switch (projects.Item(i).Properties.Item(i2).Name)
+                        {
+
+                            //case fullPath:
+                            //    projects.Item(i).Properties.Item(i2).Value = Project.FullPath;
+                            //    break;
+                            //case assemblyName:
+                            //    projects.Item(i).Properties.Item(i2).Value = Project.AssemblyName;
+                            //    break;
+                            case title:
+                                projects.Item(i).Properties.Item(i2).Value = Project.AssemblyInfo.Titel;
+                                break;
+                            case description:
+                                projects.Item(i).Properties.Item(i2).Value = Project.AssemblyInfo.Beschreibung;
+                                break;
+                            case company:
+                                projects.Item(i).Properties.Item(i2).Value = Project.AssemblyInfo.Firma;
+                                break;
+                            case product:
+                                projects.Item(i).Properties.Item(i2).Value = Project.AssemblyInfo.Produkt;
+                                break;
+                            case copyright:
+                                projects.Item(i).Properties.Item(i2).Value = Project.AssemblyInfo.Copyright;
+                                break;
+                            case trademark:
+                                projects.Item(i).Properties.Item(i2).Value = Project.AssemblyInfo.Marke;
+                                break;
+                            case assemblyVersion:
+                                projects.Item(i).Properties.Item(i2).Value = Project.AssemblyInfo.AssemblyVersion.ToString();
+                                break;
+                            case assemblyFileVersion:
+                                projects.Item(i).Properties.Item(i2).Value = Project.AssemblyInfo.Dateiversion.ToString();
+                                break;
+                            default:
+                                break;
+                        }
+
+                    }
+
                 }
 
             }
@@ -136,6 +192,8 @@ namespace awinta.Deployment_NET.ViewModel
 
 
         }
+
+        #endregion
 
     }
 }
