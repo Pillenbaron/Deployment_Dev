@@ -3,7 +3,7 @@
     class ProjectData : Base.Model.BaseData
     {
 
-        private string name;
+        private string name = string.Empty;
 
         public string Name
         {
@@ -40,7 +40,7 @@
             }
         }
 
-        private AssemblyData assemblyInfo = null;
+        private AssemblyData assemblyInfo;
 
         public AssemblyData AssemblyInfo
         {
@@ -51,6 +51,26 @@
                 OnNotifyPropertyChanged();
             }
         }
+
+        private string assemblyPath = string.Empty;
+
+        public string AssemblyPath
+        {
+            get { return assemblyPath; }
+            set
+            {
+                assemblyPath = value;
+                OnNotifyPropertyChanged();
+            }
+        }
+
+
+        public string FullAssemblyPath
+        {
+            get { return $"{FullPath}\\{AssemblyPath}"; }
+            private set { }
+        }
+
 
         public ProjectData()
         {

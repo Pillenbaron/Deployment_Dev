@@ -11,6 +11,8 @@ namespace awinta.Deployment_NET.ViewModel
 
         #region Member
 
+        private const string codeAnalysisInputAssembly = "CodeAnalysisInputAssembly";
+
         private const string assemblyName = "AssemblyName";
         private const string fullPath = "FullPath";
         private const string assemblyVersion = "AssemblyVersion";
@@ -84,34 +86,41 @@ namespace awinta.Deployment_NET.ViewModel
 
         public void Load()
         {
-            //service.Solution.SolutionBuild.SolutionConfigurations.
+
             Projects projects = service.Solution.Projects;
 
             for (int i = 1; i <= projects.Count; i++)
             {
 
-                var Query = from ProjectProperty in projects.Item(i).Properties.ToDictionary().AsEnumerable()
-                            where usedProperties.Contains(ProjectProperty.Key)
-                            select ProjectProperty;
+                var QueryProperties = from ProjectProperty in projects.Item(i).Properties.ToDictionary().AsEnumerable()
+                                      where usedProperties.Contains(ProjectProperty.Key)
+                                      select ProjectProperty;
 
-                var Dictionary = Query.ToDictionary(x => x.Key, x => x.Value);
+                var DictionaryProperties = QueryProperties.ToDictionary(x => x.Key, x => x.Value);
 
-                string[] assemblyVersionTemp = Dictionary[assemblyVersion].Split('.');
-                string[] dateiVersionTemp = Dictionary[assemblyFileVersion].Split('.');
+                string[] assemblyVersionTemp = DictionaryProperties[assemblyVersion].Split('.');
+                string[] dateiVersionTemp = DictionaryProperties[assemblyFileVersion].Split('.');
+
+                var QueryBuildConfig = from ProjectBuildConfig in projects.Item(i).ConfigurationManager.ActiveConfiguration.Properties.ToDictionary().AsEnumerable()
+                                       where ProjectBuildConfig.Key == codeAnalysisInputAssembly
+                                       select ProjectBuildConfig;
+
+                var DictionaryBuildConfig = QueryProperties.ToDictionary(x => x.Key, x => x.Value);
 
                 var CurrentProject = new Solution.Model.ProjectData()
                 {
                     Name = projects.Item(i).Name,
-                    AssemblyName = Dictionary[assemblyName],
-                    FullPath = Dictionary[fullPath],
+                    AssemblyPath = DictionaryBuildConfig[codeAnalysisInputAssembly],
+                    AssemblyName = DictionaryProperties[assemblyName],
+                    FullPath = DictionaryProperties[fullPath],
                     AssemblyInfo = new Solution.Model.AssemblyData()
                     {
-                        Titel = Dictionary[title],
-                        Beschreibung = Dictionary[description],
-                        Firma = Dictionary[company],
-                        Produkt = Dictionary[product],
-                        Copyright = Dictionary[copyright],
-                        Marke = Dictionary[trademark],
+                        Titel = DictionaryProperties[title],
+                        Beschreibung = DictionaryProperties[description],
+                        Firma = DictionaryProperties[company],
+                        Produkt = DictionaryProperties[product],
+                        Copyright = DictionaryProperties[copyright],
+                        Marke = DictionaryProperties[trademark],
                         AssemblyVersion = new Solution.Model.VersionData(assemblyVersionTemp[0], assemblyVersionTemp[1], assemblyVersionTemp[2], assemblyVersionTemp[3]),
                         Dateiversion = new Solution.Model.VersionData(dateiVersionTemp[0], dateiVersionTemp[1], dateiVersionTemp[2], dateiVersionTemp[3])
                     }
@@ -120,8 +129,6 @@ namespace awinta.Deployment_NET.ViewModel
                 Data.Add(CurrentProject);
 
             }
-
-            //return Data.Count > 0;
 
         }
 
@@ -189,7 +196,12 @@ namespace awinta.Deployment_NET.ViewModel
         public void Deploy()
         {
 
+            for (int i = 0; i < Data.Count - 1; i++)
+            {
 
+
+
+            }
 
         }
 
