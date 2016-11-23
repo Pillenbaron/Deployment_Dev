@@ -1,7 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using awinta.Deployment_NET.Extensions;
+using awinta.Deployment_NET.Solution.Model;
 using EnvDTE;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
-using awinta.Deployment_NET.Extensions;
 using System.Windows.Input;
 
 namespace awinta.Deployment_NET.ViewModel
@@ -37,14 +39,14 @@ namespace awinta.Deployment_NET.ViewModel
 
         private DTE service = null;
 
-        private Solution.Model.VersionData version;
+        private ConfigData configuration;
 
-        public Solution.Model.VersionData Version
+        public ConfigData Configuration
         {
-            get { return version; }
+            get { return configuration; }
             set
             {
-                version = value;
+                configuration = value;
                 OnNotifyPropertyChanged();
             }
         }
@@ -68,6 +70,8 @@ namespace awinta.Deployment_NET.ViewModel
         public ICommand LoadCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand DeployCommand { get; set; }
+        public ICommand BuildSolutionCommand { get; set; }
+
         #endregion
 
         public MainViewModel()
@@ -76,9 +80,10 @@ namespace awinta.Deployment_NET.ViewModel
             LoadCommand = new Commands.DefaultCommand(Load);
             SaveCommand = new Commands.DefaultCommand(Save);
             DeployCommand = new Commands.DefaultCommand(Deploy);
+            BuildSolutionCommand = new Commands.DefaultCommand(BuildSolution);
 
             service = Service.ServiceLocator.GetInstance<DTE>();
-            data = new ObservableCollection<Solution.Model.ProjectData>();
+            data = new ObservableCollection<ProjectData>();
 
         }
 
@@ -157,6 +162,7 @@ namespace awinta.Deployment_NET.ViewModel
                             //case assemblyName:
                             //    projects.Item(i).Properties.Item(i2).Value = Project.AssemblyName;
                             //    break;
+
                             case title:
                                 projects.Item(i).Properties.Item(i2).Value = Project.AssemblyInfo.Titel;
                                 break;
@@ -179,7 +185,7 @@ namespace awinta.Deployment_NET.ViewModel
                                 projects.Item(i).Properties.Item(i2).Value = Project.AssemblyInfo.AssemblyVersion.ToString();
                                 break;
                             case assemblyFileVersion:
-                                projects.Item(i).Properties.Item(i2).Value = Project.AssemblyInfo.Dateiversion.ToString();
+                                projects.Item(i).Properties.Item(i2).Value = configuration.Version.ToString();
                                 break;
                             default:
                                 break;
@@ -196,12 +202,7 @@ namespace awinta.Deployment_NET.ViewModel
         public void Deploy()
         {
 
-            for (int i = 0; i < Data.Count - 1; i++)
-            {
-
-
-
-            }
+            data.ForEach(x => copyAssembly(x));
 
         }
 
@@ -212,7 +213,40 @@ namespace awinta.Deployment_NET.ViewModel
             service.Events.BuildEvents.OnBuildDone += _BuildDone;
             solBuild.ActiveConfiguration.Activate();
             solBuild.Build();
-            solBuild.ActiveConfiguration.Collection
+
+        }
+
+        private void copyAssembly(ProjectData project)
+        {
+
+            System.Diagnostics.Debug.Print($"Deploy: {project.Name}");
+
+            FileInfo assembly = new FileInfo(project.FullAssemblyPath);
+            DirectoryInfo targetPath = new DirectoryInfo(configuration.FullDeployPath);
+            FileInfo targetAssembly = new FileInfo(Path.Combine(configuration.FullDeployPath, assembly.Name));
+
+            if (assembly.Exists && targetPath.Exists)
+            {
+
+                assembly.CopyTo(targetPath.FullName, true);
+
+                if (assembly.ToFileHash() != targetAssembly.ToFileHash())
+                {
+
+                    System.Diagnostics.Debug.Print($"Fehler: die Datei {assembly.Name} stimmt nicht mit ihrer Quelle über ein.");
+                    System.Diagnostics.Debug.Print($"Hash: Quelle {assembly.ToFileHash()} <> Ziel {targetAssembly.ToFileHash()}");
+
+                }
+
+            }
+            else
+            {
+
+                if (!assembly.Exists) System.Diagnostics.Debug.Print($"Build nicht vorhanden: {assembly.FullName}");
+                if (!targetPath.Exists) System.Diagnostics.Debug.Print($"Zielpfad nicht vorhanden: {targetPath.FullName}");
+
+            }
+
         }
 
         #endregion
@@ -231,6 +265,10 @@ namespace awinta.Deployment_NET.ViewModel
                     switch (Action)
                     {
                         case vsBuildAction.vsBuildActionBuild:
+
+                            System.Diagnostics.Debug.Print("StartDeploy");
+                            Deploy();
+
                             break;
                         case vsBuildAction.vsBuildActionRebuildAll:
                             break;

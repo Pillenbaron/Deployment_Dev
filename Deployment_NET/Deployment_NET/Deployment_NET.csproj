@@ -57,9 +57,10 @@
   <ItemGroup>
     <Compile Include="Classes\Commands\DefaultCommand.cs" />
     <Compile Include="Classes\Extensions\DataExtension.cs" />
-    <Compile Include="Classes\IO\SerializationService.cs" />
+    <Compile Include="Classes\Service\IO\SerializationService.cs" />
     <Compile Include="Classes\Model\AssemblyData.cs" />
     <Compile Include="Classes\Model\BaseData.cs" />
+    <Compile Include="Classes\Model\ConfigData.cs" />
     <Compile Include="Classes\Model\ProjectData.cs" />
     <Compile Include="Classes\Model\VersionData.cs" />
     <Compile Include="Classes\Service\ServiceLocator.cs" />
@@ -82,6 +83,7 @@
   <ItemGroup>
     <VSCTCompile Include="Classes\View\ConfigView\ConfigViewPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
+      <SubType>Designer</SubType>
     </VSCTCompile>
     <Content Include="Classes\View\ConfigView\Resources\ConfigViewCommand.png" />
     <Content Include="Classes\View\ConfigView\Resources\ConfigViewPackage.ico" />
@@ -187,6 +189,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Design" />
@@ -199,7 +202,9 @@
     <Reference Include="System.Xml.Serialization" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Classes\View\ContextMenu\" />
+  </ItemGroup>
   <ItemGroup>
     <Page Include="Classes\View\ConfigView\ConfigViewControl.xaml">
       <SubType>Designer</SubType>
