@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.IO;
 
 namespace awinta.Deployment_NET.Solution.Model
 {
     internal class ConfigData : Base.Model.BaseData
     {
+
         private const string defaultDeployPath = "\\\\asys-smart500\\ASYS_Installation";
 
         private VersionData version;
@@ -25,7 +21,6 @@ namespace awinta.Deployment_NET.Solution.Model
         }
 
         private string deployPath = defaultDeployPath;
-
         public string DeployPath
         {
             get { return deployPath; }
@@ -50,9 +45,21 @@ namespace awinta.Deployment_NET.Solution.Model
             set
             {
                 deployPathVersion = value;
+                OnNotifyPropertyChanged();
             }
         }
 
+        private bool isLocked;
+
+        public bool Islocked
+        {
+            get { return isLocked; }
+            set
+            {
+                isLocked = value;
+                OnNotifyPropertyChanged();
+            }
+        }
 
     }
 }

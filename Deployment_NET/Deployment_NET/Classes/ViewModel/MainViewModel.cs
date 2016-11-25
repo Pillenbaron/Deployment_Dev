@@ -37,10 +37,20 @@ namespace awinta.Deployment_NET.ViewModel
                                                             company,
                                                             assemblyName };
 
-        private DTE service = null;
+        private DTE service;
+        public DTE Service
+        {
+            get { return service; }
+            set
+            {
+                service = value;
+            }
+        }
+        #endregion
+
+        #region Properties
 
         private ConfigData configuration;
-
         public ConfigData Configuration
         {
             get { return configuration; }
@@ -52,7 +62,6 @@ namespace awinta.Deployment_NET.ViewModel
         }
 
         private ObservableCollection<Solution.Model.ProjectData> data;
-
         public ObservableCollection<Solution.Model.ProjectData> Data
         {
             get { return data; }
@@ -69,20 +78,22 @@ namespace awinta.Deployment_NET.ViewModel
 
         public ICommand LoadCommand { get; set; }
         public ICommand SaveCommand { get; set; }
-        public ICommand DeployCommand { get; set; }
+        public ICommand DeploayCommand { get; set; }
         public ICommand BuildSolutionCommand { get; set; }
+        public ICommand DirCommand { get; set; }
 
         #endregion
 
         public MainViewModel()
         {
 
-            LoadCommand = new Commands.DefaultCommand(Load);
-            SaveCommand = new Commands.DefaultCommand(Save);
-            DeployCommand = new Commands.DefaultCommand(Deploy);
-            BuildSolutionCommand = new Commands.DefaultCommand(BuildSolution);
+            LoadCommand = new UICommands.DefaultCommand(Load);
+            SaveCommand = new UICommands.DefaultCommand(Save);
+            DeploayCommand = new UICommands.DefaultCommand(Deploy);
+            BuildSolutionCommand = new UICommands.DefaultCommand(BuildSolution);
+            DirCommand = new UICommands.DefaultCommand(setDeployPath);
 
-            service = Service.ServiceLocator.GetInstance<DTE>();
+            //service = Service.ServiceLocator.GetInstance<DTE>();
             data = new ObservableCollection<ProjectData>();
 
         }
@@ -292,6 +303,26 @@ namespace awinta.Deployment_NET.ViewModel
             {
 
                 service.Events.BuildEvents.OnBuildDone -= _BuildDone;
+
+            }
+
+        }
+
+        private void setDeployPath()
+        {
+
+            var dialog = new System.Windows.Forms.FolderBrowserDialog()
+            {
+
+                Description = "Wählen sie den Root-Ordner der Updates aus",
+                RootFolder = System.Environment.SpecialFolder.NetworkShortcuts,
+                SelectedPath = configuration.DeployPath
+            };
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+
+                configuration.DeployPath = dialog.SelectedPath;
 
             }
 

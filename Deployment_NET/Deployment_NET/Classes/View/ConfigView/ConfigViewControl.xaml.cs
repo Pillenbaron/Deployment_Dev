@@ -6,6 +6,7 @@
 
 namespace awinta.Deployment_NET.View
 {
+    using EnvDTE;
     using System.Diagnostics.CodeAnalysis;
     using System.Windows;
     using System.Windows.Controls;
@@ -15,14 +16,23 @@ namespace awinta.Deployment_NET.View
     /// </summary>
     public partial class ConfigViewControl : UserControl
     {
+
+        private ViewModel.MainViewModel viewModel;
+
+        public DTE Service
+        {
+            get { return viewModel.Service; }
+            set { viewModel.Service = value; }
+        }  
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigViewControl"/> class.
         /// </summary>
         public ConfigViewControl()
         {
             this.InitializeComponent();
-
-            this.DataContext = new ViewModel.MainViewModel();
+            viewModel = new ViewModel.MainViewModel();
+            this.DataContext = viewModel;
 
         }
 

@@ -4,11 +4,11 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
-using System;
-using System.ComponentModel.Design;
-using System.Globalization;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using System;
+using System.ComponentModel.Design;
 
 namespace awinta.Deployment_NET.View
 {
@@ -99,10 +99,23 @@ namespace awinta.Deployment_NET.View
             {
                 throw new NotSupportedException("Cannot create tool window");
             }
+            else
+            {
+
+                var ConfigWindow = window as ConfigView;
+
+                if (ConfigWindow != null)
+                {
+
+                    ConfigWindow.setService((DTE)this.ServiceProvider.GetService(typeof(DTE)));
+
+                }
+
+            }
 
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
-            
+
         }
     }
 }

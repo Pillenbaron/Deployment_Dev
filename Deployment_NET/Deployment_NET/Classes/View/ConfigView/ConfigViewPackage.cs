@@ -68,7 +68,6 @@ namespace awinta.Deployment_NET.View
         /// </summary>
         protected override void Initialize()
         {
-            Service.ServiceLocator.Add(this.GetService(typeof(DTE)));
             ConfigViewCommand.Initialize(this);
             base.Initialize();
         }

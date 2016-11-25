@@ -31,6 +31,12 @@
     group; your package should define its own command set in order to avoid collisions
     with command ids defined by other packages. -->
 
+    <Groups>
+      <Group guid="guidConfigViewPackageCmdSet" id="ConfigGroup" priority="0x0100">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE"/>
+      </Group>
+    </Groups>
+
     <!--Buttons section. -->
     <!--This section defines the elements the user can interact with, like a menu command or a button
         or combo box in a toolbar. -->
@@ -42,11 +48,11 @@
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-      <Button guid="guidConfigViewPackageCmdSet" id="ConfigViewCommandId" priority="0x0100" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
+      <Button guid="guidConfigViewPackageCmdSet" id="ConfigGroup" priority="0x0100" type="Button">
+        <Parent guid="guidConfigViewPackageCmdSet" id="ConfigGroup"/>
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>ConfigView</ButtonText>
+          <ButtonText>Deploy</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -68,7 +74,7 @@
 
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidConfigViewPackageCmdSet" value="{474584a9-6d02-41f7-a806-494a7ae0f332}">
-      <IDSymbol name="ConfigViewCommandId" value="0x0100" />
+      <IDSymbol name="ConfigGroup" value="0x0100" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{85a68b29-d5d8-4686-8d92-92ca7dc1c22e}" >

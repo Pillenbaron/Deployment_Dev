@@ -6,9 +6,9 @@
 
 namespace awinta.Deployment_NET.View
 {
+    using Microsoft.VisualStudio.Shell;
     using System;
     using System.Runtime.InteropServices;
-    using Microsoft.VisualStudio.Shell;
 
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
@@ -36,5 +36,20 @@ namespace awinta.Deployment_NET.View
             // the object returned by the Content property.
             this.Content = new ConfigViewControl();
         }
+
+        public void setService(EnvDTE.DTE Service)
+        {
+
+            var Control = this.Content as ConfigViewControl;
+
+            if (Control != null)
+            {
+
+                Control.Service = Service;
+
+            }
+
+        }
+
     }
 }

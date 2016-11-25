@@ -4,12 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml" x:Class="awinta.Deployment_NET.View.ConfigViewControl"
+             xmlns:rule="clr-namespace:awinta.Deployment_NET.Validation"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             x:Name="MyToolWindow" Width="400" Height="300" Loaded="">
+             x:Name="MyToolWindow" Width="300" Height="300" MinHeight="300" MinWidth="300">
     <UserControl.Resources>
+        <ControlTemplate x:Key="ValidationTemplate">
+            <DockPanel>
+                <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
+                <AdornedElementPlaceholder/>
+            </DockPanel>
+        </ControlTemplate>
         <Style x:Key="myStyle" TargetType="{x:Type Label}">
             <Setter Property="Background" Value="Orange" />
             <Setter Property="FontStyle" Value="Normal" />
@@ -19,23 +26,31 @@
         <Style x:Key="VersionStyle" TargetType="TextBox">
             <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="TextAlignment" Value="Left" />
-            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="Width" Value="50"/>
             <Setter Property="Height" Value="26"/>
         </Style>
         <Style x:Key="LabelStyle" TargetType="Label">
-            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="Height" Value="26"/>
+            <Setter Property="Width" Value="52"/>
+        </Style>
+        <Style x:Key="textBoxInError" BasedOn="{StaticResource VersionStyle}" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </UserControl.Resources>
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="80" MinHeight="80"/>
+            <RowDefinition Height="Auto" MinHeight="220" />
         </Grid.RowDefinitions>
-        <Label x:Name="VersionCaption" Content="Version:" Margin="10,10,10,10" Grid.Row="0" Style="{StaticResource LabelStyle}"/>
+        <Label x:Name="VersionCaption" Content="Version:" Margin="10,15,0,0" Grid.Row="0" Style="{StaticResource LabelStyle}"/>
         <DataGrid x:Name="dataGrid" Margin="10,10,10,10" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" ItemsSource="{Binding Path=Data}" ColumnWidth="auto">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Titel" Binding="{Binding Path=Titel}"/>
@@ -43,9 +58,51 @@
                 <DataGridTextColumn Header="Dateiversion" Binding="{Binding Path=Dateiversion}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBox x:Name="Hauptversion" Margin="65,10,0,10" Grid.Row="0" Style="{StaticResource VersionStyle}" Text="{Binding Path=Version}"/>
-        <TextBox x:Name="Nebenversion" Margin="120,10,0,10" Grid.Row="0" Style="{StaticResource VersionStyle}"/>
-        <TextBox x:Name="Buildnummer" Margin="175,10,0,10" Grid.Row="0" Style="{StaticResource VersionStyle}"/>
-        <TextBox x:Name="Revision" Margin="230,10,0,10" Grid.Row="0" Style="{StaticResource VersionStyle}"/>
+        <TextBox x:Name="Hauptversion" Margin="65,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}">
+            <TextBox.Text>
+                <Binding Path="Hauptversion" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <rule:NumericValidation/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <TextBox x:Name="Nebenversion" Margin="120,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}">
+            <TextBox.Text>
+                <Binding Path="Hauptversion" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <rule:NumericValidation/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <TextBox x:Name="Buildnummer" Margin="175,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}">
+            <TextBox.Text>
+                <Binding Path="Hauptversion" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <rule:NumericValidation/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <TextBox x:Name="Revision" Margin="230,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}">
+            <TextBox.Text>
+                <Binding Path="Hauptversion" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <rule:NumericValidation/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <Label x:Name="label" Content="Pfad:" Margin="10,46,0,0"  Style="{StaticResource LabelStyle}"/>
+        <TextBox x:Name="DeployPath" Margin="65,46,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}" Width="215" Validation.ErrorTemplate="{StaticResource ValidationTemplate}">
+            <TextBox.Text>
+                <Binding Path="DeployPath" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <rule:UriValidation/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
     </Grid>
 </UserControl>

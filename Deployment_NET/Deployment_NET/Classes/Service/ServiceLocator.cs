@@ -19,10 +19,7 @@ namespace awinta.Deployment_NET.Service
 
         public static T GetInstance<T>()
         {
-
-            Type type = typeof(T);
-
-            return (T)data.FirstOrDefault(x => x.GetType() == type);
+            return (T)data.FirstOrDefault(x => x.GetType() == typeof(T));
         }
 
         public static IEnumerable<T> GetInstances<T>()

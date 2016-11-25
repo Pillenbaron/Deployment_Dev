@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace awinta.Deployment_NET.Commands
+namespace awinta.Deployment_NET.UICommands
 {
     public class DefaultCommand : ICommand
     {
@@ -19,6 +19,13 @@ namespace awinta.Deployment_NET.Commands
 
         public bool CanExecute(object parameter)
         {
+
+            if (parameter is bool)
+            {
+
+                return !(bool)parameter;
+
+            }
 
             return true;
 
