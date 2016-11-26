@@ -5,8 +5,24 @@ using System.Runtime.CompilerServices;
 
 namespace awinta.Deployment_NET.Base.Model
 {
-    internal abstract class BaseData : System.ComponentModel.INotifyPropertyChanged
+    internal abstract class BaseData : INotifyPropertyChanged, IDataErrorInfo
     {
+        public virtual string Error
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public virtual string this[string columnName]
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         internal void OnNotifyPropertyChanged([CallerMemberName] String propertyName = "")

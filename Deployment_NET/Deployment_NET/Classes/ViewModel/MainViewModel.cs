@@ -93,7 +93,7 @@ namespace awinta.Deployment_NET.ViewModel
             BuildSolutionCommand = new UICommands.DefaultCommand(BuildSolution);
             DirCommand = new UICommands.DefaultCommand(setDeployPath);
 
-            //service = Service.ServiceLocator.GetInstance<DTE>();
+            Configuration = new ConfigData();
             data = new ObservableCollection<ProjectData>();
 
         }
@@ -121,7 +121,7 @@ namespace awinta.Deployment_NET.ViewModel
                                        where ProjectBuildConfig.Key == codeAnalysisInputAssembly
                                        select ProjectBuildConfig;
 
-                var DictionaryBuildConfig = QueryProperties.ToDictionary(x => x.Key, x => x.Value);
+                var DictionaryBuildConfig = QueryBuildConfig.ToDictionary(x => x.Key, x => x.Value);
 
                 var CurrentProject = new Solution.Model.ProjectData()
                 {

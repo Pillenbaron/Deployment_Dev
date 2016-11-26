@@ -6,6 +6,24 @@ namespace awinta.Deployment_NET.Solution.Model
     internal class ConfigData : Base.Model.BaseData
     {
 
+        public override string this[string columnName]
+        {
+            get
+            {
+                string errorMessage = string.Empty;
+                switch (columnName)
+                {
+                    case "DeployPath":
+                        errorMessage = Service.ValidationService.ValidateUri(DeployPath);
+                        break;
+                    default:
+                        break;
+                }
+
+                return base[columnName];
+            }
+        }
+
         private const string defaultDeployPath = "\\\\asys-smart500\\ASYS_Installation";
 
         private VersionData version;
