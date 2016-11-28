@@ -1,6 +1,6 @@
 ﻿namespace awinta.Deployment_NET.Solution.Model
 {
-    class ProjectData : Base.Model.BaseData
+    class ProjectData : BaseData
     {
 
         private string name = string.Empty;

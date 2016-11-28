@@ -1,6 +1,6 @@
 ﻿namespace awinta.Deployment_NET.Solution.Model
 {
-    internal class AssemblyData : Base.Model.BaseData
+    internal class AssemblyData : BaseData
     {
 
         private string titel = string.Empty;

@@ -11,7 +11,7 @@ namespace awinta.Deployment_NET.Extensions
     internal static class DataExtension
     {
 
-        public static Dictionary<string,string> ToDictionary(this EnvDTE.Properties value)
+        public static Dictionary<string, string> ToDictionary(this EnvDTE.Properties value)
         {
 
             Dictionary<string, string> Result = new Dictionary<string, string>();
@@ -49,7 +49,7 @@ namespace awinta.Deployment_NET.Extensions
         public static string ToFileHash(this FileInfo value)
         {
 
-            byte[] Result= new byte[] { };
+            byte[] Result = new byte[] { };
 
             using (FileStream FileCheck = value.OpenRead())
             {
@@ -58,7 +58,7 @@ namespace awinta.Deployment_NET.Extensions
                 Result = md5.ComputeHash(FileCheck);
 
             }
-           
+
             return Encoding.UTF8.GetString(Result);
 
         }
@@ -66,7 +66,7 @@ namespace awinta.Deployment_NET.Extensions
         public static void ToXML<T>(this T Value)
         {
 
-           
+
 
         }
 

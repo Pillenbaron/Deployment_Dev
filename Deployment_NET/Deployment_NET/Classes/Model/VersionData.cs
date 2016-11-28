@@ -1,25 +1,7 @@
 ﻿namespace awinta.Deployment_NET.Solution.Model
 {
-    internal class VersionData : Base.Model.BaseData
+    internal class VersionData : BaseData
     {
-
-        public override string this[string columnName]
-        {
-            get
-            {
-                string errorMessage = string.Empty;
-                switch (columnName)
-                {
-                    case "Hauptversion":
-                        //errorMessage = Service.ValidationService.ValidateNumeric(Hauptversion);
-                        break;
-                    default:
-                        break;
-                }
-
-                return base[columnName];
-            }
-        }
 
         private int hauptversion = 0;
 

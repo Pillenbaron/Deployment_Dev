@@ -6,6 +6,7 @@
              xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml" x:Class="awinta.Deployment_NET.View.ConfigViewControl"
              xmlns:rule="clr-namespace:awinta.Deployment_NET.Validation"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:Converter="clr-namespace:awinta.Deployment_NET.Converter"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -17,12 +18,6 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <UserControl.Resources>
-        <ControlTemplate x:Key="ValidationTemplate">
-            <DockPanel>
-                <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
-                <AdornedElementPlaceholder/>
-            </DockPanel>
-        </ControlTemplate>
         <Style x:Key="myStyle" TargetType="{x:Type Label}">
             <Setter Property="Background" Value="Orange" />
             <Setter Property="FontStyle" Value="Normal" />
@@ -50,6 +45,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <ResourceDictionary x:Key="Converter" Source="../../../Ressource/ConverterDictionary.xaml"/>
     </UserControl.Resources>
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -64,51 +60,11 @@
                 <DataGridTextColumn Header="Dateiversion" Binding="{Binding Path=Dateiversion}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBox x:Name="Hauptversion" Margin="65,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}">
-            <TextBox.Text>
-                <Binding Path="Hauptversion" UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                        <rule:NumericValidation/>
-                    </Binding.ValidationRules>
-                </Binding>
-            </TextBox.Text>
-        </TextBox>
-        <TextBox x:Name="Nebenversion" Margin="120,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}">
-            <TextBox.Text>
-                <Binding Path="Hauptversion" UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                        <rule:NumericValidation/>
-                    </Binding.ValidationRules>
-                </Binding>
-            </TextBox.Text>
-        </TextBox>
-        <TextBox x:Name="Buildnummer" Margin="175,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}">
-            <TextBox.Text>
-                <Binding Path="Hauptversion" UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                        <rule:NumericValidation/>
-                    </Binding.ValidationRules>
-                </Binding>
-            </TextBox.Text>
-        </TextBox>
-        <TextBox x:Name="Revision" Margin="230,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}">
-            <TextBox.Text>
-                <Binding Path="Hauptversion" UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                        <rule:NumericValidation/>
-                    </Binding.ValidationRules>
-                </Binding>
-            </TextBox.Text>
-        </TextBox>
+        <TextBox x:Name="Hauptversion" Margin="65,15,0,0" Foreground="{StaticResource ResourceKey=yolo}" Grid.Row="0" Style="{StaticResource textBoxInError}"/>
+        <TextBox x:Name="Nebenversion" Margin="120,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}"/>
+        <TextBox x:Name="Buildnummer" Margin="175,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}"/>
+        <TextBox x:Name="Revision" Margin="230,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}"/>
         <Label x:Name="label" Content="Pfad:" Margin="10,46,0,0"  Style="{StaticResource LabelStyle}"/>
-        <TextBox x:Name="DeployPath" Margin="65,46,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}" Width="215" Validation.ErrorTemplate="{StaticResource ValidationTemplate}">
-            <TextBox.Text>
-                <Binding Path="DeployPath" UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                        <rule:UriValidation/>
-                    </Binding.ValidationRules>
-                </Binding>
-            </TextBox.Text>
-        </TextBox>
+        <TextBox x:Name="DeployPath" Margin="65,46,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}" Width="215" Text="{Binding DeployPath, Mode=TwoWay,ValidatesOnDataErrors=True, NotifyOnValidationError=True, Converter={StaticResource ResourceKey=UriConverter }}"/>
     </Grid>
 </UserControl>

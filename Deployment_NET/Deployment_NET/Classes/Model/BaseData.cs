@@ -1,37 +1,96 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace awinta.Deployment_NET.Base.Model
+namespace awinta.Deployment_NET.Solution.Model
 {
-    internal abstract class BaseData : INotifyPropertyChanged, IDataErrorInfo
+    internal abstract class BaseData : INotifyPropertyChanged, INotifyDataErrorInfo
     {
-        public virtual string Error
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
 
-        public virtual string this[string columnName]
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        #region Events
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
-        internal void OnNotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        #endregion
+
+        #region Member
+
+        private Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
+
+        #endregion
+
+        #region Propertie
+
+        public bool HasErrors
         {
-            if (PropertyChanged != null)
+            get
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                return errors.Count > 0;
             }
         }
+
+        #endregion
+
+        #region Validation
+
+        public virtual bool Validate(object value, [CallerMemberName] String propertyName = "")
+        {
+
+            throw new NotImplementedException();
+
+        }
+
+        public void AddError(string propertyName, string error, bool isWarning)
+        {
+            if (!errors.ContainsKey(propertyName))
+                errors[propertyName] = new List<string>();
+
+            if (!errors[propertyName].Contains(error))
+            {
+                if (isWarning) errors[propertyName].Add(error);
+                else errors[propertyName].Insert(0, error);
+                OnErrorsChanged(propertyName);
+            }
+        }
+
+        public void RemoveError(string propertyName, string error)
+        {
+            if (errors.ContainsKey(propertyName) &&
+                errors[propertyName].Contains(error))
+            {
+                errors[propertyName].Remove(error);
+                if (errors[propertyName].Count == 0) errors.Remove(propertyName);
+                OnErrorsChanged(propertyName);
+            }
+        }
+
+        public IEnumerable GetErrors(string propertyName)
+        {
+            if (String.IsNullOrEmpty(propertyName) || !errors.ContainsKey(propertyName)) return null;
+            return errors[propertyName];
+        }
+
+        #endregion
+
+        #region OnMethoden
+
+        internal virtual void OnErrorsChanged(string propertyName)
+        {
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+
+        internal virtual void OnNotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
+
+        #region Other
 
         public override string ToString()
         {
@@ -63,6 +122,8 @@ namespace awinta.Deployment_NET.Base.Model
             return Result;
 
         }
+
+        #endregion
 
     }
 }

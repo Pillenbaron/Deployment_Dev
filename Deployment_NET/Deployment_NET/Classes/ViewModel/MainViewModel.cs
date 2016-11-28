@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace awinta.Deployment_NET.ViewModel
 {
-    internal class MainViewModel : Base.Model.BaseData
+    internal class MainViewModel : BaseData
     {
 
         #region Member
@@ -316,13 +316,13 @@ namespace awinta.Deployment_NET.ViewModel
 
                 Description = "Wählen sie den Root-Ordner der Updates aus",
                 RootFolder = System.Environment.SpecialFolder.NetworkShortcuts,
-                SelectedPath = configuration.DeployPath
+                SelectedPath = configuration.DeployPath.AbsolutePath
             };
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
 
-                configuration.DeployPath = dialog.SelectedPath;
+                configuration.DeployPath = new System.Uri( dialog.SelectedPath);
 
             }
 
