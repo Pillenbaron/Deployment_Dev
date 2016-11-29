@@ -7,10 +7,6 @@
              xmlns:rule="clr-namespace:awinta.Deployment_NET.Validation"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:Converter="clr-namespace:awinta.Deployment_NET.Converter"
-             Background="{DynamicResource VsBrush.Window}"
-             Foreground="{DynamicResource VsBrush.WindowText}"
-             mc:Ignorable="d"
-             d:DesignHeight="300"
              x:Name="MyToolWindow" Width="300" Height="300" MinHeight="300" MinWidth="300">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -45,7 +41,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <ResourceDictionary x:Key="Converter" Source="../../../Ressource/ConverterDictionary.xaml"/>
     </UserControl.Resources>
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -60,11 +55,11 @@
                 <DataGridTextColumn Header="Dateiversion" Binding="{Binding Path=Dateiversion}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBox x:Name="Hauptversion" Margin="65,15,0,0" Foreground="{StaticResource ResourceKey=yolo}" Grid.Row="0" Style="{StaticResource textBoxInError}"/>
+        <TextBox x:Name="Hauptversion" Margin="65,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}"/>
         <TextBox x:Name="Nebenversion" Margin="120,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}"/>
         <TextBox x:Name="Buildnummer" Margin="175,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}"/>
         <TextBox x:Name="Revision" Margin="230,15,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}"/>
         <Label x:Name="label" Content="Pfad:" Margin="10,46,0,0"  Style="{StaticResource LabelStyle}"/>
-        <TextBox x:Name="DeployPath" Margin="65,46,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}" Width="215" Text="{Binding DeployPath, Mode=TwoWay,ValidatesOnDataErrors=True, NotifyOnValidationError=True, Converter={StaticResource ResourceKey=UriConverter }}"/>
+        <TextBox x:Name="DeployPath" Margin="65,46,0,0" Grid.Row="0" Style="{StaticResource textBoxInError}" Width="215"/>
     </Grid>
 </UserControl>
