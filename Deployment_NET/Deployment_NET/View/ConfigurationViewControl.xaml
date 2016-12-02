@@ -1,0 +1,73 @@
+﻿<UserControl x:Class="awinta.Deployment_NET.View.ConfigurationViewControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             Name="MyToolWindow">
+    <!--xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"-->
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadCommand}" x:Name="Commandinvoker"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <UserControl.Resources>
+        <Style x:Key="CaptionStyle" TargetType="Label">
+            <Setter Property="Width" Value="75" />
+        </Style>
+        <Style x:Key="PathStyle" TargetType="TextBox">
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="TextAlignment" Value="Right" />
+            <Setter Property="Margin" Value="0,0,2,0"/>
+            <Setter Property="KeyboardNavigation.IsTabStop" Value="True"/>
+        </Style>
+        <Style x:Key="VersionStyle" TargetType="TextBox" BasedOn="{StaticResource PathStyle}">
+            <Setter Property="Width" Value="50"/>
+        </Style>
+        <Style x:Key="LabelStyle" TargetType="Label">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Width" Value="52"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto" Grid.Row="0">
+            <StackPanel  Orientation="Horizontal">
+                <Label Width="75" DockPanel.Dock="Left">Version</Label>
+                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}">1</TextBox>
+                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}">0</TextBox>
+                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}">0</TextBox>
+                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}">0</TextBox>
+            </StackPanel>
+            <DockPanel LastChildFill="True">
+                <Label DockPanel.Dock="Left" Style="{StaticResource CaptionStyle}">Updatepfad:</Label>
+                <Button DockPanel.Dock="Right" Width="50" >...</Button>
+                <TextBox Style="{StaticResource PathStyle}"></TextBox>
+            </DockPanel>
+        </StackPanel>
+        <DockPanel LastChildFill="True" Grid.Row="1" >
+            <GroupBox Header="Projekte">
+                <DataGrid x:Name="dataGrid" 
+                          Margin="5,5,5,5" 
+                          Grid.Row="1" 
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch"                           
+                          ItemsSource="{Binding Path=Data}" 
+                          ColumnWidth="auto">
+                    <!--<DataGrid.Columns>
+                        <DataGridTextColumn Header="Titel" Binding="{Binding Path=Titel}"/>
+                        <DataGridTextColumn Header="AssemblyVersion" Binding="{Binding Path=AssemblyVersion}"/>
+                        <DataGridTextColumn Header="Dateiversion" Binding="{Binding Path=Dateiversion}"/>
+                    </DataGrid.Columns>-->
+                </DataGrid>
+            </GroupBox>
+        </DockPanel>
+    </Grid>
+</UserControl>
