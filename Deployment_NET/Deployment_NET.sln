@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deployment_NET", "Deploymen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApplication1", "WpfApplication1\WpfApplication1.csproj", "{4D26770E-A301-4A42-BBF4-044B89D473BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deployment_NET.Tests", "Deployment_NET.Tests\Deployment_NET.Tests.csproj", "{387E2787-2BA3-4519-A329-DC7704DD397A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,20 +23,12 @@ Global
 		{4D26770E-A301-4A42-BBF4-044B89D473BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D26770E-A301-4A42-BBF4-044B89D473BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D26770E-A301-4A42-BBF4-044B89D473BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{387E2787-2BA3-4519-A329-DC7704DD397A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{387E2787-2BA3-4519-A329-DC7704DD397A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{387E2787-2BA3-4519-A329-DC7704DD397A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{387E2787-2BA3-4519-A329-DC7704DD397A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://tfs:8080/tfs/asys
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Deployment_NET\\Deployment_NET.csproj
-		SccProjectName1 = Deployment_NET
-		SccLocalPath1 = Deployment_NET
-		SccProjectUniqueName2 = WpfApplication1\\WpfApplication1.csproj
-		SccProjectName2 = WpfApplication1
-		SccLocalPath2 = WpfApplication1
 	EndGlobalSection
 EndGlobal
