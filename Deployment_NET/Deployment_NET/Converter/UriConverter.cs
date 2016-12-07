@@ -8,6 +8,16 @@ namespace awinta.Deployment_NET.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+
+            var uri = value as Uri;
+
+            return uri != null ? uri.AbsolutePath : string.Empty;
+
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+
             var path = value as string;
             Uri deployPath = null;
 
@@ -23,13 +33,7 @@ namespace awinta.Deployment_NET.Converter
                 return null;
 
             }
-        }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var uri = value as Uri;
-
-            return uri != null ? uri.AbsolutePath : string.Empty;
         }
     }
 }

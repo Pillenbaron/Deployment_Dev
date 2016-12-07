@@ -46,8 +46,8 @@ namespace awinta.Deployment_NET.View
             }
 
             this.package = package;
-                      
-            IoC.ApplicationContainer.Register< DTE,DTE>((DTE)this.ServiceProvider.GetService(typeof(DTE)));
+            
+            IoC.ApplicationContainer.Register<DTE, DTE>((DTE)this.ServiceProvider.GetService(typeof(DTE)));
 
             OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)

@@ -29,6 +29,58 @@ namespace awinta.Deployment_NET.Solution.Model
             }
         }
 
+        //#region testnumeric
+
+        //private int hauptversion = 0;
+
+        //public int Hauptversion
+        //{
+        //    get { return hauptversion; }
+        //    set
+        //    {
+        //        hauptversion = value;
+        //        OnNotifyPropertyChanged();
+        //    }
+        //}
+
+        //private int nebenversion = 0;
+
+        //public int Nebenversion
+        //{
+        //    get { return nebenversion; }
+        //    set
+        //    {
+        //        nebenversion = value;
+        //        OnNotifyPropertyChanged();
+        //    }
+        //}
+
+        //private int buildnummer = 0;
+
+        //public int Buildnummer
+        //{
+        //    get { return buildnummer; }
+        //    set
+        //    {
+        //        buildnummer = value;
+        //        OnNotifyPropertyChanged();
+        //    }
+        //}
+
+        //private int revision = 0;
+
+        //public int Revision
+        //{
+        //    get { return revision; }
+        //    set
+        //    {
+        //        revision = value;
+        //        OnNotifyPropertyChanged();
+        //    }
+        //}
+
+        //#endregion
+
         private Uri deployPath = new Uri(defaultDeployPath);
         public Uri DeployPath
         {

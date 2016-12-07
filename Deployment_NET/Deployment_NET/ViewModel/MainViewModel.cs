@@ -303,7 +303,7 @@ namespace awinta.Deployment_NET.ViewModel
             {
 
                 Description = "Wählen sie den Root-Ordner der Updates aus",
-                RootFolder = Environment.SpecialFolder.NetworkShortcuts,
+                //RootFolder = Environment.SpecialFolder.NetworkShortcuts,
                 SelectedPath = configuration.DeployPath.AbsolutePath
             };
 
