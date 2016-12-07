@@ -44,10 +44,10 @@
         <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto" Grid.Row="0">
             <StackPanel  Orientation="Horizontal">
                 <Label Width="75" DockPanel.Dock="Left">Version</Label>
-                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Configuration.Version.Hauptversion ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
-                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Configuration.Version.Nebenversion ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
-                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Configuration.Version.Buildnummer ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
-                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Configuration.Version.Revision ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
+                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Hauptversion ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
+                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Nebenversion ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
+                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Buildnummer ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
+                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Revision ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
             </StackPanel>
             <DockPanel LastChildFill="True">
                 <Label DockPanel.Dock="Left" Style="{StaticResource CaptionStyle}">Updatepfad:</Label>
