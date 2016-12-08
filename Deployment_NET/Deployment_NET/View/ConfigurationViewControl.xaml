@@ -18,31 +18,10 @@
         <c:NumericConverter x:Key="NumericConverter"/>
         <Style x:Key="CaptionStyle" TargetType="Label">
             <Setter Property="Width" Value="75" />
-        </Style>
-        <Style x:Key="LabelStyle" TargetType="Label">
-            <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Height" Value="26"/>
-            <Setter Property="Width" Value="52"/>
+            <Setter Property="Height" Value="25"/>
         </Style>
         <Style x:Key="TextErrorStyle" TargetType="{x:Type TextBox}">
-            <!--<Setter Property="Validation.ErrorTemplate">
-                <Setter.Value>
-                    <ControlTemplate x:Name="TextErrorTemplate">
-                        <DockPanel LastChildFill="True">
-                            <AdornedElementPlaceholder>
-                                <Border BorderBrush="Red" BorderThickness="2"/>
-                            </AdornedElementPlaceholder>
-                            <Viewbox Stretch="Uniform" Height="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=DockPanel}, Path=Height,Converter={StaticResource NumericConverter}}" Width="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=DockPanel}, Path=Height,Converter={StaticResource NumericConverter}}">
-                                <Grid>
-                                    <Ellipse Stroke="Red" StrokeThickness="2"/>
-                                    <TextBlock TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" TextWrapping="Wrap">!</TextBlock>
-                                </Grid>
-                            </Viewbox>
-                        </DockPanel>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>-->
+            <Setter Property="Height" Value="25"/>
             <Style.Triggers>
                 <Trigger Property="Validation.HasError" 
                 Value="True">
@@ -63,22 +42,22 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="75" />
-            <RowDefinition />
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto" Grid.Row="0">
-            <StackPanel  Orientation="Horizontal">
+            <StackPanel  Orientation="Horizontal" Height="25">
                 <Label DockPanel.Dock="Left" Style="{StaticResource CaptionStyle}">Version</Label>
                 <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Hauptversion ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
                 <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Nebenversion ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
                 <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Buildnummer ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
                 <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Revision ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
             </StackPanel>
-            <DockPanel LastChildFill="True">
+            <DockPanel LastChildFill="True" Height="25">
                 <Label DockPanel.Dock="Left" Style="{StaticResource CaptionStyle}">Updatepfad:</Label>
                 <Button DockPanel.Dock="Right" Width="50" Command="{Binding DirCommand}">...</Button>
                 <TextBox Style="{StaticResource PathStyle}" Text="{Binding Configuration.DeployPath ,Mode=TwoWay,NotifyOnValidationError=True}"></TextBox>
             </DockPanel>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Height="25">
                 <Label DockPanel.Dock="Left" Style="{StaticResource CaptionStyle}">Update Nr.:</Label>
                 <TextBox DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.DeployPathVersion ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
             </StackPanel>
