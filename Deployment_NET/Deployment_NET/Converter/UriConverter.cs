@@ -11,7 +11,7 @@ namespace awinta.Deployment_NET.Converter
 
             var uri = value as Uri;
 
-            return uri != null ? uri.AbsolutePath : string.Empty;
+            return uri != null ? uri.LocalPath : string.Empty;
 
         }
 
@@ -21,7 +21,7 @@ namespace awinta.Deployment_NET.Converter
             var path = value as string;
             Uri deployPath = null;
 
-            if (string.IsNullOrWhiteSpace(path) && Uri.TryCreate(path, UriKind.Absolute, out deployPath))
+            if (string.IsNullOrWhiteSpace(path) && Uri.TryCreate(path, UriKind.Absolute, out deployPath) && System.IO.Directory.Exists(deployPath.LocalPath))
             {
 
                 return deployPath;

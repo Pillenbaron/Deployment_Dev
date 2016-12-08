@@ -9,10 +9,11 @@ namespace awinta.Deployment_NET.Solution.Model
 
         #region Member
 
-        private const string defaultDeployPath = @"\\asys-smart500\ASYS_Installation";
+        private const string defaultDeployPath = @"\\asys-smart500\ASYS_Installationen\SMART PharmaComp Update";
         private const string uriErrorMessage = "Eingabe ist kein gültiger Pfad!";
         private const string versionErrorMessage = "Die Versionsnummer muss vierstellig sein!";
         private const string pflichtfeldErrorMessage = "Pflichtfeld darf nicht leer sein!";
+        private const string uriExistsErrorMessage = "Der Pfad existiert nicht!";
 
         #endregion
 
@@ -29,78 +30,29 @@ namespace awinta.Deployment_NET.Solution.Model
             }
         }
 
-        //#region testnumeric
-
-        //private int hauptversion = 0;
-
-        //public int Hauptversion
-        //{
-        //    get { return hauptversion; }
-        //    set
-        //    {
-        //        hauptversion = value;
-        //        OnNotifyPropertyChanged();
-        //    }
-        //}
-
-        //private int nebenversion = 0;
-
-        //public int Nebenversion
-        //{
-        //    get { return nebenversion; }
-        //    set
-        //    {
-        //        nebenversion = value;
-        //        OnNotifyPropertyChanged();
-        //    }
-        //}
-
-        //private int buildnummer = 0;
-
-        //public int Buildnummer
-        //{
-        //    get { return buildnummer; }
-        //    set
-        //    {
-        //        buildnummer = value;
-        //        OnNotifyPropertyChanged();
-        //    }
-        //}
-
-        //private int revision = 0;
-
-        //public int Revision
-        //{
-        //    get { return revision; }
-        //    set
-        //    {
-        //        revision = value;
-        //        OnNotifyPropertyChanged();
-        //    }
-        //}
-
-        //#endregion
-
-        private Uri deployPath = new Uri(defaultDeployPath);
-        public Uri DeployPath
+        private string deployPath;
+        public string DeployPath
         {
             get { return deployPath; }
             set
             {
-                if (Validate(value)) deployPath = value;
+                Validate(value);
+                deployPath = value;
                 OnNotifyPropertyChanged();
+
             }
         }
 
-        public string FullDeployPath => Path.Combine(DeployPath.AbsolutePath, $"SMART PharmaComp Update 5.0.0.{DeployPathVersion.ToString()}");
+        public string FullDeployPath => Path.Combine(DeployPath, $"SMART PharmaComp Update 5.0.0.{DeployPathVersion.ToString()}");
 
-        private string deployPathVersion;
+        private string deployPathVersion = "0";
         public string DeployPathVersion
         {
             get { return deployPathVersion; }
             set
             {
-                if (Validate(value)) deployPathVersion = value;
+                Validate(value);
+                deployPathVersion = value;
                 OnNotifyPropertyChanged();
             }
         }
@@ -118,6 +70,14 @@ namespace awinta.Deployment_NET.Solution.Model
 
         #endregion
 
+        public ConfigData()
+        {
+
+            Version = new VersionData();
+            DeployPath = defaultDeployPath;
+
+        }
+
         public override bool Validate(object value, [CallerMemberName] string propertyName = "")
         {
 
@@ -126,7 +86,10 @@ namespace awinta.Deployment_NET.Solution.Model
             switch (propertyName)
             {
                 case "DeployPath":
-                    if (value == null)
+
+                    var path = value as string;
+
+                    if (string.IsNullOrWhiteSpace(path))
                     {
                         AddError(propertyName, uriErrorMessage, true);
                         isValid = false;
@@ -135,6 +98,17 @@ namespace awinta.Deployment_NET.Solution.Model
                     {
                         RemoveError(propertyName, uriErrorMessage);
                     }
+
+                    if (!Directory.Exists(path))
+                    {
+                        AddError(propertyName, uriExistsErrorMessage, true);
+                        isValid = false;
+                    }
+                    else
+                    {
+                        RemoveError(propertyName, uriExistsErrorMessage);
+                    }
+
                     break;
                 case "DeployPathVersion":
 

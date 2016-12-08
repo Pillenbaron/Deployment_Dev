@@ -304,13 +304,13 @@ namespace awinta.Deployment_NET.ViewModel
 
                 Description = "Wählen sie den Root-Ordner der Updates aus",
                 //RootFolder = Environment.SpecialFolder.NetworkShortcuts,
-                SelectedPath = configuration.DeployPath.AbsolutePath
+                SelectedPath = configuration.DeployPath
             };
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
 
-                configuration.DeployPath = new Uri(dialog.SelectedPath);
+                configuration.DeployPath = dialog.SelectedPath;
 
             }
 
