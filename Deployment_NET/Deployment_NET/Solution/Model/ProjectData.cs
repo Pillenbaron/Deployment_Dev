@@ -14,8 +14,7 @@
                 OnNotifyPropertyChanged();
             }
         }
-
-
+        
         private string assemblyName = string.Empty;
 
         public string AssemblyName
@@ -63,8 +62,7 @@
                 OnNotifyPropertyChanged();
             }
         }
-
-
+        
         public string FullAssemblyPath
         {
             get
@@ -73,6 +71,13 @@
             }
         }
 
+        private bool hasToRegister;
+
+        public bool HasToRegister
+        {
+            get { return hasToRegister; }
+            set { hasToRegister = value; }
+        }
 
         public ProjectData()
         {

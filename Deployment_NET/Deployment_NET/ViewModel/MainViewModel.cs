@@ -29,7 +29,8 @@ namespace awinta.Deployment_NET.ViewModel
         private const string product = "Product";
         private const string copyright = "Copyright";
         private const string trademark = "Trademark";
-
+        private const string targetRegDir = "DotNetReg";
+        private const string targetAppDir = @"AppPath\DotNet";
         private static readonly string[] UsedProperties = { assemblyVersion,
                                                             assemblyFileVersion,
                                                             description,
@@ -234,27 +235,48 @@ namespace awinta.Deployment_NET.ViewModel
         private void CopyAssembly(ProjectData project)
         {
 
-            Debug.Print($"Deploy: {project.Name}");
-
-            FileInfo assembly = new FileInfo(project.FullAssemblyPath);
-            DirectoryInfo targetPath = new DirectoryInfo(configuration.FullDeployPath);
-            FileInfo targetAssembly = new FileInfo(Path.Combine(configuration.FullDeployPath, assembly.Name));
-
-            if (assembly.Exists && targetPath.Exists)
+            try
             {
 
-                assembly.CopyTo(targetPath.FullName, true);
+                Debug.Print($"Deploy: {project.Name}");
 
-                if (assembly.ToFileHash() == targetAssembly.ToFileHash()) return;
-                Debug.Print($"Fehler: die Datei {assembly.Name} stimmt nicht mit ihrer Quelle über ein.");
-                Debug.Print($"Hash: Quelle {assembly.ToFileHash()} <> Ziel {targetAssembly.ToFileHash()}");
+                var dynamicPart = string.Empty;
+
+                if (project.HasToRegister)
+                {
+                    dynamicPart = targetRegDir;
+                }
+                else
+                {
+                    dynamicPart = targetAppDir;
+                }
+
+                FileInfo assembly = new FileInfo(project.FullAssemblyPath);
+                DirectoryInfo targetPath = new DirectoryInfo(Path.Combine(configuration.FullDeployPath, dynamicPart));
+                FileInfo targetAssembly = new FileInfo(Path.Combine(configuration.FullDeployPath, assembly.Name));
+
+                if (assembly.Exists && targetPath.Exists)
+                {
+
+                    assembly.CopyTo(targetAssembly.FullName, true);
+
+                    if (assembly.ToFileHash() == targetAssembly.ToFileHash()) return;
+                    Debug.Print($"Fehler: die Datei {assembly.Name} stimmt nicht mit ihrer Quelle über ein.");
+                    Debug.Print($"Hash: Quelle {assembly.ToFileHash()} <> Ziel {targetAssembly.ToFileHash()}");
+                }
+                else
+                {
+
+                    if (!assembly.Exists) Debug.Print($"Build nicht vorhanden: {assembly.FullName}");
+                    if (!targetPath.Exists) Debug.Print($"Zielpfad nicht vorhanden: {targetPath.FullName}");
+
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-
-                if (!assembly.Exists) Debug.Print($"Build nicht vorhanden: {assembly.FullName}");
-                if (!targetPath.Exists) Debug.Print($"Zielpfad nicht vorhanden: {targetPath.FullName}");
-
+                Debug.Print($"Fehler: {ex.Message}");
+                throw;
             }
 
         }

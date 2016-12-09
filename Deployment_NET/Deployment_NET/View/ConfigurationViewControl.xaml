@@ -43,6 +43,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="75" />
             <RowDefinition/>
+            <RowDefinition Height="25" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto" Grid.Row="0">
             <StackPanel  Orientation="Horizontal" Height="25">
@@ -78,6 +79,12 @@
                     </DataGrid.Columns>-->
                 </DataGrid>
             </GroupBox>
+        </DockPanel>
+        <DockPanel Grid.Row="2">
+            <StackPanel FlowDirection="RightToLeft" Orientation="Horizontal" Height="25" Width="Auto">
+                <Button  Width="100" IsCancel="True">Abbrechen</Button>
+                <Button  Width="100" IsDefault="True" Command="{Binding BuildSolutionCommand}">OK</Button>
+            </StackPanel>
         </DockPanel>
     </Grid>
 </UserControl>
