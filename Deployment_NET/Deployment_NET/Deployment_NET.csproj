@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Converter\NumericConverter.cs" />
     <Compile Include="Converter\UriConverter.cs" />
+    <Compile Include="Converter\VersionConverter.cs" />
     <Compile Include="Extensions\DataExtension.cs" />
     <Compile Include="IoC\ApplicationContainer.cs" />
     <Compile Include="IO\XML\Serialization\SerializationService.cs" />

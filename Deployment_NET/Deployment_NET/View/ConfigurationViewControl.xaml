@@ -59,7 +59,7 @@
                 <TextBox Style="{StaticResource PathStyle}" Text="{Binding Configuration.DeployPath ,Mode=TwoWay,NotifyOnValidationError=True}"></TextBox>
             </DockPanel>
             <StackPanel Orientation="Horizontal" Height="25">
-                <Label DockPanel.Dock="Left" Style="{StaticResource CaptionStyle}">Update Nr.:</Label>
+                <Label Style="{StaticResource CaptionStyle}">Update Nr.:</Label>
                 <TextBox DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.DeployPathVersion ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
             </StackPanel>
         </StackPanel>
@@ -71,12 +71,14 @@
                           HorizontalAlignment="Stretch" 
                           VerticalAlignment="Stretch"
                           ItemsSource="{Binding Path=Data}" 
-                          ColumnWidth="auto">
-                    <!--<DataGrid.Columns>
-                        <DataGridTextColumn Header="Titel" Binding="{Binding Path=Titel}"/>
-                        <DataGridTextColumn Header="AssemblyVersion" Binding="{Binding Path=AssemblyVersion}"/>
-                        <DataGridTextColumn Header="Dateiversion" Binding="{Binding Path=Dateiversion}"/>
-                    </DataGrid.Columns>-->
+                          ColumnWidth="auto"
+                          AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridCheckBoxColumn Header="Registierung" Binding="{Binding HasToRegister,Mode=TwoWay}"/>
+                        <DataGridTextColumn Header="Titel" Binding="{Binding Name,Mode=TwoWay}"/>
+                        <DataGridTextColumn Header="AssemblyVersion" Binding="{Binding AssemblyInfo.AssemblyVersion,Mode=TwoWay}"/>
+                        <DataGridTextColumn Header="Dateiversion" Binding="{Binding AssemblyInfo.Dateiversion,Mode=TwoWay}"/>
+                    </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>
         </DockPanel>
