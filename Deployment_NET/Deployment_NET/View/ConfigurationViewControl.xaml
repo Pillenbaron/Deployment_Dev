@@ -16,6 +16,7 @@
     <UserControl.Resources>
         <c:UriConverter x:Key="UriConverter"/>
         <c:NumericConverter x:Key="NumericConverter"/>
+        <c:VersionConverter x:Key="VersionConverter"/>
         <Style x:Key="CaptionStyle" TargetType="Label">
             <Setter Property="Width" Value="75" />
             <Setter Property="Height" Value="25"/>
@@ -76,8 +77,8 @@
                     <DataGrid.Columns>
                         <DataGridCheckBoxColumn Header="Registierung" Binding="{Binding HasToRegister,Mode=TwoWay}"/>
                         <DataGridTextColumn Header="Titel" Binding="{Binding Name,Mode=TwoWay}"/>
-                        <DataGridTextColumn Header="AssemblyVersion" Binding="{Binding AssemblyInfo.AssemblyVersion,Mode=TwoWay}"/>
-                        <DataGridTextColumn Header="Dateiversion" Binding="{Binding AssemblyInfo.Dateiversion,Mode=TwoWay}"/>
+                        <DataGridTextColumn Header="AssemblyVersion" Binding="{Binding AssemblyInfo.AssemblyVersion,Mode=TwoWay, Converter={StaticResource VersionConverter}}"/>
+                        <DataGridTextColumn Header="Dateiversion" Binding="{Binding AssemblyInfo.Dateiversion,Mode=TwoWay, Converter={StaticResource VersionConverter}}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>

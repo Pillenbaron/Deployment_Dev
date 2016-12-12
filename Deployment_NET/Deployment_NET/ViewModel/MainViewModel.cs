@@ -225,6 +225,8 @@ namespace awinta.Deployment_NET.ViewModel
         public void BuildSolution()
         {
 
+            setVersionNumber();
+
             SolutionBuild solBuild = service.Solution.SolutionBuild;
             service.Events.BuildEvents.OnBuildDone += _BuildDone;
             solBuild.ActiveConfiguration.Activate();
@@ -253,7 +255,7 @@ namespace awinta.Deployment_NET.ViewModel
 
                 FileInfo assembly = new FileInfo(project.FullAssemblyPath);
                 DirectoryInfo targetPath = new DirectoryInfo(Path.Combine(configuration.FullDeployPath, dynamicPart));
-                FileInfo targetAssembly = new FileInfo(Path.Combine(configuration.FullDeployPath, assembly.Name));
+                FileInfo targetAssembly = new FileInfo(Path.Combine(targetPath.FullName, assembly.Name));
 
                 if (assembly.Exists && targetPath.Exists)
                 {
@@ -338,7 +340,46 @@ namespace awinta.Deployment_NET.ViewModel
 
         }
 
+        private void setVersionNumber()
+        {
+
+            for (int i = 0; i < Data.Count; i++)
+            {
+                Data[i].AssemblyInfo.Dateiversion = Configuration.Version;
+            }
+
+            Projects projects = service.Solution.Projects;
+
+            for (int i = 1; i <= projects.Count; i++)
+            {
+
+                var project = projects.Item(i);
+
+                if (project != null && project.Properties != null)
+                {
+
+                    foreach (var item in project.Properties)
+                    {
+
+                        var property = item as Property;
+
+                        if (property != null && property.Name.Equals(assemblyFileVersion))
+                        {
+                            //property.let_Value(Configuration.Version);
+                            property.Value = Configuration.Version.ToString();
+                            break;
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
         #endregion
 
     }
+
 }

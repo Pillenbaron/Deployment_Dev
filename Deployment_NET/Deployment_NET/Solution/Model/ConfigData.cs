@@ -8,7 +8,9 @@ namespace awinta.Deployment_NET.Solution.Model
 
         #region Member
 
-        private const string defaultDeployPath = @"\\asys-smart500\ASYS_Installationen\SMART PharmaComp Update";
+        //private const string defaultDeployPath = @"\\asys-smart500\ASYS_Installationen\SMART PharmaComp Update";
+
+        private const string defaultDeployPath = @"D:\TestUpdate";
         private const string uriErrorMessage = "Eingabe ist kein gültiger Pfad!";
         private const string versionErrorMessage = "Die Versionsnummer muss vierstellig sein!";
         private const string pflichtfeldErrorMessage = "Pflichtfeld darf nicht leer sein!";
