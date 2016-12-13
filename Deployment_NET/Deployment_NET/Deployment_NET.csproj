@@ -63,6 +63,7 @@
     <Compile Include="IoC\ApplicationContainer.cs" />
     <Compile Include="IO\XML\Serialization\SerializationService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\OutputService.cs" />
     <Compile Include="Service\ValidationService.cs" />
     <Compile Include="Solution\Model\AssemblyData.cs" />
     <Compile Include="Solution\Model\BaseData.cs" />

@@ -9,6 +9,7 @@ using awinta.Deployment_NET.Extensions;
 using awinta.Deployment_NET.Solution.Model;
 using awinta.Deployment_NET.UICommands;
 using EnvDTE;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace awinta.Deployment_NET.ViewModel
 {
@@ -43,6 +44,7 @@ namespace awinta.Deployment_NET.ViewModel
                                                             assemblyName };
 
         private DTE service;
+        private IVsOutputWindowPane output;
 
         #endregion
 
@@ -95,6 +97,7 @@ namespace awinta.Deployment_NET.ViewModel
             data = new ObservableCollection<ProjectData>();
 
             service = IoC.ApplicationContainer.GetInstance<DTE>();
+            IoC.ApplicationContainer.GetInstance<IVsOutputWindow>().GetPane(new Guid("D309F791-903F-11D0-9EFC-00A0C911004F"),out output);
 
         }
 
@@ -263,6 +266,7 @@ namespace awinta.Deployment_NET.ViewModel
                     assembly.CopyTo(targetAssembly.FullName, true);
 
                     if (assembly.ToFileHash() == targetAssembly.ToFileHash()) return;
+                    
                     Debug.Print($"Fehler: die Datei {assembly.Name} stimmt nicht mit ihrer Quelle über ein.");
                     Debug.Print($"Hash: Quelle {assembly.ToFileHash()} <> Ziel {targetAssembly.ToFileHash()}");
                 }
