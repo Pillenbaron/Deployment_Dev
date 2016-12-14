@@ -1,15 +1,14 @@
-﻿using System;
+﻿using awinta.Deployment_NET.Extensions;
+using awinta.Deployment_NET.Solution.Model;
+using awinta.Deployment_NET.UICommands;
+using EnvDTE;
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
-using awinta.Deployment_NET.Extensions;
-using awinta.Deployment_NET.Solution.Model;
-using awinta.Deployment_NET.UICommands;
-using EnvDTE;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace awinta.Deployment_NET.ViewModel
 {
@@ -44,7 +43,6 @@ namespace awinta.Deployment_NET.ViewModel
                                                             assemblyName };
 
         private DTE service;
-        private IVsOutputWindowPane output;
 
         #endregion
 
@@ -97,8 +95,7 @@ namespace awinta.Deployment_NET.ViewModel
             data = new ObservableCollection<ProjectData>();
 
             service = IoC.ApplicationContainer.GetInstance<DTE>();
-            IoC.ApplicationContainer.GetInstance<IVsOutputWindow>().GetPane(new Guid("D309F791-903F-11D0-9EFC-00A0C911004F"),out output);
-
+            
         }
 
         #region Methode
@@ -243,7 +240,7 @@ namespace awinta.Deployment_NET.ViewModel
             try
             {
 
-                Debug.Print($"Deploy: {project.Name}");
+                Service.OutputService.WriteOutput($"Deploy: {project.Name}");
 
                 var dynamicPart = string.Empty;
 
@@ -266,15 +263,16 @@ namespace awinta.Deployment_NET.ViewModel
                     assembly.CopyTo(targetAssembly.FullName, true);
 
                     if (assembly.ToFileHash() == targetAssembly.ToFileHash()) return;
-                    
-                    Debug.Print($"Fehler: die Datei {assembly.Name} stimmt nicht mit ihrer Quelle über ein.");
-                    Debug.Print($"Hash: Quelle {assembly.ToFileHash()} <> Ziel {targetAssembly.ToFileHash()}");
+
+                    Service.OutputService.WriteOutput($"Fehler: die Datei {assembly.Name} stimmt nicht mit ihrer Quelle über ein.");
+                    Service.OutputService.WriteOutput($"Hash: Quelle {assembly.ToFileHash()} <> Ziel {targetAssembly.ToFileHash()}");
+
                 }
                 else
                 {
 
-                    if (!assembly.Exists) Debug.Print($"Build nicht vorhanden: {assembly.FullName}");
-                    if (!targetPath.Exists) Debug.Print($"Zielpfad nicht vorhanden: {targetPath.FullName}");
+                    if (!assembly.Exists) Service.OutputService.WriteOutput($"Build nicht vorhanden: {assembly.FullName}");
+                    if (!targetPath.Exists) Service.OutputService.WriteOutput($"Zielpfad nicht vorhanden: {targetPath.FullName}");
 
                 }
 
@@ -301,7 +299,7 @@ namespace awinta.Deployment_NET.ViewModel
                 {
                     case vsBuildAction.vsBuildActionBuild:
 
-                        Debug.Print("StartDeploy");
+                        Service.OutputService.WriteOutput("StartDeploy");
                         Deploy();
 
                         break;
@@ -327,20 +325,22 @@ namespace awinta.Deployment_NET.ViewModel
         private void SetDeployPath()
         {
 
-            var dialog = new FolderBrowserDialog
-            {
+            Service.OutputService.WriteOutput("Test");
 
-                Description = "Wählen sie den Root-Ordner der Updates aus",
-                //RootFolder = Environment.SpecialFolder.NetworkShortcuts,
-                SelectedPath = configuration.DeployPath
-            };
+            //var dialog = new FolderBrowserDialog
+            //{
 
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
+            //    Description = "Wählen sie den Root-Ordner der Updates aus",
+            //    //RootFolder = Environment.SpecialFolder.NetworkShortcuts,
+            //    SelectedPath = configuration.DeployPath
+            //};
 
-                configuration.DeployPath = dialog.SelectedPath;
+            //if (dialog.ShowDialog() == DialogResult.OK)
+            //{
 
-            }
+            //    configuration.DeployPath = dialog.SelectedPath;
+
+            //}
 
         }
 

@@ -10,6 +10,7 @@ using System.Globalization;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
+using EnvDTE80;
 
 namespace awinta.Deployment_NET.View
 {
@@ -48,7 +49,7 @@ namespace awinta.Deployment_NET.View
             this.package = package;
             
             IoC.ApplicationContainer.Register<DTE, DTE>((DTE)this.ServiceProvider.GetService(typeof(DTE)));
-            IoC.ApplicationContainer.Register<IVsOutputWindow, IVsOutputWindow>((IVsOutputWindow)this.ServiceProvider.GetService(typeof(IVsOutputWindow)));
+            IoC.ApplicationContainer.Register<IVsOutputWindowPane, IVsOutputWindowPane>((IVsOutputWindowPane)this.ServiceProvider.GetService(typeof(SVsGeneralOutputWindowPane)));
 
             OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
