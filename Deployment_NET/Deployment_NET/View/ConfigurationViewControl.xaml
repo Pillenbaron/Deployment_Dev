@@ -73,20 +73,20 @@
                           VerticalAlignment="Stretch"
                           ItemsSource="{Binding Path=Data}" 
                           ColumnWidth="auto"
-                          AutoGenerateColumns="False">
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False">
                     <DataGrid.Columns>
-                        <DataGridCheckBoxColumn Header="Registierung" Binding="{Binding HasToRegister,Mode=TwoWay}"/>
-                        <DataGridTextColumn Header="Titel" Binding="{Binding Name,Mode=TwoWay}"/>
-                        <DataGridTextColumn Header="AssemblyVersion" Binding="{Binding AssemblyInfo.AssemblyVersion,Mode=TwoWay, Converter={StaticResource VersionConverter}}"/>
-                        <DataGridTextColumn Header="Dateiversion" Binding="{Binding AssemblyInfo.Dateiversion,Mode=TwoWay, Converter={StaticResource VersionConverter}}"/>
+                        <DataGridCheckBoxColumn Header="Registrierung" Binding="{Binding HasToRegister,Mode=TwoWay}"/>
+                        <DataGridTextColumn Header="Titel" Binding="{Binding Name,Mode=TwoWay}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="AssemblyVersion" Binding="{Binding AssemblyInfo.AssemblyVersion,Mode=TwoWay, Converter={StaticResource VersionConverter}}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Dateiversion" Binding="{Binding AssemblyInfo.Dateiversion,Mode=TwoWay, Converter={StaticResource VersionConverter}}" IsReadOnly="True"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>
         </DockPanel>
         <DockPanel Grid.Row="2">
             <StackPanel FlowDirection="RightToLeft" Orientation="Horizontal" Height="25" Width="Auto">
-                <Button  Width="100" IsCancel="True">Abbrechen</Button>
-                <Button  Width="100" IsDefault="True" Command="{Binding BuildSolutionCommand}">OK</Button>
+                <Button  Width="100" IsDefault="True" Command="{Binding BuildSolutionCommand}">Deploy</Button>
             </StackPanel>
         </DockPanel>
     </Grid>

@@ -25,6 +25,6 @@ namespace awinta.Deployment_NET.View
             this.DataContext = new ViewModel.MainViewModel();
 
         }
-         
+
     }
 }

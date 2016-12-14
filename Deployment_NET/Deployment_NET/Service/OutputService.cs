@@ -30,7 +30,6 @@ namespace awinta.Deployment_NET.Service
 
         }
 
-
         public static void WriteOutput(string text)
         {
 
@@ -40,8 +39,8 @@ namespace awinta.Deployment_NET.Service
             {
 
                 Service.Activate();
-                Service.OutputString(text + System.Environment.NewLine);
-                
+                Service.OutputStringThreadSafe(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + ": " + text + System.Environment.NewLine);
+
             }
 
         }
