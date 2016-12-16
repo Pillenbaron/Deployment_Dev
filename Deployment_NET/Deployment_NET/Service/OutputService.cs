@@ -41,7 +41,7 @@ namespace awinta.Deployment_NET.Service
 
                 Service.Activate();
                 Service.OutputString(text + System.Environment.NewLine);
-                
+
             }
 
         }
