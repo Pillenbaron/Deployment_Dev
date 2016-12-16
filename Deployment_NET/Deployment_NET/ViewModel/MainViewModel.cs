@@ -95,7 +95,7 @@ namespace awinta.Deployment_NET.ViewModel
             data = new ObservableCollection<ProjectData>();
 
             service = IoC.ApplicationContainer.GetInstance<DTE>();
-            
+
         }
 
         #region Methode
@@ -103,31 +103,40 @@ namespace awinta.Deployment_NET.ViewModel
         public void Load()
         {
 
+            Service.OutputService.WriteOutput("Load Projectinformation");
+
             Projects projects = service.Solution.Projects;
 
             for (int i = 1; i <= projects.Count; i++)
             {
 
                 var project = projects.Item(i);
-
+                
                 if (project != null && project.Properties != null)
                 {
 
+                    Service.OutputService.WriteOutput($"Load Project: {project.FullName}");
+
+                    Service.OutputService.WriteOutput($"Start Collecting ProjectProperties: {project.FullName}");
                     var queryProperties = from projectProperty in project.Properties.ToDictionary().AsEnumerable()
                                           where UsedProperties.Contains(projectProperty.Key)
                                           select projectProperty;
 
                     var dictionaryProperties = queryProperties.ToDictionary(x => x.Key, x => x.Value);
+                    Service.OutputService.WriteOutput($"Finished Collecting ProjectProperties: {project.FullName}");
 
                     string[] assemblyVersionTemp = dictionaryProperties[assemblyVersion].Split('.');
                     string[] dateiVersionTemp = dictionaryProperties[assemblyFileVersion].Split('.');
 
+                    Service.OutputService.WriteOutput($"Start Collecting ProjectBuildconfiguration: {project.FullName}");
                     var queryBuildConfig = from projectBuildConfig in project.ConfigurationManager.ActiveConfiguration.Properties.ToDictionary().AsEnumerable()
                                            where projectBuildConfig.Key == codeAnalysisInputAssembly
                                            select projectBuildConfig;
+                    Service.OutputService.WriteOutput($"Finished Collecting ProjectBuildconfiguration: {project.FullName}");
 
                     var dictionaryBuildConfig = queryBuildConfig.ToDictionary(x => x.Key, x => x.Value);
 
+                    Service.OutputService.WriteOutput($"Start Build ProjectContainer: {project.FullName}");
                     var currentProject = new ProjectData
                     {
                         Name = projects.Item(i).Name,
@@ -146,6 +155,7 @@ namespace awinta.Deployment_NET.ViewModel
                             Dateiversion = new VersionData(dateiVersionTemp[0], dateiVersionTemp[1], dateiVersionTemp[2], dateiVersionTemp[3])
                         }
                     };
+                    Service.OutputService.WriteOutput($"Finished Build ProjectContainer: {project.FullName}");
 
                     Data.Add(currentProject);
 
@@ -325,22 +335,20 @@ namespace awinta.Deployment_NET.ViewModel
         private void SetDeployPath()
         {
 
-            Service.OutputService.WriteOutput("Test");
+            var dialog = new FolderBrowserDialog
+            {
 
-            //var dialog = new FolderBrowserDialog
-            //{
+                Description = "Wählen sie den Root-Ordner der Updates aus",
+                //RootFolder = Environment.SpecialFolder.NetworkShortcuts,
+                SelectedPath = configuration.DeployPath
+            };
 
-            //    Description = "Wählen sie den Root-Ordner der Updates aus",
-            //    //RootFolder = Environment.SpecialFolder.NetworkShortcuts,
-            //    SelectedPath = configuration.DeployPath
-            //};
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
 
-            //if (dialog.ShowDialog() == DialogResult.OK)
-            //{
+                configuration.DeployPath = dialog.SelectedPath;
 
-            //    configuration.DeployPath = dialog.SelectedPath;
-
-            //}
+            }
 
         }
 
