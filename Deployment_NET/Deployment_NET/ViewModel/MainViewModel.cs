@@ -2,6 +2,7 @@
 using awinta.Deployment_NET.Solution.Model;
 using awinta.Deployment_NET.UICommands;
 using EnvDTE;
+using Microsoft.TeamFoundation.VersionControl.Client;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -43,6 +44,7 @@ namespace awinta.Deployment_NET.ViewModel
                                                             assemblyName };
 
         private DTE service;
+        private Interfaces.ITeamFoundationServerService tfsServer;
 
         #endregion
 
@@ -95,6 +97,7 @@ namespace awinta.Deployment_NET.ViewModel
             data = new ObservableCollection<ProjectData>();
 
             service = IoC.ApplicationContainer.GetInstance<DTE>();
+            tfsServer = IoC.ApplicationContainer.GetInstance<Interfaces.ITeamFoundationServerService>();
 
         }
 
@@ -111,7 +114,7 @@ namespace awinta.Deployment_NET.ViewModel
             {
 
                 var project = projects.Item(i);
-                
+
                 if (project != null && project.Properties != null)
                 {
 
@@ -137,6 +140,7 @@ namespace awinta.Deployment_NET.ViewModel
                     var dictionaryBuildConfig = queryBuildConfig.ToDictionary(x => x.Key, x => x.Value);
 
                     Service.OutputService.WriteOutput($"Start Build ProjectContainer: {project.FullName}");
+
                     var currentProject = new ProjectData
                     {
                         Name = projects.Item(i).Name,
@@ -162,6 +166,45 @@ namespace awinta.Deployment_NET.ViewModel
                 }
 
             }
+
+            data = new ObservableCollection<ProjectData>(data.Distinct());
+
+        }
+
+        private void LoadLatestVersion()
+        {
+
+            try
+            {
+                foreach (ProjectData currentProject in data)
+                {
+
+                    Service.OutputService.WriteOutput($"<TFS>Get latest Version of: {currentProject.Name}");
+                    tfsServer.UpdateProject(currentProject.FullPath);
+
+                    if (tfsServer.Failures != null && tfsServer.Failures.Length > 0)
+                    {
+                        Service.OutputService.WriteOutput($"<TFS>Sync failed: {currentProject.Name}");
+
+                        foreach (Failure fail in tfsServer.Failures)
+                        {
+
+                            Service.OutputService.WriteOutput($"<TFS>{fail.GetFormattedMessage()}");
+
+                        }
+
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                Service.OutputService.WriteOutput($"Fehler: {ex.Message}");
+                throw;
+
+            }
+
 
         }
 
@@ -234,7 +277,7 @@ namespace awinta.Deployment_NET.ViewModel
 
         public void BuildSolution()
         {
-
+            LoadLatestVersion();
             setVersionNumber();
 
             SolutionBuild solBuild = service.Solution.SolutionBuild;
@@ -289,7 +332,7 @@ namespace awinta.Deployment_NET.ViewModel
             }
             catch (Exception ex)
             {
-                Debug.Print($"Fehler: {ex.Message}");
+                Service.OutputService.WriteOutput($"Fehler: {ex.Message}");
                 throw;
             }
 

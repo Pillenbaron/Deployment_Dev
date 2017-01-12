@@ -50,8 +50,10 @@ namespace awinta.Deployment_NET.View
             
             IoC.ApplicationContainer.Register<DTE, DTE>((DTE)this.ServiceProvider.GetService(typeof(DTE)));
             IoC.ApplicationContainer.Register<IVsOutputWindowPane, IVsOutputWindowPane>((IVsOutputWindowPane)this.ServiceProvider.GetService(typeof(SVsGeneralOutputWindowPane)));
+            IoC.ApplicationContainer.Register<Interfaces.ITeamFoundationServerService, Service.TeamFoundationServerService>();
 
             OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+
             if (commandService != null)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);

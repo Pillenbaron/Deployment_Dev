@@ -1,6 +1,8 @@
-﻿namespace awinta.Deployment_NET.Solution.Model
+﻿using System;
+
+namespace awinta.Deployment_NET.Solution.Model
 {
-    internal class ProjectData : BaseData
+    internal class ProjectData : BaseData, IEquatable<ProjectData>
     {
 
         private string name = string.Empty;
@@ -87,6 +89,39 @@
         {
 
             assemblyInfo = new AssemblyData();
+
+        }
+
+        public bool Equals(ProjectData other)
+        {
+
+            if (Name.Equals(other.Name) &&
+                AssemblyName.Equals(other.AssemblyName) &&
+                FullPath.Equals(other.FullPath) &&
+                AssemblyPath.Equals(other.AssemblyPath) &&
+                FullAssemblyPath.Equals(other.FullAssemblyPath) &&
+                HasToRegister.Equals(other.HasToRegister))
+            {
+                return true;
+            }
+
+            return false;
+
+        }
+
+        public override bool Equals(object obj)
+        {
+
+            var project = obj as ProjectData;
+
+            return Equals(project);
+
+        }
+
+        public override int GetHashCode()
+        {
+
+            return $"{Name}{AssemblyName}{FullPath}{AssemblyPath}{FullAssemblyPath}{HasToRegister}".GetHashCode();
 
         }
 
