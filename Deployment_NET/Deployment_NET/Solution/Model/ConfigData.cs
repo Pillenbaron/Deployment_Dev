@@ -20,6 +20,8 @@ namespace awinta.Deployment_NET.Solution.Model
 
         #region Properties
 
+        public string SolutionPath { get; set; }
+
         private VersionData version;
         public VersionData Version
         {

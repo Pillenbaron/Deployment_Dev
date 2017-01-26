@@ -3,11 +3,13 @@ using awinta.Deployment_NET.Solution.Model;
 using awinta.Deployment_NET.UICommands;
 using EnvDTE;
 using Microsoft.TeamFoundation.VersionControl.Client;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 
@@ -45,6 +47,8 @@ namespace awinta.Deployment_NET.ViewModel
 
         private DTE service;
         private Interfaces.ITeamFoundationServerService tfsServer;
+        private FileInfo solutionPath;
+        private IVsStatusbar statusBarService;
 
         #endregion
 
@@ -87,10 +91,10 @@ namespace awinta.Deployment_NET.ViewModel
         public MainViewModel()
         {
 
-            LoadCommand = new DefaultCommand(Load);
+            LoadCommand = new AsyncCommand(LoadAsync);
             SaveCommand = new DefaultCommand(Save);
-            DeploayCommand = new DefaultCommand(Deploy);
-            BuildSolutionCommand = new DefaultCommand(BuildSolution);
+            DeploayCommand = new AsyncCommand(DeployAsync);
+            BuildSolutionCommand = new AsyncCommand(BuildSolution);
             DirCommand = new DefaultCommand(SetDeployPath);
 
             Configuration = new ConfigData();
@@ -98,17 +102,31 @@ namespace awinta.Deployment_NET.ViewModel
 
             service = IoC.ApplicationContainer.GetInstance<DTE>();
             tfsServer = IoC.ApplicationContainer.GetInstance<Interfaces.ITeamFoundationServerService>();
+            statusBarService = IoC.ApplicationContainer.GetInstance<IVsStatusbar>();
 
+            object icon = (short)Microsoft.VisualStudio.Shell.Interop.Constants.SBAI_Deploy;
+            statusBarService.Animation(1, ref icon);
         }
 
         #region Methode
 
-        public void Load()
+        public async Task LoadAsync()
         {
+
+            await Task.Run(() => Load());
+
+        }
+
+        private void Load()
+        {
+
+            uint cookie = 0;
+            //statusBarService.Progress(ref cookie, 1, "", 0, 0);
 
             Service.OutputService.WriteOutput("Load Projectinformation");
 
             Projects projects = service.Solution.Projects;
+            solutionPath = new FileInfo(service.Solution.FullName);
 
             for (int i = 1; i <= projects.Count; i++)
             {
@@ -165,46 +183,18 @@ namespace awinta.Deployment_NET.ViewModel
 
                 }
 
+                //uint count = i + 1;
+                //statusBarService.Progress(ref cookie, 1, "", count, Convert.ToUInt32(projects.Count));
+
             }
+
+            //statusBarService.Progress(ref cookie, 0, "", 0, 0);
+            //statusBarService.FreezeOutput(0);
+            //statusBarService.Clear();
 
             data = new ObservableCollection<ProjectData>(data.Distinct());
 
-        }
-
-        private void LoadLatestVersion()
-        {
-
-            try
-            {
-                foreach (ProjectData currentProject in data)
-                {
-
-                    Service.OutputService.WriteOutput($"<TFS>Get latest Version of: {currentProject.Name}");
-                    tfsServer.UpdateProject(currentProject.FullPath);
-
-                    if (tfsServer.Failures != null && tfsServer.Failures.Length > 0)
-                    {
-                        Service.OutputService.WriteOutput($"<TFS>Sync failed: {currentProject.Name}");
-
-                        foreach (Failure fail in tfsServer.Failures)
-                        {
-
-                            Service.OutputService.WriteOutput($"<TFS>{fail.GetFormattedMessage()}");
-
-                        }
-
-                    }
-
-                }
-            }
-            catch (Exception ex)
-            {
-
-                Service.OutputService.WriteOutput($"Fehler: {ex.Message}");
-                throw;
-
-            }
-
+            statusBarService.Animation(0, System.Runtime.InteropServices.VarEnum.VT_I2);
 
         }
 
@@ -268,22 +258,75 @@ namespace awinta.Deployment_NET.ViewModel
 
         }
 
-        public void Deploy()
+        public async Task DeployAsync()
         {
 
-            data.ForEach(CopyAssembly);
+            await Task.Run(() => Deploy());
+
+            CloseMainView();
+            Service.OutputService.WriteOutput("Addin closed: Deployment");
 
         }
 
-        public void BuildSolution()
+        public void Deploy()
         {
-            LoadLatestVersion();
+
+            try
+            {
+                data.ForEach(CopyAssembly);
+            }
+            catch (Exception ex)
+            {
+                Service.OutputService.WriteOutput($"Error: {ex.Message}");
+                throw;
+            }
+
+        }
+
+        public async Task BuildSolution()
+        {
+
+            await Task.Run(() => LoadLatestVersion());
             setVersionNumber();
 
             SolutionBuild solBuild = service.Solution.SolutionBuild;
             service.Events.BuildEvents.OnBuildDone += _BuildDone;
             solBuild.ActiveConfiguration.Activate();
             solBuild.Build();
+
+        }
+
+        private void LoadLatestVersion()
+        {
+
+            try
+            {
+
+                Service.OutputService.WriteOutput($"<TFS>Get latest Version of: {solutionPath.DirectoryName}");
+                tfsServer.UpdateProject(solutionPath.DirectoryName);
+
+                if (tfsServer.Failures != null && tfsServer.Failures.Length > 0)
+                {
+                    Service.OutputService.WriteOutput($"<TFS>Sync failed: {solutionPath.DirectoryName}");
+
+                    foreach (Failure fail in tfsServer.Failures)
+                    {
+
+                        Service.OutputService.WriteOutput($"<TFS>{fail.GetFormattedMessage()}");
+
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                Service.OutputService.WriteOutput($"Error: {ex.Message}");
+                throw;
+
+            }
+
 
         }
 
@@ -317,25 +360,30 @@ namespace awinta.Deployment_NET.ViewModel
 
                     if (assembly.ToFileHash() == targetAssembly.ToFileHash()) return;
 
-                    Service.OutputService.WriteOutput($"Fehler: die Datei {assembly.Name} stimmt nicht mit ihrer Quelle über ein.");
-                    Service.OutputService.WriteOutput($"Hash: Quelle {assembly.ToFileHash()} <> Ziel {targetAssembly.ToFileHash()}");
+                    Service.OutputService.WriteOutput($"Error: the File {assembly.Name} doesn't match the Source.");
+                    Service.OutputService.WriteOutput($"Hash: Source {assembly.ToFileHash()} <> Target {targetAssembly.ToFileHash()}");
 
                 }
                 else
                 {
 
-                    if (!assembly.Exists) Service.OutputService.WriteOutput($"Build nicht vorhanden: {assembly.FullName}");
-                    if (!targetPath.Exists) Service.OutputService.WriteOutput($"Zielpfad nicht vorhanden: {targetPath.FullName}");
+                    if (!assembly.Exists) Service.OutputService.WriteOutput($"Build is missing: {assembly.FullName}");
+                    if (!targetPath.Exists) Service.OutputService.WriteOutput($"targetPath is missing: {targetPath.FullName}");
 
                 }
 
             }
             catch (Exception ex)
             {
-                Service.OutputService.WriteOutput($"Fehler: {ex.Message}");
+                Service.OutputService.WriteOutput($"Error: {ex.Message}");
                 throw;
             }
 
+        }
+
+        private void CloseMainView()
+        {
+            System.Windows.Application.Current.MainWindow.Close();
         }
 
         #endregion
