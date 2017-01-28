@@ -65,6 +65,31 @@ namespace awinta.Deployment_NET.ViewModel
             }
         }
 
+        private int progressCount;
+
+        public int ProgressCount
+        {
+            get { return progressCount; }
+            set
+            {
+                progressCount = value;
+                OnNotifyPropertyChanged();
+            }
+        }
+
+        private bool working;
+
+        public bool Working
+        {
+            get { return working; }
+            set
+            {
+                working = value;
+                OnNotifyPropertyChanged();
+            }
+        }
+
+
         private ObservableCollection<ProjectData> data;
         public ObservableCollection<ProjectData> Data
         {
@@ -120,20 +145,18 @@ namespace awinta.Deployment_NET.ViewModel
         private void Load()
         {
 
-            uint cookie = 0;
-            //statusBarService.Progress(ref cookie, 1, "", 0, 0);
-
             Service.OutputService.WriteOutput("Load Projectinformation");
 
             Projects projects = service.Solution.Projects;
+
             solutionPath = new FileInfo(service.Solution.FullName);
 
-            for (int i = 1; i <= projects.Count; i++)
+            for (var i = 1; i <= projects.Count; i++)
             {
 
                 var project = projects.Item(i);
 
-                if (project != null && project.Properties != null)
+                if (project?.Properties != null)
                 {
 
                     Service.OutputService.WriteOutput($"Load Project: {project.FullName}");
@@ -146,8 +169,8 @@ namespace awinta.Deployment_NET.ViewModel
                     var dictionaryProperties = queryProperties.ToDictionary(x => x.Key, x => x.Value);
                     Service.OutputService.WriteOutput($"Finished Collecting ProjectProperties: {project.FullName}");
 
-                    string[] assemblyVersionTemp = dictionaryProperties[assemblyVersion].Split('.');
-                    string[] dateiVersionTemp = dictionaryProperties[assemblyFileVersion].Split('.');
+                    var assemblyVersionTemp = dictionaryProperties[assemblyVersion].Split('.');
+                    var dateiVersionTemp = dictionaryProperties[assemblyFileVersion].Split('.');
 
                     Service.OutputService.WriteOutput($"Start Collecting ProjectBuildconfiguration: {project.FullName}");
                     var queryBuildConfig = from projectBuildConfig in project.ConfigurationManager.ActiveConfiguration.Properties.ToDictionary().AsEnumerable()
@@ -183,14 +206,7 @@ namespace awinta.Deployment_NET.ViewModel
 
                 }
 
-                //uint count = i + 1;
-                //statusBarService.Progress(ref cookie, 1, "", count, Convert.ToUInt32(projects.Count));
-
             }
-
-            //statusBarService.Progress(ref cookie, 0, "", 0, 0);
-            //statusBarService.FreezeOutput(0);
-            //statusBarService.Clear();
 
             data = new ObservableCollection<ProjectData>(data.Distinct());
 
@@ -203,7 +219,7 @@ namespace awinta.Deployment_NET.ViewModel
 
             Projects projects = service.Solution.Projects;
 
-            for (int i = 1; i <= projects.Count; i++)
+            for (var i = 1; i <= projects.Count; i++)
             {
 
                 var project = Data.FirstOrDefault(x => x.Name == projects.Item(i).Name);
@@ -211,7 +227,7 @@ namespace awinta.Deployment_NET.ViewModel
                 if (project != null)
                 {
 
-                    for (int i2 = 1; i2 <= projects.Item(i).Properties.Count; i++)
+                    for (var i2 = 1; i2 <= projects.Item(i).Properties.Count; i++)
                     {
 
                         switch (projects.Item(i).Properties.Item(i2).Name)
@@ -287,7 +303,7 @@ namespace awinta.Deployment_NET.ViewModel
         {
 
             await Task.Run(() => LoadLatestVersion());
-            setVersionNumber();
+            SetVersionNumber();
 
             SolutionBuild solBuild = service.Solution.SolutionBuild;
             service.Events.BuildEvents.OnBuildDone += _BuildDone;
@@ -338,20 +354,11 @@ namespace awinta.Deployment_NET.ViewModel
 
                 Service.OutputService.WriteOutput($"Deploy: {project.Name}");
 
-                var dynamicPart = string.Empty;
+                var dynamicPart = project.HasToRegister ? targetRegDir : targetAppDir;
 
-                if (project.HasToRegister)
-                {
-                    dynamicPart = targetRegDir;
-                }
-                else
-                {
-                    dynamicPart = targetAppDir;
-                }
-
-                FileInfo assembly = new FileInfo(project.FullAssemblyPath);
-                DirectoryInfo targetPath = new DirectoryInfo(Path.Combine(configuration.FullDeployPath, dynamicPart));
-                FileInfo targetAssembly = new FileInfo(Path.Combine(targetPath.FullName, assembly.Name));
+                var assembly = new FileInfo(project.FullAssemblyPath);
+                var targetPath = new DirectoryInfo(Path.Combine(configuration.FullDeployPath, dynamicPart));
+                var targetAssembly = new FileInfo(Path.Combine(targetPath.FullName, assembly.Name));
 
                 if (assembly.Exists && targetPath.Exists)
                 {
@@ -381,7 +388,7 @@ namespace awinta.Deployment_NET.ViewModel
 
         }
 
-        private void CloseMainView()
+        private static void CloseMainView()
         {
             System.Windows.Application.Current.MainWindow.Close();
         }
@@ -443,22 +450,22 @@ namespace awinta.Deployment_NET.ViewModel
 
         }
 
-        private void setVersionNumber()
+        private void SetVersionNumber()
         {
 
-            for (int i = 0; i < Data.Count; i++)
+            foreach (var project in Data)
             {
-                Data[i].AssemblyInfo.Dateiversion = Configuration.Version;
+                project.AssemblyInfo.Dateiversion = Configuration.Version;
             }
 
-            Projects projects = service.Solution.Projects;
+            var projects = service.Solution.Projects;
 
-            for (int i = 1; i <= projects.Count; i++)
+            for (var i = 1; i <= projects.Count; i++)
             {
 
                 var project = projects.Item(i);
 
-                if (project != null && project.Properties != null)
+                if (project?.Properties != null)
                 {
 
                     foreach (var item in project.Properties)
@@ -466,9 +473,8 @@ namespace awinta.Deployment_NET.ViewModel
 
                         var property = item as Property;
 
-                        if (property != null && property.Name.Equals(assemblyFileVersion))
+                        if (property?.Name.Equals(assemblyFileVersion) == true)
                         {
-                            //property.let_Value(Configuration.Version);
                             property.Value = Configuration.Version.ToString();
                             break;
                         }

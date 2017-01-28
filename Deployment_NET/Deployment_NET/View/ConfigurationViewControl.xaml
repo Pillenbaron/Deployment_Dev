@@ -40,28 +40,29 @@
             <Setter Property="Width" Value="50"/>
         </Style>
     </UserControl.Resources>
-    <Grid>
+    <Grid IsEnabled="{Binding Working}">
         <Grid.RowDefinitions>
             <RowDefinition Height="75" />
             <RowDefinition/>
+            <RowDefinition Height="30" />
             <RowDefinition Height="25" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto" Grid.Row="0">
             <StackPanel  Orientation="Horizontal" Height="25">
                 <Label DockPanel.Dock="Left" Style="{StaticResource CaptionStyle}">Version</Label>
-                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Hauptversion ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
-                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Nebenversion ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
-                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Buildnummer ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
-                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Revision ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
+                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Hauptversion, Converter={StaticResource NumericConverter}}"></TextBox>
+                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Nebenversion, Converter={StaticResource NumericConverter}}"></TextBox>
+                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Buildnummer, Converter={StaticResource NumericConverter}}"></TextBox>
+                <TextBox  DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.Version.Revision, Converter={StaticResource NumericConverter}}"></TextBox>
             </StackPanel>
             <DockPanel LastChildFill="True" Height="25">
                 <Label DockPanel.Dock="Left" Style="{StaticResource CaptionStyle}">Updatepfad:</Label>
                 <Button DockPanel.Dock="Right" Width="50" Command="{Binding DirCommand}">...</Button>
-                <TextBox Style="{StaticResource PathStyle}" Text="{Binding Configuration.DeployPath ,Mode=TwoWay,NotifyOnValidationError=True}"></TextBox>
+                <TextBox Style="{StaticResource PathStyle}" Text="{Binding Configuration.DeployPath ,NotifyOnValidationError=True}"></TextBox>
             </DockPanel>
             <StackPanel Orientation="Horizontal" Height="25">
                 <Label Style="{StaticResource CaptionStyle}">Update Nr.:</Label>
-                <TextBox DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.DeployPathVersion ,Mode=TwoWay, Converter={StaticResource NumericConverter}}"></TextBox>
+                <TextBox DockPanel.Dock="Left" Style="{StaticResource VersionStyle}" Text="{Binding Path=Configuration.DeployPathVersion , Converter={StaticResource NumericConverter}}"></TextBox>
             </StackPanel>
         </StackPanel>
         <DockPanel LastChildFill="True" Grid.Row="1" >
@@ -76,18 +77,26 @@
                           AutoGenerateColumns="False"
                           CanUserAddRows="False">
                     <DataGrid.Columns>
-                        <DataGridCheckBoxColumn Header="Registrierung" Binding="{Binding HasToRegister,Mode=TwoWay}"/>
-                        <DataGridTextColumn Header="Titel" Binding="{Binding Name,Mode=TwoWay}" IsReadOnly="True"/>
-                        <DataGridTextColumn Header="AssemblyVersion" Binding="{Binding AssemblyInfo.AssemblyVersion,Mode=TwoWay, Converter={StaticResource VersionConverter}}" IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Dateiversion" Binding="{Binding AssemblyInfo.Dateiversion,Mode=TwoWay, Converter={StaticResource VersionConverter}}" IsReadOnly="True"/>
+                        <DataGridCheckBoxColumn Header="Registrierung" Binding="{Binding HasToRegister}"/>
+                        <DataGridTextColumn Header="Titel" Binding="{Binding Name}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="AssemblyVersion" Binding="{Binding AssemblyInfo.AssemblyVersion, Converter={StaticResource VersionConverter}}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Dateiversion" Binding="{Binding AssemblyInfo.Dateiversion, Converter={StaticResource VersionConverter}}" IsReadOnly="True"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>
         </DockPanel>
         <DockPanel Grid.Row="2">
-            <StackPanel FlowDirection="RightToLeft" Orientation="Horizontal" Height="25" Width="Auto">
-                <Button  Width="100" IsDefault="True" Command="{Binding BuildSolutionCommand}">Deploy</Button>
+            <StackPanel FlowDirection="RightToLeft" Orientation="Horizontal" Height="30" Width="Auto">
+                <Button Margin="0,2,0,2" Width="100" IsDefault="True" Command="{Binding BuildSolutionCommand}">Deploy</Button>
             </StackPanel>
         </DockPanel>
+        <DockPanel Grid.Row="3" Height="25" FlowDirection="RightToLeft">
+            <StatusBar>
+                <StatusBarItem>
+                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressCount}" Width="90" Height="16" Margin="2,2,2,2" />
+                </StatusBarItem>
+            </StatusBar>
+        </DockPanel>
     </Grid>
+
 </UserControl>
