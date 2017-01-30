@@ -2,7 +2,6 @@
 using awinta.Deployment_NET.Solution.Model;
 using awinta.Deployment_NET.UICommands;
 using EnvDTE;
-using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.ObjectModel;
@@ -118,7 +117,7 @@ namespace awinta.Deployment_NET.ViewModel
             LoadCommand = new AsyncCommand(LoadAsync);
             SaveCommand = new DefaultCommand(Save);
             DeploayCommand = new AsyncCommand(DeployAsync);
-            BuildSolutionCommand = new AsyncCommand(BuildSolution);
+            BuildSolutionCommand = new AsyncCommand(BuildSolutionAsync);
             DirCommand = new DefaultCommand(SetDeployPath);
 
             Configuration = new ConfigData();
@@ -298,7 +297,7 @@ namespace awinta.Deployment_NET.ViewModel
 
         }
 
-        public async Task BuildSolution()
+        public async Task BuildSolutionAsync()
         {
 
             await Task.Run(() => LoadLatestVersion());
@@ -324,7 +323,7 @@ namespace awinta.Deployment_NET.ViewModel
                 {
                     Service.OutputService.WriteOutput($"<TFS>Sync failed: {solutionPath.DirectoryName}");
 
-                    foreach (Failure fail in tfsServer.Failures)
+                    foreach (var fail in tfsServer.Failures)
                     {
 
                         Service.OutputService.WriteOutput($"<TFS>{fail.GetFormattedMessage()}");
