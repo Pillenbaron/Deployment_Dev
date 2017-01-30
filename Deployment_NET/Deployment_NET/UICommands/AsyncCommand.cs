@@ -7,7 +7,7 @@ namespace awinta.Deployment_NET.UICommands
     class AsyncCommand : ICommand
     {
 
-        private readonly Func<Task> executeDelegate = null;
+        private readonly Func<Task> executeDelegate;
 
         public event EventHandler CanExecuteChanged;
 

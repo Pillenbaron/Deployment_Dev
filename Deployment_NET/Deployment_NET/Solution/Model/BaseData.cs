@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace awinta.Deployment_NET.Solution.Model
@@ -86,7 +85,7 @@ namespace awinta.Deployment_NET.Solution.Model
 
             var result = string.Empty;
 
-            var Class = this.GetType();
+            var Class = GetType();
             var propertyInfos = Class.GetProperties();
 
             foreach (var propertyInfo in propertyInfos)

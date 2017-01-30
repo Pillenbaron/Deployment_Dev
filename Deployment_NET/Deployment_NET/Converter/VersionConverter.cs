@@ -8,10 +8,10 @@ namespace awinta.Deployment_NET.Converter
     {
 
         private const string RegexExpression = @"^.*?(?<Hauptversion>\d+)\.(?<Nebenversion>\d+)\.(?<Buildnummer>\d+)\.(?<Revision>\d+).*?$";
-        private const string hauptversion = "Hauptversion";
-        private const string nebenversion = "Nebenversion";
-        private const string buildnummer = "Buildnummer";
-        private const string revision = "Revision";
+        private const string Hauptversion = "Hauptversion";
+        private const string Nebenversion = "Nebenversion";
+        private const string Buildnummer = "Buildnummer";
+        private const string Revision = "Revision";
 
         public Solution.Model.VersionData GetVersionNumber(object value)
         {
@@ -23,22 +23,19 @@ namespace awinta.Deployment_NET.Converter
             {
 
                 RegexOptions options = RegexOptions.Multiline;
-                Solution.Model.VersionData output = null;
 
                 MatchCollection matches = Regex.Matches(text, RegexExpression, options);
                 foreach (Match match in matches)
                 {
-
-                    output = new Solution.Model.VersionData()
+                    var output = new Solution.Model.VersionData()
                     {
-                        Hauptversion = System.Convert.ToInt16(match.Groups[hauptversion].Value),
-                        Nebenversion = System.Convert.ToInt16(match.Groups[nebenversion].Value),
-                        Buildnummer = System.Convert.ToInt16(match.Groups[buildnummer].Value),
-                        Revision = System.Convert.ToInt16(match.Groups[revision].Value)
+                        Hauptversion = System.Convert.ToInt16(match.Groups[Hauptversion].Value),
+                        Nebenversion = System.Convert.ToInt16(match.Groups[Nebenversion].Value),
+                        Buildnummer = System.Convert.ToInt16(match.Groups[Buildnummer].Value),
+                        Revision = System.Convert.ToInt16(match.Groups[Revision].Value)
                     };
 
                     return output;
-
                 }
             }
 
@@ -50,13 +47,9 @@ namespace awinta.Deployment_NET.Converter
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
 
-            var Version = value as Solution.Model.VersionData;
+            var version = value as Solution.Model.VersionData;
 
-            if (Version != null) { return Version.ToString(); }
-
-            return string.Empty;
-
-
+            return version?.ToString() ?? string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

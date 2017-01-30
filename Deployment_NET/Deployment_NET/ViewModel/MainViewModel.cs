@@ -6,7 +6,6 @@ using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,35 +19,35 @@ namespace awinta.Deployment_NET.ViewModel
 
         #region Member
 
-        private const string codeAnalysisInputAssembly = "CodeAnalysisInputAssembly";
+        private const string CodeAnalysisInputAssembly = "CodeAnalysisInputAssembly";
 
-        private const string assemblyName = "AssemblyName";
-        private const string fullPath = "FullPath";
-        private const string assemblyVersion = "AssemblyVersion";
-        private const string assemblyFileVersion = "AssemblyFileVersion";
-        private const string title = "Title";
-        private const string description = "Description";
-        private const string company = "Company";
-        private const string product = "Product";
-        private const string copyright = "Copyright";
-        private const string trademark = "Trademark";
-        private const string targetRegDir = "DotNetReg";
-        private const string targetAppDir = @"AppPath\DotNet";
-        private static readonly string[] UsedProperties = { assemblyVersion,
-                                                            assemblyFileVersion,
-                                                            description,
-                                                            product,
-                                                            title,
-                                                            copyright,
-                                                            trademark,
-                                                            fullPath,
-                                                            company,
-                                                            assemblyName };
+        private const string AssemblyName = "AssemblyName";
+        private const string FullPath = "FullPath";
+        private const string AssemblyVersion = "AssemblyVersion";
+        private const string AssemblyFileVersion = "AssemblyFileVersion";
+        private const string Title = "Title";
+        private const string Description = "Description";
+        private const string Company = "Company";
+        private const string Product = "Product";
+        private const string Copyright = "Copyright";
+        private const string Trademark = "Trademark";
+        private const string TargetRegDir = "DotNetReg";
+        private const string TargetAppDir = @"AppPath\DotNet";
+        private static readonly string[] UsedProperties = { AssemblyVersion,
+                                                            AssemblyFileVersion,
+                                                            Description,
+                                                            Product,
+                                                            Title,
+                                                            Copyright,
+                                                            Trademark,
+                                                            FullPath,
+                                                            Company,
+                                                            AssemblyName };
 
-        private DTE service;
-        private Interfaces.ITeamFoundationServerService tfsServer;
+        private readonly DTE service;
+        private readonly Interfaces.ITeamFoundationServerService tfsServer;
+        private readonly IVsStatusbar statusBarService;
         private FileInfo solutionPath;
-        private IVsStatusbar statusBarService;
 
         #endregion
 
@@ -147,7 +146,7 @@ namespace awinta.Deployment_NET.ViewModel
 
             Service.OutputService.WriteOutput("Load Projectinformation");
 
-            Projects projects = service.Solution.Projects;
+            var projects = service.Solution.Projects;
 
             solutionPath = new FileInfo(service.Solution.FullName);
 
@@ -169,12 +168,12 @@ namespace awinta.Deployment_NET.ViewModel
                     var dictionaryProperties = queryProperties.ToDictionary(x => x.Key, x => x.Value);
                     Service.OutputService.WriteOutput($"Finished Collecting ProjectProperties: {project.FullName}");
 
-                    var assemblyVersionTemp = dictionaryProperties[assemblyVersion].Split('.');
-                    var dateiVersionTemp = dictionaryProperties[assemblyFileVersion].Split('.');
+                    var assemblyVersionTemp = dictionaryProperties[AssemblyVersion].Split('.');
+                    var dateiVersionTemp = dictionaryProperties[AssemblyFileVersion].Split('.');
 
                     Service.OutputService.WriteOutput($"Start Collecting ProjectBuildconfiguration: {project.FullName}");
                     var queryBuildConfig = from projectBuildConfig in project.ConfigurationManager.ActiveConfiguration.Properties.ToDictionary().AsEnumerable()
-                                           where projectBuildConfig.Key == codeAnalysisInputAssembly
+                                           where projectBuildConfig.Key == CodeAnalysisInputAssembly
                                            select projectBuildConfig;
                     Service.OutputService.WriteOutput($"Finished Collecting ProjectBuildconfiguration: {project.FullName}");
 
@@ -185,17 +184,17 @@ namespace awinta.Deployment_NET.ViewModel
                     var currentProject = new ProjectData
                     {
                         Name = projects.Item(i).Name,
-                        AssemblyPath = dictionaryBuildConfig[codeAnalysisInputAssembly],
-                        AssemblyName = dictionaryProperties[assemblyName],
-                        FullPath = dictionaryProperties[fullPath],
+                        AssemblyPath = dictionaryBuildConfig[CodeAnalysisInputAssembly],
+                        AssemblyName = dictionaryProperties[AssemblyName],
+                        FullPath = dictionaryProperties[FullPath],
                         AssemblyInfo = new AssemblyData
                         {
-                            Titel = dictionaryProperties[title],
-                            Beschreibung = dictionaryProperties[description],
-                            Firma = dictionaryProperties[company],
-                            Produkt = dictionaryProperties[product],
-                            Copyright = dictionaryProperties[copyright],
-                            Marke = dictionaryProperties[trademark],
+                            Titel = dictionaryProperties[Title],
+                            Beschreibung = dictionaryProperties[Description],
+                            Firma = dictionaryProperties[Company],
+                            Produkt = dictionaryProperties[Product],
+                            Copyright = dictionaryProperties[Copyright],
+                            Marke = dictionaryProperties[Trademark],
                             AssemblyVersion = new VersionData(assemblyVersionTemp[0], assemblyVersionTemp[1], assemblyVersionTemp[2], assemblyVersionTemp[3]),
                             Dateiversion = new VersionData(dateiVersionTemp[0], dateiVersionTemp[1], dateiVersionTemp[2], dateiVersionTemp[3])
                         }
@@ -217,7 +216,7 @@ namespace awinta.Deployment_NET.ViewModel
         public void Save()
         {
 
-            Projects projects = service.Solution.Projects;
+            var projects = service.Solution.Projects;
 
             for (var i = 1; i <= projects.Count; i++)
             {
@@ -240,28 +239,28 @@ namespace awinta.Deployment_NET.ViewModel
                             //    projects.Item(i).Properties.Item(i2).Value = Project.AssemblyName;
                             //    break;
 
-                            case title:
+                            case Title:
                                 projects.Item(i).Properties.Item(i2).Value = project.AssemblyInfo.Titel;
                                 break;
-                            case description:
+                            case Description:
                                 projects.Item(i).Properties.Item(i2).Value = project.AssemblyInfo.Beschreibung;
                                 break;
-                            case company:
+                            case Company:
                                 projects.Item(i).Properties.Item(i2).Value = project.AssemblyInfo.Firma;
                                 break;
-                            case product:
+                            case Product:
                                 projects.Item(i).Properties.Item(i2).Value = project.AssemblyInfo.Produkt;
                                 break;
-                            case copyright:
+                            case Copyright:
                                 projects.Item(i).Properties.Item(i2).Value = project.AssemblyInfo.Copyright;
                                 break;
-                            case trademark:
+                            case Trademark:
                                 projects.Item(i).Properties.Item(i2).Value = project.AssemblyInfo.Marke;
                                 break;
-                            case assemblyVersion:
+                            case AssemblyVersion:
                                 projects.Item(i).Properties.Item(i2).Value = project.AssemblyInfo.AssemblyVersion.ToString();
                                 break;
-                            case assemblyFileVersion:
+                            case AssemblyFileVersion:
                                 projects.Item(i).Properties.Item(i2).Value = configuration.Version.ToString();
                                 break;
                         }
@@ -354,7 +353,7 @@ namespace awinta.Deployment_NET.ViewModel
 
                 Service.OutputService.WriteOutput($"Deploy: {project.Name}");
 
-                var dynamicPart = project.HasToRegister ? targetRegDir : targetAppDir;
+                var dynamicPart = project.HasToRegister ? TargetRegDir : TargetAppDir;
 
                 var assembly = new FileInfo(project.FullAssemblyPath);
                 var targetPath = new DirectoryInfo(Path.Combine(configuration.FullDeployPath, dynamicPart));
@@ -473,7 +472,7 @@ namespace awinta.Deployment_NET.ViewModel
 
                         var property = item as Property;
 
-                        if (property?.Name.Equals(assemblyFileVersion) == true)
+                        if (property?.Name.Equals(AssemblyFileVersion) == true)
                         {
                             property.Value = Configuration.Version.ToString();
                             break;

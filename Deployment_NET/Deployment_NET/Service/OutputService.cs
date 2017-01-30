@@ -24,25 +24,20 @@ namespace awinta.Deployment_NET.Service
 
         public static void ClearOutput()
         {
-            IVsOutputWindowPane Service = IoC.ApplicationContainer.GetInstance<IVsOutputWindowPane>();
+            var service = IoC.ApplicationContainer.GetInstance<IVsOutputWindowPane>();
 
-            Service.Clear();
+            service.Clear();
 
         }
 
         public static void WriteOutput(string text)
         {
 
-            IVsOutputWindowPane Service = IoC.ApplicationContainer.GetInstance<IVsOutputWindowPane>();
+            var service = IoC.ApplicationContainer.GetInstance<IVsOutputWindowPane>();
 
-            if (Service != null)
-            {
-
-                Service.Activate();
-                Service.OutputStringThreadSafe(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + ": " + text + System.Environment.NewLine);
-
-            }
-
+            if (service == null) return;
+            service.Activate();
+            service.OutputStringThreadSafe(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + ": " + text + System.Environment.NewLine);
         }
 
     }

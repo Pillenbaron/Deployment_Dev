@@ -2,21 +2,19 @@
 
 namespace awinta.Deployment_NET.Service
 {
-    internal sealed class ValidationService
+    internal static class ValidationService
     {
 
         private const string UrlErrorMessage = "Kein Gültiger Pfad!";
         private const string NumericErrorMessage = "Eingabe ist keine gültige Zahl!";
-
-        private ValidationService() { }
 
         #region Validation
 
         public static string ValidateUri(string value)
         {
 
-            var path = value as string;
-            Uri deployPath = null;
+            var path = value;
+            Uri deployPath;
 
             if (string.IsNullOrWhiteSpace(path) && Uri.TryCreate(path, UriKind.Absolute, out deployPath))
             {
@@ -24,19 +22,13 @@ namespace awinta.Deployment_NET.Service
                 return string.Empty;
 
             }
-            else
-            {
-
-                return UrlErrorMessage;
-
-            }
-
+            return UrlErrorMessage;
         }
 
         public static string ValidateNumeric(string value)
         {
 
-            var number = value as string;
+            var number = value;
             int output;
 
             if (string.IsNullOrWhiteSpace(number) && int.TryParse(number, out output))

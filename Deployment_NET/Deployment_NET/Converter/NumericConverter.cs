@@ -24,10 +24,10 @@ namespace awinta.Deployment_NET.Converter
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
 
-            var Number = value as string;
-            int Output;
+            var number = value as string;
+            int output;
 
-            if (value is string && !string.IsNullOrWhiteSpace(Number) && int.TryParse(Number, out Output))
+            if (value is string && !string.IsNullOrWhiteSpace(number) && int.TryParse(number, out output))
             {
 
                 return value;

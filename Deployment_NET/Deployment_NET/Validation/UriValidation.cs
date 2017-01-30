@@ -10,7 +10,7 @@ namespace awinta.Deployment_NET.Validation
         {
 
             var path = value as string;
-            Uri deployPath = null;
+            Uri deployPath;
 
             if (string.IsNullOrWhiteSpace(path) && Uri.TryCreate(path, UriKind.Absolute, out deployPath))
             {

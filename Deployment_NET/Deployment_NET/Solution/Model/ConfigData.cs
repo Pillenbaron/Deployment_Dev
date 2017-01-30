@@ -10,11 +10,11 @@ namespace awinta.Deployment_NET.Solution.Model
 
         //private const string defaultDeployPath = @"\\asys-smart500\ASYS_Installationen\SMART PharmaComp Update";
 
-        private const string defaultDeployPath = @"D:\TestUpdate";
-        private const string uriErrorMessage = "Eingabe ist kein gültiger Pfad!";
-        private const string versionErrorMessage = "Die Versionsnummer muss vierstellig sein!";
-        private const string pflichtfeldErrorMessage = "Pflichtfeld darf nicht leer sein!";
-        private const string uriExistsErrorMessage = "Der Pfad existiert nicht!";
+        private const string DefaultDeployPath = @"D:\TestUpdate";
+        private const string UriErrorMessage = "Eingabe ist kein gültiger Pfad!";
+        private const string VersionErrorMessage = "Die Versionsnummer muss vierstellig sein!";
+        private const string PflichtfeldErrorMessage = "Pflichtfeld darf nicht leer sein!";
+        private const string UriExistsErrorMessage = "Der Pfad existiert nicht!";
 
         #endregion
 
@@ -46,7 +46,7 @@ namespace awinta.Deployment_NET.Solution.Model
             }
         }
 
-        public string FullDeployPath => Path.Combine(DeployPath, $"SMART PharmaComp Update 5.0.0.{DeployPathVersion.ToString()}");
+        public string FullDeployPath => Path.Combine(DeployPath, $"SMART PharmaComp Update 5.0.0.{DeployPathVersion}");
 
         private string deployPathVersion = "0";
         public string DeployPathVersion
@@ -77,7 +77,7 @@ namespace awinta.Deployment_NET.Solution.Model
         {
 
             Version = new VersionData();
-            DeployPath = defaultDeployPath;
+            DeployPath = DefaultDeployPath;
 
         }
 
@@ -94,47 +94,47 @@ namespace awinta.Deployment_NET.Solution.Model
 
                     if (string.IsNullOrWhiteSpace(path))
                     {
-                        AddError(propertyName, uriErrorMessage, true);
+                        AddError(propertyName, UriErrorMessage, true);
                         isValid = false;
                     }
                     else
                     {
-                        RemoveError(propertyName, uriErrorMessage);
+                        RemoveError(propertyName, UriErrorMessage);
                     }
 
                     if (!Directory.Exists(path))
                     {
-                        AddError(propertyName, uriExistsErrorMessage, true);
+                        AddError(propertyName, UriExistsErrorMessage, true);
                         isValid = false;
                     }
                     else
                     {
-                        RemoveError(propertyName, uriExistsErrorMessage);
+                        RemoveError(propertyName, UriExistsErrorMessage);
                     }
 
                     break;
                 case "DeployPathVersion":
 
-                    var NumericString = value as string;
+                    var numericString = value as string;
 
-                    if (string.IsNullOrWhiteSpace(NumericString))
+                    if (string.IsNullOrWhiteSpace(numericString))
                     {
-                        AddError(propertyName, pflichtfeldErrorMessage, true);
+                        AddError(propertyName, PflichtfeldErrorMessage, true);
                         isValid = false;
                     }
                     else
                     {
-                        RemoveError(propertyName, pflichtfeldErrorMessage);
+                        RemoveError(propertyName, PflichtfeldErrorMessage);
                     }
 
-                    if (NumericString.Length != 4)
+                    if (numericString != null && numericString.Length != 4)
                     {
-                        AddError(propertyName, versionErrorMessage, true);
+                        AddError(propertyName, VersionErrorMessage, true);
                         isValid = false;
                     }
                     else
                     {
-                        RemoveError(propertyName, versionErrorMessage);
+                        RemoveError(propertyName, VersionErrorMessage);
                     }
                     break;
             }

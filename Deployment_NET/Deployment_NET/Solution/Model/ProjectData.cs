@@ -65,13 +65,7 @@ namespace awinta.Deployment_NET.Solution.Model
             }
         }
 
-        public string FullAssemblyPath
-        {
-            get
-            {
-                return FullPath != null ? $"{FullPath}\\{AssemblyPath}" : null;
-            }
-        }
+        public string FullAssemblyPath => FullPath != null ? $"{FullPath}\\{AssemblyPath}" : null;
 
         private bool hasToRegister;
 
@@ -94,19 +88,12 @@ namespace awinta.Deployment_NET.Solution.Model
 
         public bool Equals(ProjectData other)
         {
-
-            if (Name.Equals(other.Name) &&
-                AssemblyName.Equals(other.AssemblyName) &&
-                FullPath.Equals(other.FullPath) &&
-                AssemblyPath.Equals(other.AssemblyPath) &&
-                FullAssemblyPath.Equals(other.FullAssemblyPath) &&
-                HasToRegister.Equals(other.HasToRegister))
-            {
-                return true;
-            }
-
-            return false;
-
+            return other != null && (Name.Equals(other.Name) &&
+                                     AssemblyName.Equals(other.AssemblyName) &&
+                                     FullPath.Equals(other.FullPath) &&
+                                     AssemblyPath.Equals(other.AssemblyPath) &&
+                                     FullAssemblyPath.Equals(other.FullAssemblyPath) &&
+                                     HasToRegister.Equals(other.HasToRegister));
         }
 
         public override bool Equals(object obj)

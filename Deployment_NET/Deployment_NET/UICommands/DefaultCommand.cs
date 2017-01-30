@@ -6,7 +6,7 @@ namespace awinta.Deployment_NET.UICommands
     public class DefaultCommand : ICommand
     {
 
-        private readonly Action executeDelegate = null;
+        private readonly Action executeDelegate;
 
         public event EventHandler CanExecuteChanged;
 

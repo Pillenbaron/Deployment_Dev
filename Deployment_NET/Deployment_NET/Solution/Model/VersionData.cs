@@ -3,7 +3,7 @@
     internal class VersionData : BaseData
     {
 
-        private int hauptversion = 0;
+        private int hauptversion;
 
         public int Hauptversion
         {
@@ -15,7 +15,7 @@
             }
         }
 
-        private int nebenversion = 0;
+        private int nebenversion;
 
         public int Nebenversion
         {
@@ -27,7 +27,7 @@
             }
         }
 
-        private int buildnummer = 0;
+        private int buildnummer;
 
         public int Buildnummer
         {
@@ -39,7 +39,7 @@
             }
         }
 
-        private int revision = 0;
+        private int revision;
 
         public int Revision
         {

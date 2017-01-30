@@ -11,7 +11,7 @@ namespace awinta.Deployment_NET.IO.XML.Serialization
         /// <param name="file">Das System.IO.FileInfo Objekt, welches Informationen über die Zieldatei enthält.</param>
         /// <param name="value">Das zu Serialisierende Objekt vom Typ 'T'</param>
         /// <remarks></remarks>
-        public static void ToXML<T>(FileInfo file, T value)
+        public static void ToXml<T>(FileInfo file, T value)
         {
 
             using (StreamWriter writer = new StreamWriter(file.FullName))
@@ -33,7 +33,7 @@ namespace awinta.Deployment_NET.IO.XML.Serialization
         /// <param name="file">Der Pfad zur Zieldatei</param>
         /// <param name="value">Das zu Serialisierende Objekt vom Typ 'T'</param>
         /// <remarks></remarks>
-        public static void ToXML<T>(string file, T value) => ToXML(new FileInfo(file), value);
+        public static void ToXml<T>(string file, T value) => ToXml(new FileInfo(file), value);
 
         /// <summary>
         /// Deserialisiert ein Objekt vom Typ 'T' aus der angegebenen Datei
@@ -41,7 +41,7 @@ namespace awinta.Deployment_NET.IO.XML.Serialization
         /// <param name="file">Ein System.IO.FileInfo Objekt, welches Informationen zur Quelldatei enthält. </param>
         /// <returns>Das deserialisierte Objekt vom Typ 'T'</returns>
         /// <remarks></remarks>
-        public static T FromXML<T>(FileInfo file)
+        public static T FromXml<T>(FileInfo file)
         {
             var objReturn = default(T);
 
@@ -62,9 +62,9 @@ namespace awinta.Deployment_NET.IO.XML.Serialization
         /// <param name="file">Der Pfad zur Quelldatei.</param>
         /// <returns>Das deserialisierte Objekt vom Typ 'T'</returns>
         /// <remarks></remarks>
-        public static T FromXML<T>(string file)
+        public static T FromXml<T>(string file)
         {
-            return SerializationService.FromXML<T>(new FileInfo(file));
+            return FromXml<T>(new FileInfo(file));
         }
 
         private SerializationService() { }

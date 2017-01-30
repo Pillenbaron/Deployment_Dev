@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
 
 namespace awinta.Deployment_NET.IoC
 {
@@ -32,28 +32,19 @@ namespace awinta.Deployment_NET.IoC
             {
                 return typeInstances[contract];
             }
-            else
+            var implementation = types[contract];
+            var constructor = implementation.GetConstructors()[0];
+            var constructorParameters = constructor.GetParameters();
+
+            if (constructorParameters.Length == 0)
             {
-                var implementation = types[contract];
-                var constructor = implementation.GetConstructors()[0];
-                var constructorParameters = constructor.GetParameters();
-
-                if (constructorParameters.Length == 0)
-                {
-                    return Activator.CreateInstance(implementation);
-                }
-
-                List<object> parameters = new List<object>(constructorParameters.Length);
-
-                foreach (ParameterInfo parameterInfo in constructorParameters)
-                {
-                    parameters.Add(GetInstance(parameterInfo.ParameterType));
-                }
-
-                return constructor.Invoke(parameters.ToArray());
-
+                return Activator.CreateInstance(implementation);
             }
 
+            var parameters = new List<object>(constructorParameters.Length);
+            parameters.AddRange(constructorParameters.Select(parameterInfo => GetInstance(parameterInfo.ParameterType)));
+
+            return constructor.Invoke(parameters.ToArray());
         }
 
         public static void Release()

@@ -10,7 +10,7 @@ namespace awinta.Deployment_NET.Interfaces
         void Connect();
         void Connect(Uri path);
         void Connect(string path);
-        void getFileListOutput();
+        void GetFileListOutput();
         void UpdateProject(string path);
     }
 }

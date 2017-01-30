@@ -6,11 +6,9 @@
 
 using System;
 using System.ComponentModel.Design;
-using System.Globalization;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
-using EnvDTE80;
 
 namespace awinta.Deployment_NET.View
 {
@@ -43,22 +41,22 @@ namespace awinta.Deployment_NET.View
         {
             if (package == null)
             {
-                throw new ArgumentNullException("package");
+                throw new ArgumentNullException(nameof(package));
             }
 
             this.package = package;
             
-            IoC.ApplicationContainer.Register<DTE, DTE>((DTE)this.ServiceProvider.GetService(typeof(DTE)));
-            IoC.ApplicationContainer.Register<IVsOutputWindowPane, IVsOutputWindowPane>((IVsOutputWindowPane)this.ServiceProvider.GetService(typeof(SVsGeneralOutputWindowPane)));
+            IoC.ApplicationContainer.Register<DTE, DTE>((DTE)ServiceProvider.GetService(typeof(DTE)));
+            IoC.ApplicationContainer.Register<IVsOutputWindowPane, IVsOutputWindowPane>((IVsOutputWindowPane)ServiceProvider.GetService(typeof(SVsGeneralOutputWindowPane)));
             IoC.ApplicationContainer.Register<Interfaces.ITeamFoundationServerService, Service.TeamFoundationServerService>();
-            IoC.ApplicationContainer.Register<IVsStatusbar, IVsStatusbar>((IVsStatusbar)this.ServiceProvider.GetService(typeof(SVsStatusbar)));
+            IoC.ApplicationContainer.Register<IVsStatusbar, IVsStatusbar>((IVsStatusbar)ServiceProvider.GetService(typeof(SVsStatusbar)));
 
-            OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
             if (commandService != null)
             {
-                var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new MenuCommand(this.ShowToolWindow, menuCommandID);
+                var menuCommandId = new CommandID(CommandSet, CommandId);
+                var menuItem = new MenuCommand(ShowToolWindow, menuCommandId);
                 commandService.AddCommand(menuItem);
             }
         }
@@ -75,13 +73,7 @@ namespace awinta.Deployment_NET.View
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private IServiceProvider ServiceProvider
-        {
-            get
-            {
-                return this.package;
-            }
-        }
+        private IServiceProvider ServiceProvider => package;
 
         /// <summary>
         /// Initializes the singleton instance of the command.
@@ -102,8 +94,8 @@ namespace awinta.Deployment_NET.View
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
-            ToolWindowPane window = this.package.FindToolWindow(typeof(ConfigurationView), 0, true);
-            if ((null == window) || (null == window.Frame))
+            var window = package.FindToolWindow(typeof(ConfigurationView), 0, true);
+            if (window?.Frame == null)
             {
                 throw new NotSupportedException("Cannot create tool window");
             }

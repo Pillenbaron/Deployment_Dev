@@ -6,8 +6,6 @@
 
 namespace awinta.Deployment_NET.View
 {
-    using System.Diagnostics.CodeAnalysis;
-    using System.Windows;
     using System.Windows.Controls;
 
     /// <summary>

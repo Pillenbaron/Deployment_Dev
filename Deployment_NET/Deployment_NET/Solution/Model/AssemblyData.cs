@@ -75,7 +75,7 @@
             }
         }
 
-        private VersionData assemblyVersion = null;
+        private VersionData assemblyVersion;
 
         public VersionData AssemblyVersion
         {
@@ -87,7 +87,7 @@
             }
         }
 
-        private VersionData dateiversion = null;
+        private VersionData dateiversion;
 
         public VersionData Dateiversion
         {

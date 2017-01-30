@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.TeamFoundation.Client;
-using Microsoft.TeamFoundation.Framework;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using awinta.Deployment_NET.Interfaces;
 
@@ -12,7 +7,7 @@ namespace awinta.Deployment_NET.Service
 {
     public sealed class TeamFoundationServerService : ITeamFoundationServerService
     {
-        private const string teamFoundationServerUrl = "http://tfs:8080/tfs/asys";
+        private const string TeamFoundationServerUrl = "http://tfs:8080/tfs/asys";
         private VersionControlServer vcServer;
         private WorkspaceInfo workSpaceInfo;
         private Workspace workSpace;
@@ -29,7 +24,7 @@ namespace awinta.Deployment_NET.Service
         public void Connect()
         {
 
-            Connect(new Uri(teamFoundationServerUrl));
+            Connect(new Uri(TeamFoundationServerUrl));
 
         }
 
@@ -55,9 +50,9 @@ namespace awinta.Deployment_NET.Service
         public void UpdateProject(string path)
         {
 
-            GetStatus status = workSpace.Get(new string[] { path }, VersionSpec.Latest, RecursionType.Full, GetOptions.GetAll | GetOptions.Overwrite);
+            var status = workSpace.Get(new[] { path }, VersionSpec.Latest, RecursionType.Full, GetOptions.GetAll | GetOptions.Overwrite);
 
-           if (status.NoActionNeeded) { Service.OutputService.WriteOutput($"<TFS>No Actions needed on: {path}"); }
+           if (status.NoActionNeeded) { OutputService.WriteOutput($"<TFS>No Actions needed on: {path}"); }
 
             if (status.NumFailures > 0)
             {
@@ -65,13 +60,13 @@ namespace awinta.Deployment_NET.Service
             }
         }
 
-        public void getFileListOutput()
+        public void GetFileListOutput()
         {
 
-            ItemSet items = vcServer.GetItems("$/", RecursionType.Full);
-            foreach (Item item in items.Items)
+            var items = vcServer.GetItems("$/", RecursionType.Full);
+            foreach (var item in items.Items)
             {
-                Service.OutputService.WriteOutput(item.ServerItem.ToString());
+                OutputService.WriteOutput(item.ServerItem);
             }
 
         }
