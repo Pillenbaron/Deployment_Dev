@@ -6,50 +6,54 @@
 
 using System;
 using System.ComponentModel.Design;
+using awinta.Deployment_NET.Interfaces;
+using awinta.Deployment_NET.IoC;
+using awinta.Deployment_NET.Service;
+using EnvDTE;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using EnvDTE;
 
 namespace awinta.Deployment_NET.View
 {
     /// <summary>
-    /// Command handler
+    ///     Command handler
     /// </summary>
     internal sealed class ConfigurationViewCommand
     {
         /// <summary>
-        /// Command ID.
+        ///     Command ID.
         /// </summary>
         public const int CommandId = 0x0100;
 
         /// <summary>
-        /// Command menu group (command set GUID).
+        ///     Command menu group (command set GUID).
         /// </summary>
         public static readonly Guid CommandSet = new Guid("1e437a60-a91c-4782-ab86-0b3b59a91ac0");
 
         /// <summary>
-        /// VS Package that provides this command, not null.
+        ///     VS Package that provides this command, not null.
         /// </summary>
         private readonly Package package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigurationViewCommand"/> class.
-        /// Adds our command handlers for menu (commands must exist in the command table file)
+        ///     Initializes a new instance of the <see cref="ConfigurationViewCommand" /> class.
+        ///     Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         private ConfigurationViewCommand(Package package)
         {
             if (package == null)
-            {
                 throw new ArgumentNullException(nameof(package));
-            }
 
             this.package = package;
-            
-            IoC.ApplicationContainer.Register<DTE, DTE>((DTE)ServiceProvider.GetService(typeof(DTE)));
-            IoC.ApplicationContainer.Register<IVsOutputWindowPane, IVsOutputWindowPane>((IVsOutputWindowPane)ServiceProvider.GetService(typeof(SVsGeneralOutputWindowPane)));
-            IoC.ApplicationContainer.Register<Interfaces.ITeamFoundationServerService, Service.TeamFoundationServerService>();
-            IoC.ApplicationContainer.Register<IVsStatusbar, IVsStatusbar>((IVsStatusbar)ServiceProvider.GetService(typeof(SVsStatusbar)));
+
+            ApplicationContainer.Register<DTE, DTE>((DTE) ServiceProvider.GetService(typeof(DTE)));
+            ApplicationContainer.Register<IVsOutputWindowPane, IVsOutputWindowPane>(
+                (IVsOutputWindowPane) ServiceProvider.GetService(typeof(SVsGeneralOutputWindowPane)));
+            ApplicationContainer.Register<ITeamFoundationServerService, TeamFoundationServerService>();
+            ApplicationContainer.Register<IVsStatusbar, IVsStatusbar>(
+                (IVsStatusbar) ServiceProvider.GetService(typeof(SVsStatusbar)));
 
             var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
@@ -62,21 +66,17 @@ namespace awinta.Deployment_NET.View
         }
 
         /// <summary>
-        /// Gets the instance of the command.
+        ///     Gets the instance of the command.
         /// </summary>
-        public static ConfigurationViewCommand Instance
-        {
-            get;
-            private set;
-        }
+        public static ConfigurationViewCommand Instance { get; private set; }
 
         /// <summary>
-        /// Gets the service provider from the owner package.
+        ///     Gets the service provider from the owner package.
         /// </summary>
         private IServiceProvider ServiceProvider => package;
 
         /// <summary>
-        /// Initializes the singleton instance of the command.
+        ///     Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
@@ -85,7 +85,7 @@ namespace awinta.Deployment_NET.View
         }
 
         /// <summary>
-        /// Shows the tool window when the menu item is clicked.
+        ///     Shows the tool window when the menu item is clicked.
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event args.</param>
@@ -96,12 +96,10 @@ namespace awinta.Deployment_NET.View
             // The last flag is set to true so that if the tool window does not exists it will be created.
             var window = package.FindToolWindow(typeof(ConfigurationView), 0, true);
             if (window?.Frame == null)
-            {
                 throw new NotSupportedException("Cannot create tool window");
-            }
 
-            IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+            var windowFrame = (IVsWindowFrame) window.Frame;
+            ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
     }
 }

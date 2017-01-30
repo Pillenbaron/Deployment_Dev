@@ -1,20 +1,44 @@
-﻿using awinta.Deployment_NET.Extensions;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Input;
+using awinta.Deployment_NET.Extensions;
+using awinta.Deployment_NET.Interfaces;
+using awinta.Deployment_NET.IoC;
+using awinta.Deployment_NET.Service;
 using awinta.Deployment_NET.Solution.Model;
 using awinta.Deployment_NET.UICommands;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell.Interop;
-using System;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Input;
+using Application = System.Windows.Application;
+using Constants = Microsoft.VisualStudio.Shell.Interop.Constants;
 
 namespace awinta.Deployment_NET.ViewModel
 {
     internal class MainViewModel : BaseData
     {
+        public MainViewModel()
+        {
+            LoadCommand = new AsyncCommand(LoadAsync);
+            SaveCommand = new DefaultCommand(Save);
+            DeploayCommand = new AsyncCommand(DeployAsync);
+            BuildSolutionCommand = new AsyncCommand(BuildSolutionAsync);
+            DirCommand = new DefaultCommand(SetDeployPath);
+
+            Configuration = new ConfigData();
+            data = new ObservableCollection<ProjectData>();
+
+            service = ApplicationContainer.GetInstance<DTE>();
+            tfsServer = ApplicationContainer.GetInstance<ITeamFoundationServerService>();
+            statusBarService = ApplicationContainer.GetInstance<IVsStatusbar>();
+
+            object icon = (short) Constants.SBAI_Deploy;
+            statusBarService.Animation(1, ref icon);
+        }
 
         #region Member
 
@@ -32,19 +56,23 @@ namespace awinta.Deployment_NET.ViewModel
         private const string Trademark = "Trademark";
         private const string TargetRegDir = "DotNetReg";
         private const string TargetAppDir = @"AppPath\DotNet";
-        private static readonly string[] UsedProperties = { AssemblyVersion,
-                                                            AssemblyFileVersion,
-                                                            Description,
-                                                            Product,
-                                                            Title,
-                                                            Copyright,
-                                                            Trademark,
-                                                            FullPath,
-                                                            Company,
-                                                            AssemblyName };
+
+        private static readonly string[] UsedProperties =
+        {
+            AssemblyVersion,
+            AssemblyFileVersion,
+            Description,
+            Product,
+            Title,
+            Copyright,
+            Trademark,
+            FullPath,
+            Company,
+            AssemblyName
+        };
 
         private readonly DTE service;
-        private readonly Interfaces.ITeamFoundationServerService tfsServer;
+        private readonly ITeamFoundationServerService tfsServer;
         private readonly IVsStatusbar statusBarService;
         private FileInfo solutionPath;
 
@@ -53,6 +81,7 @@ namespace awinta.Deployment_NET.ViewModel
         #region Properties
 
         private ConfigData configuration;
+
         public ConfigData Configuration
         {
             get { return configuration; }
@@ -89,6 +118,7 @@ namespace awinta.Deployment_NET.ViewModel
 
 
         private ObservableCollection<ProjectData> data;
+
         public ObservableCollection<ProjectData> Data
         {
             get { return data; }
@@ -111,39 +141,16 @@ namespace awinta.Deployment_NET.ViewModel
 
         #endregion
 
-        public MainViewModel()
-        {
-
-            LoadCommand = new AsyncCommand(LoadAsync);
-            SaveCommand = new DefaultCommand(Save);
-            DeploayCommand = new AsyncCommand(DeployAsync);
-            BuildSolutionCommand = new AsyncCommand(BuildSolutionAsync);
-            DirCommand = new DefaultCommand(SetDeployPath);
-
-            Configuration = new ConfigData();
-            data = new ObservableCollection<ProjectData>();
-
-            service = IoC.ApplicationContainer.GetInstance<DTE>();
-            tfsServer = IoC.ApplicationContainer.GetInstance<Interfaces.ITeamFoundationServerService>();
-            statusBarService = IoC.ApplicationContainer.GetInstance<IVsStatusbar>();
-
-            object icon = (short)Microsoft.VisualStudio.Shell.Interop.Constants.SBAI_Deploy;
-            statusBarService.Animation(1, ref icon);
-        }
-
         #region Methode
 
         public async Task LoadAsync()
         {
-
             await Task.Run(() => Load());
-
         }
 
         private void Load()
         {
-
-            Service.OutputService.WriteOutput("Load Projectinformation");
+            OutputService.WriteOutput("Load Projectinformation");
 
             var projects = service.Solution.Projects;
 
@@ -151,34 +158,34 @@ namespace awinta.Deployment_NET.ViewModel
 
             for (var i = 1; i <= projects.Count; i++)
             {
-
                 var project = projects.Item(i);
 
                 if (project?.Properties != null)
                 {
+                    OutputService.WriteOutput($"Load Project: {project.FullName}");
 
-                    Service.OutputService.WriteOutput($"Load Project: {project.FullName}");
-
-                    Service.OutputService.WriteOutput($"Start Collecting ProjectProperties: {project.FullName}");
+                    OutputService.WriteOutput($"Start Collecting ProjectProperties: {project.FullName}");
                     var queryProperties = from projectProperty in project.Properties.ToDictionary().AsEnumerable()
-                                          where UsedProperties.Contains(projectProperty.Key)
-                                          select projectProperty;
+                        where UsedProperties.Contains(projectProperty.Key)
+                        select projectProperty;
 
                     var dictionaryProperties = queryProperties.ToDictionary(x => x.Key, x => x.Value);
-                    Service.OutputService.WriteOutput($"Finished Collecting ProjectProperties: {project.FullName}");
+                    OutputService.WriteOutput($"Finished Collecting ProjectProperties: {project.FullName}");
 
                     var assemblyVersionTemp = dictionaryProperties[AssemblyVersion].Split('.');
                     var dateiVersionTemp = dictionaryProperties[AssemblyFileVersion].Split('.');
 
-                    Service.OutputService.WriteOutput($"Start Collecting ProjectBuildconfiguration: {project.FullName}");
-                    var queryBuildConfig = from projectBuildConfig in project.ConfigurationManager.ActiveConfiguration.Properties.ToDictionary().AsEnumerable()
-                                           where projectBuildConfig.Key == CodeAnalysisInputAssembly
-                                           select projectBuildConfig;
-                    Service.OutputService.WriteOutput($"Finished Collecting ProjectBuildconfiguration: {project.FullName}");
+                    OutputService.WriteOutput($"Start Collecting ProjectBuildconfiguration: {project.FullName}");
+                    var queryBuildConfig =
+                        from projectBuildConfig in
+                        project.ConfigurationManager.ActiveConfiguration.Properties.ToDictionary().AsEnumerable()
+                        where projectBuildConfig.Key == CodeAnalysisInputAssembly
+                        select projectBuildConfig;
+                    OutputService.WriteOutput($"Finished Collecting ProjectBuildconfiguration: {project.FullName}");
 
                     var dictionaryBuildConfig = queryBuildConfig.ToDictionary(x => x.Key, x => x.Value);
 
-                    Service.OutputService.WriteOutput($"Start Build ProjectContainer: {project.FullName}");
+                    OutputService.WriteOutput($"Start Build ProjectContainer: {project.FullName}");
 
                     var currentProject = new ProjectData
                     {
@@ -194,43 +201,37 @@ namespace awinta.Deployment_NET.ViewModel
                             Produkt = dictionaryProperties[Product],
                             Copyright = dictionaryProperties[Copyright],
                             Marke = dictionaryProperties[Trademark],
-                            AssemblyVersion = new VersionData(assemblyVersionTemp[0], assemblyVersionTemp[1], assemblyVersionTemp[2], assemblyVersionTemp[3]),
-                            Dateiversion = new VersionData(dateiVersionTemp[0], dateiVersionTemp[1], dateiVersionTemp[2], dateiVersionTemp[3])
+                            AssemblyVersion =
+                                new VersionData(assemblyVersionTemp[0], assemblyVersionTemp[1], assemblyVersionTemp[2],
+                                    assemblyVersionTemp[3]),
+                            Dateiversion =
+                                new VersionData(dateiVersionTemp[0], dateiVersionTemp[1], dateiVersionTemp[2],
+                                    dateiVersionTemp[3])
                         }
                     };
-                    Service.OutputService.WriteOutput($"Finished Build ProjectContainer: {project.FullName}");
+                    OutputService.WriteOutput($"Finished Build ProjectContainer: {project.FullName}");
 
                     Data.Add(currentProject);
-
                 }
-
             }
 
             data = new ObservableCollection<ProjectData>(data.Distinct());
 
-            statusBarService.Animation(0, System.Runtime.InteropServices.VarEnum.VT_I2);
-
+            statusBarService.Animation(0, VarEnum.VT_I2);
         }
 
         public void Save()
         {
-
             var projects = service.Solution.Projects;
 
             for (var i = 1; i <= projects.Count; i++)
             {
-
                 var project = Data.FirstOrDefault(x => x.Name == projects.Item(i).Name);
 
                 if (project != null)
-                {
-
                     for (var i2 = 1; i2 <= projects.Item(i).Properties.Count; i++)
-                    {
-
                         switch (projects.Item(i).Properties.Item(i2).Name)
                         {
-
                             //case fullPath:
                             //    projects.Item(i).Properties.Item(i2).Value = Project.FullPath;
                             //    break;
@@ -257,100 +258,75 @@ namespace awinta.Deployment_NET.ViewModel
                                 projects.Item(i).Properties.Item(i2).Value = project.AssemblyInfo.Marke;
                                 break;
                             case AssemblyVersion:
-                                projects.Item(i).Properties.Item(i2).Value = project.AssemblyInfo.AssemblyVersion.ToString();
+                                projects.Item(i).Properties.Item(i2).Value =
+                                    project.AssemblyInfo.AssemblyVersion.ToString();
                                 break;
                             case AssemblyFileVersion:
                                 projects.Item(i).Properties.Item(i2).Value = configuration.Version.ToString();
                                 break;
                         }
-
-                    }
-
-                }
-
             }
-
         }
 
         public async Task DeployAsync()
         {
-
             await Task.Run(() => Deploy());
 
             CloseMainView();
-            Service.OutputService.WriteOutput("Addin closed: Deployment");
-
+            OutputService.WriteOutput("Addin closed: Deployment");
         }
 
         public void Deploy()
         {
-
             try
             {
                 data.ForEach(CopyAssembly);
             }
             catch (Exception ex)
             {
-                Service.OutputService.WriteOutput($"Error: {ex.Message}");
+                OutputService.WriteOutput($"Error: {ex.Message}");
                 throw;
             }
-
         }
 
         public async Task BuildSolutionAsync()
         {
-
             await Task.Run(() => LoadLatestVersion());
             SetVersionNumber();
 
-            SolutionBuild solBuild = service.Solution.SolutionBuild;
+            var solBuild = service.Solution.SolutionBuild;
             service.Events.BuildEvents.OnBuildDone += _BuildDone;
             solBuild.ActiveConfiguration.Activate();
             solBuild.Build();
-
         }
 
         private void LoadLatestVersion()
         {
-
             try
             {
-
-                Service.OutputService.WriteOutput($"<TFS>Get latest Version of: {solutionPath.DirectoryName}");
+                OutputService.WriteOutput($"<TFS>Get latest Version of: {solutionPath.DirectoryName}");
                 tfsServer.UpdateProject(solutionPath.DirectoryName);
 
                 if (tfsServer.Failures != null && tfsServer.Failures.Length > 0)
                 {
-                    Service.OutputService.WriteOutput($"<TFS>Sync failed: {solutionPath.DirectoryName}");
+                    OutputService.WriteOutput($"<TFS>Sync failed: {solutionPath.DirectoryName}");
 
                     foreach (var fail in tfsServer.Failures)
-                    {
-
-                        Service.OutputService.WriteOutput($"<TFS>{fail.GetFormattedMessage()}");
-
-                    }
-
+                        OutputService.WriteOutput($"<TFS>{fail.GetFormattedMessage()}");
                 }
-
             }
             catch (Exception ex)
             {
-
-                Service.OutputService.WriteOutput($"Error: {ex.Message}");
+                OutputService.WriteOutput($"Error: {ex.Message}");
                 throw;
-
             }
-
-
         }
 
         private void CopyAssembly(ProjectData project)
         {
-
             try
             {
-
-                Service.OutputService.WriteOutput($"Deploy: {project.Name}");
+                OutputService.WriteOutput($"Deploy: {project.Name}");
 
                 var dynamicPart = project.HasToRegister ? TargetRegDir : TargetAppDir;
 
@@ -360,35 +336,30 @@ namespace awinta.Deployment_NET.ViewModel
 
                 if (assembly.Exists && targetPath.Exists)
                 {
-
                     assembly.CopyTo(targetAssembly.FullName, true);
 
                     if (assembly.ToFileHash() == targetAssembly.ToFileHash()) return;
 
-                    Service.OutputService.WriteOutput($"Error: the File {assembly.Name} doesn't match the Source.");
-                    Service.OutputService.WriteOutput($"Hash: Source {assembly.ToFileHash()} <> Target {targetAssembly.ToFileHash()}");
-
+                    OutputService.WriteOutput($"Error: the File {assembly.Name} doesn't match the Source.");
+                    OutputService.WriteOutput(
+                        $"Hash: Source {assembly.ToFileHash()} <> Target {targetAssembly.ToFileHash()}");
                 }
                 else
                 {
-
-                    if (!assembly.Exists) Service.OutputService.WriteOutput($"Build is missing: {assembly.FullName}");
-                    if (!targetPath.Exists) Service.OutputService.WriteOutput($"targetPath is missing: {targetPath.FullName}");
-
+                    if (!assembly.Exists) OutputService.WriteOutput($"Build is missing: {assembly.FullName}");
+                    if (!targetPath.Exists) OutputService.WriteOutput($"targetPath is missing: {targetPath.FullName}");
                 }
-
             }
             catch (Exception ex)
             {
-                Service.OutputService.WriteOutput($"Error: {ex.Message}");
+                OutputService.WriteOutput($"Error: {ex.Message}");
                 throw;
             }
-
         }
 
         private static void CloseMainView()
         {
-            System.Windows.Application.Current.MainWindow.Close();
+            Application.Current.MainWindow.Close();
         }
 
         #endregion
@@ -397,7 +368,6 @@ namespace awinta.Deployment_NET.ViewModel
 
         public void _BuildDone(vsBuildScope scope, vsBuildAction action)
         {
-
             try
             {
                 if (scope != vsBuildScope.vsBuildScopeSolution) return;
@@ -405,7 +375,7 @@ namespace awinta.Deployment_NET.ViewModel
                 {
                     case vsBuildAction.vsBuildActionBuild:
 
-                        Service.OutputService.WriteOutput("StartDeploy");
+                        OutputService.WriteOutput("StartDeploy");
                         Deploy();
 
                         break;
@@ -421,54 +391,37 @@ namespace awinta.Deployment_NET.ViewModel
             }
             finally
             {
-
                 service.Events.BuildEvents.OnBuildDone -= _BuildDone;
-
             }
-
         }
 
         private void SetDeployPath()
         {
-
             var dialog = new FolderBrowserDialog
             {
-
                 Description = "Wählen sie den Root-Ordner der Updates aus",
                 //RootFolder = Environment.SpecialFolder.NetworkShortcuts,
                 SelectedPath = configuration.DeployPath
             };
 
             if (dialog.ShowDialog() == DialogResult.OK)
-            {
-
                 configuration.DeployPath = dialog.SelectedPath;
-
-            }
-
         }
 
         private void SetVersionNumber()
         {
-
             foreach (var project in Data)
-            {
                 project.AssemblyInfo.Dateiversion = Configuration.Version;
-            }
 
             var projects = service.Solution.Projects;
 
             for (var i = 1; i <= projects.Count; i++)
             {
-
                 var project = projects.Item(i);
 
                 if (project?.Properties != null)
-                {
-
                     foreach (var item in project.Properties)
                     {
-
                         var property = item as Property;
 
                         if (property?.Name.Equals(AssemblyFileVersion) == true)
@@ -476,17 +429,10 @@ namespace awinta.Deployment_NET.ViewModel
                             property.Value = Configuration.Version.ToString();
                             break;
                         }
-
                     }
-
-                }
-
             }
-
         }
 
         #endregion
-
     }
-
 }

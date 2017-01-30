@@ -5,85 +5,14 @@ namespace awinta.Deployment_NET.Solution.Model
 {
     internal class ConfigData : BaseData
     {
-
-        #region Member
-
-        //private const string defaultDeployPath = @"\\asys-smart500\ASYS_Installationen\SMART PharmaComp Update";
-
-        private const string DefaultDeployPath = @"D:\TestUpdate";
-        private const string UriErrorMessage = "Eingabe ist kein gültiger Pfad!";
-        private const string VersionErrorMessage = "Die Versionsnummer muss vierstellig sein!";
-        private const string PflichtfeldErrorMessage = "Pflichtfeld darf nicht leer sein!";
-        private const string UriExistsErrorMessage = "Der Pfad existiert nicht!";
-
-        #endregion
-
-        #region Properties
-
-        public string SolutionPath { get; set; }
-
-        private VersionData version;
-        public VersionData Version
-        {
-            get { return version; }
-            set
-            {
-                version = value;
-                OnNotifyPropertyChanged();
-            }
-        }
-
-        private string deployPath;
-        public string DeployPath
-        {
-            get { return deployPath; }
-            set
-            {
-                Validate(value);
-                deployPath = value;
-                OnNotifyPropertyChanged();
-
-            }
-        }
-
-        public string FullDeployPath => Path.Combine(DeployPath, $"SMART PharmaComp Update 5.0.0.{DeployPathVersion}");
-
-        private string deployPathVersion = "0";
-        public string DeployPathVersion
-        {
-            get { return deployPathVersion; }
-            set
-            {
-                Validate(value);
-                deployPathVersion = value;
-                OnNotifyPropertyChanged();
-            }
-        }
-
-        private bool isLocked;
-        public bool Islocked
-        {
-            get { return isLocked; }
-            set
-            {
-                isLocked = value;
-                OnNotifyPropertyChanged();
-            }
-        }
-
-        #endregion
-
         public ConfigData()
         {
-
             Version = new VersionData();
             DeployPath = DefaultDeployPath;
-
         }
 
         public override bool Validate(object value, [CallerMemberName] string propertyName = "")
         {
-
             var isValid = true;
 
             switch (propertyName)
@@ -140,8 +69,76 @@ namespace awinta.Deployment_NET.Solution.Model
             }
 
             return isValid;
-
         }
 
+        #region Member
+
+        //private const string defaultDeployPath = @"\\asys-smart500\ASYS_Installationen\SMART PharmaComp Update";
+
+        private const string DefaultDeployPath = @"D:\TestUpdate";
+        private const string UriErrorMessage = "Eingabe ist kein gültiger Pfad!";
+        private const string VersionErrorMessage = "Die Versionsnummer muss vierstellig sein!";
+        private const string PflichtfeldErrorMessage = "Pflichtfeld darf nicht leer sein!";
+        private const string UriExistsErrorMessage = "Der Pfad existiert nicht!";
+
+        #endregion
+
+        #region Properties
+
+        public string SolutionPath { get; set; }
+
+        private VersionData version;
+
+        public VersionData Version
+        {
+            get { return version; }
+            set
+            {
+                version = value;
+                OnNotifyPropertyChanged();
+            }
+        }
+
+        private string deployPath;
+
+        public string DeployPath
+        {
+            get { return deployPath; }
+            set
+            {
+                Validate(value);
+                deployPath = value;
+                OnNotifyPropertyChanged();
+            }
+        }
+
+        public string FullDeployPath => Path.Combine(DeployPath, $"SMART PharmaComp Update 5.0.0.{DeployPathVersion}");
+
+        private string deployPathVersion = "0";
+
+        public string DeployPathVersion
+        {
+            get { return deployPathVersion; }
+            set
+            {
+                Validate(value);
+                deployPathVersion = value;
+                OnNotifyPropertyChanged();
+            }
+        }
+
+        private bool isLocked;
+
+        public bool Islocked
+        {
+            get { return isLocked; }
+            set
+            {
+                isLocked = value;
+                OnNotifyPropertyChanged();
+            }
+        }
+
+        #endregion
     }
 }

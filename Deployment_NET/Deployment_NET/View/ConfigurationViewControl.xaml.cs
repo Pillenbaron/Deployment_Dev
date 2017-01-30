@@ -4,25 +4,24 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
+using System.Windows.Controls;
+using awinta.Deployment_NET.ViewModel;
+
 namespace awinta.Deployment_NET.View
 {
-    using System.Windows.Controls;
-
     /// <summary>
-    /// Interaction logic for ConfigurationViewControl.
+    ///     Interaction logic for ConfigurationViewControl.
     /// </summary>
     public partial class ConfigurationViewControl : UserControl
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigurationViewControl"/> class.
+        ///     Initializes a new instance of the <see cref="ConfigurationViewControl" /> class.
         /// </summary>
         public ConfigurationViewControl()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
-            this.DataContext = new ViewModel.MainViewModel();
-
+            DataContext = new MainViewModel();
         }
-
     }
 }

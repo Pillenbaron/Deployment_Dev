@@ -1,5 +1,5 @@
-﻿using Microsoft.TeamFoundation.VersionControl.Client;
-using System;
+﻿using System;
+using Microsoft.TeamFoundation.VersionControl.Client;
 
 namespace awinta.Deployment_NET.Interfaces
 {

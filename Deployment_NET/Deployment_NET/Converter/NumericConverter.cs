@@ -8,38 +8,21 @@ namespace awinta.Deployment_NET.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-
             if (value != null)
-            {
                 return value.ToString();
-            }
-            else
-            {
-                return string.Empty;
-            }
+            return string.Empty;
 
             //return (string)value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-
             var number = value as string;
             int output;
 
             if (value is string && !string.IsNullOrWhiteSpace(number) && int.TryParse(number, out output))
-            {
-
                 return value;
-
-            }
-            else
-            {
-
-                return null;
-
-            }
-
+            return null;
         }
     }
 }

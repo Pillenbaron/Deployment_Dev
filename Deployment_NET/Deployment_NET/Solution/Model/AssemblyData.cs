@@ -2,8 +2,27 @@
 {
     internal class AssemblyData : BaseData
     {
+        private VersionData assemblyVersion;
+
+        private string beschreibung = string.Empty;
+
+        private string copyright = string.Empty;
+
+        private VersionData dateiversion;
+
+        private string firma = string.Empty;
+
+        private string marke = string.Empty;
+
+        private string produkt = string.Empty;
 
         private string titel = string.Empty;
+
+        public AssemblyData()
+        {
+            assemblyVersion = new VersionData();
+            dateiversion = new VersionData();
+        }
 
         public string Titel
         {
@@ -15,8 +34,6 @@
             }
         }
 
-        private string beschreibung = string.Empty;
-
         public string Beschreibung
         {
             get { return beschreibung; }
@@ -26,8 +43,6 @@
                 OnNotifyPropertyChanged();
             }
         }
-
-        private string firma = string.Empty;
 
         public string Firma
         {
@@ -39,8 +54,6 @@
             }
         }
 
-        private string produkt = string.Empty;
-
         public string Produkt
         {
             get { return produkt; }
@@ -50,8 +63,6 @@
                 OnNotifyPropertyChanged();
             }
         }
-
-        private string copyright = string.Empty;
 
         public string Copyright
         {
@@ -63,8 +74,6 @@
             }
         }
 
-        private string marke = string.Empty;
-
         public string Marke
         {
             get { return marke; }
@@ -74,8 +83,6 @@
                 OnNotifyPropertyChanged();
             }
         }
-
-        private VersionData assemblyVersion;
 
         public VersionData AssemblyVersion
         {
@@ -87,8 +94,6 @@
             }
         }
 
-        private VersionData dateiversion;
-
         public VersionData Dateiversion
         {
             get { return dateiversion; }
@@ -98,14 +103,5 @@
                 OnNotifyPropertyChanged();
             }
         }
-
-        public AssemblyData()
-        {
-
-            assemblyVersion = new VersionData();
-            dateiversion = new VersionData();
-
-        }
-
     }
 }

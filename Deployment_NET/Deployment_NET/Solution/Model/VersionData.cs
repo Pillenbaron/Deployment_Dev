@@ -1,9 +1,36 @@
-﻿namespace awinta.Deployment_NET.Solution.Model
+﻿using System;
+
+namespace awinta.Deployment_NET.Solution.Model
 {
     internal class VersionData : BaseData
     {
+        private int buildnummer;
 
         private int hauptversion;
+
+        private int nebenversion;
+
+        private int revision;
+
+        public VersionData(int vHauptversion, int vNebenversion, int vBuildnummer, int vRevision)
+        {
+            Hauptversion = vHauptversion;
+            Nebenversion = vNebenversion;
+            Buildnummer = vBuildnummer;
+            Revision = vRevision;
+        }
+
+        public VersionData(string vHauptversion, string vNebenversion, string vBuildnummer, string vRevision)
+        {
+            Hauptversion = Convert.ToInt16(vHauptversion);
+            Nebenversion = Convert.ToInt16(vNebenversion);
+            Buildnummer = Convert.ToInt16(vBuildnummer);
+            Revision = Convert.ToInt16(vRevision);
+        }
+
+        public VersionData()
+        {
+        }
 
         public int Hauptversion
         {
@@ -15,8 +42,6 @@
             }
         }
 
-        private int nebenversion;
-
         public int Nebenversion
         {
             get { return nebenversion; }
@@ -26,8 +51,6 @@
                 OnNotifyPropertyChanged();
             }
         }
-
-        private int buildnummer;
 
         public int Buildnummer
         {
@@ -39,8 +62,6 @@
             }
         }
 
-        private int revision;
-
         public int Revision
         {
             get { return revision; }
@@ -51,33 +72,9 @@
             }
         }
 
-        public VersionData(int vHauptversion, int vNebenversion, int vBuildnummer, int vRevision)
-        {
-
-            Hauptversion = vHauptversion;
-            Nebenversion = vNebenversion;
-            Buildnummer = vBuildnummer;
-            Revision = vRevision;
-
-        }
-
-        public VersionData(string vHauptversion, string vNebenversion, string vBuildnummer, string vRevision)
-        {
-
-            Hauptversion = System.Convert.ToInt16(vHauptversion);
-            Nebenversion = System.Convert.ToInt16(vNebenversion);
-            Buildnummer = System.Convert.ToInt16(vBuildnummer);
-            Revision = System.Convert.ToInt16(vRevision);
-
-        }
-
-        public VersionData() { }
-
         public override string ToString()
         {
             return $"{Hauptversion}.{Nebenversion}.{Buildnummer}.{Revision}";
         }
-
     }
-
 }

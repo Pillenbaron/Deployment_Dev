@@ -3,19 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using awinta.Deployment_NET.Logging;
 
 namespace awinta.Deployment_NET.Solution.Model
 {
-    internal abstract class BaseData : INotifyPropertyChanged, INotifyDataErrorInfo
+    internal abstract class BaseData : LoggingBase , INotifyPropertyChanged, INotifyDataErrorInfo
     {
-
-        #region Events
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-
-        #endregion
-
         #region Member
 
         private readonly Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
@@ -28,13 +21,41 @@ namespace awinta.Deployment_NET.Solution.Model
 
         #endregion
 
+        #region Other
+
+        public override string ToString()
+        {
+            var result = string.Empty;
+
+            var Class = GetType();
+            var propertyInfos = Class.GetProperties();
+
+            foreach (var propertyInfo in propertyInfos)
+            {
+                if (!propertyInfo.CanRead) continue;
+                if (result == string.Empty)
+                    result += propertyInfo.GetValue(this, null);
+                else
+                    result += "." + propertyInfo.GetValue(this, null);
+            }
+
+            return result;
+        }
+
+        #endregion
+
+        #region Events
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        #endregion
+
         #region Validation
 
         public virtual bool Validate(object value, [CallerMemberName] string propertyName = "")
         {
-
             throw new NotImplementedException();
-
         }
 
         public void AddError(string propertyName, string error, bool isWarning)
@@ -77,35 +98,5 @@ namespace awinta.Deployment_NET.Solution.Model
         }
 
         #endregion
-
-        #region Other
-
-        public override string ToString()
-        {
-
-            var result = string.Empty;
-
-            var Class = GetType();
-            var propertyInfos = Class.GetProperties();
-
-            foreach (var propertyInfo in propertyInfos)
-            {
-                if (!propertyInfo.CanRead) continue;
-                if (result == string.Empty)
-                {
-                    result += propertyInfo.GetValue(this, null);
-                }
-                else
-                {
-                    result += "." + propertyInfo.GetValue(this, null);
-                }
-            }
-
-            return result;
-
-        }
-
-        #endregion
-
     }
 }

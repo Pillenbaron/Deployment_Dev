@@ -4,8 +4,22 @@ namespace awinta.Deployment_NET.Solution.Model
 {
     internal class ProjectData : BaseData, IEquatable<ProjectData>
     {
+        private AssemblyData assemblyInfo;
+
+        private string assemblyName = string.Empty;
+
+        private string assemblyPath = string.Empty;
+
+        private string fullPath = string.Empty;
+
+        private bool hasToRegister;
 
         private string name = string.Empty;
+
+        public ProjectData()
+        {
+            assemblyInfo = new AssemblyData();
+        }
 
         public string Name
         {
@@ -17,8 +31,6 @@ namespace awinta.Deployment_NET.Solution.Model
             }
         }
 
-        private string assemblyName = string.Empty;
-
         public string AssemblyName
         {
             get { return assemblyName; }
@@ -28,8 +40,6 @@ namespace awinta.Deployment_NET.Solution.Model
                 OnNotifyPropertyChanged();
             }
         }
-
-        private string fullPath = string.Empty;
 
         public string FullPath
         {
@@ -41,8 +51,6 @@ namespace awinta.Deployment_NET.Solution.Model
             }
         }
 
-        private AssemblyData assemblyInfo;
-
         public AssemblyData AssemblyInfo
         {
             get { return assemblyInfo; }
@@ -52,8 +60,6 @@ namespace awinta.Deployment_NET.Solution.Model
                 OnNotifyPropertyChanged();
             }
         }
-
-        private string assemblyPath = string.Empty;
 
         public string AssemblyPath
         {
@@ -67,8 +73,6 @@ namespace awinta.Deployment_NET.Solution.Model
 
         public string FullAssemblyPath => FullPath != null ? $"{FullPath}\\{AssemblyPath}" : null;
 
-        private bool hasToRegister;
-
         public bool HasToRegister
         {
             get { return hasToRegister; }
@@ -79,38 +83,23 @@ namespace awinta.Deployment_NET.Solution.Model
             }
         }
 
-        public ProjectData()
-        {
-
-            assemblyInfo = new AssemblyData();
-
-        }
-
         public bool Equals(ProjectData other)
         {
-            return other != null && (Name.Equals(other.Name) &&
-                                     AssemblyName.Equals(other.AssemblyName) &&
-                                     FullPath.Equals(other.FullPath) &&
-                                     AssemblyPath.Equals(other.AssemblyPath) &&
-                                     FullAssemblyPath.Equals(other.FullAssemblyPath) &&
-                                     HasToRegister.Equals(other.HasToRegister));
+            return other != null && Name.Equals(other.Name) && AssemblyName.Equals(other.AssemblyName) &&
+                   FullPath.Equals(other.FullPath) && AssemblyPath.Equals(other.AssemblyPath) &&
+                   FullAssemblyPath.Equals(other.FullAssemblyPath) && HasToRegister.Equals(other.HasToRegister);
         }
 
         public override bool Equals(object obj)
         {
-
             var project = obj as ProjectData;
 
             return Equals(project);
-
         }
 
         public override int GetHashCode()
         {
-
             return $"{Name}{AssemblyName}{FullPath}{AssemblyPath}{FullAssemblyPath}{HasToRegister}".GetHashCode();
-
         }
-
     }
 }

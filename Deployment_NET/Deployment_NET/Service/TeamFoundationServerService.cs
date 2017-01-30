@@ -1,75 +1,78 @@
 ﻿using System;
+using awinta.Deployment_NET.Interfaces;
+using awinta.Deployment_NET.Logging;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;
-using awinta.Deployment_NET.Interfaces;
 
 namespace awinta.Deployment_NET.Service
 {
-    public sealed class TeamFoundationServerService : ITeamFoundationServerService
+    public sealed class TeamFoundationServerService : LoggingBase, ITeamFoundationServerService
     {
         private const string TeamFoundationServerUrl = "http://tfs:8080/tfs/asys";
         private VersionControlServer vcServer;
-        private WorkspaceInfo workSpaceInfo;
         private Workspace workSpace;
+        private WorkspaceInfo workSpaceInfo;
 
-        public Failure[] Failures { get; private set; }
+        public bool IsConnected { get; private set; }
 
         public TeamFoundationServerService()
         {
-
             Connect();
-
         }
+
+        public Failure[] Failures { get; private set; }
 
         public void Connect()
         {
-
             Connect(new Uri(TeamFoundationServerUrl));
-
         }
 
         public void Connect(string path)
         {
-
             Connect(new Uri(path));
-
         }
 
         public void Connect(Uri path)
         {
 
-            // Connect to the team project collection and the server that hosts the version-control repository. 
-            TfsTeamProjectCollection tpc = new TfsTeamProjectCollection(path);
-            vcServer = tpc.GetService<VersionControlServer>();
+            try
+            {
+                // Connect to the team project collection and the server that hosts the version-control repository. 
+                var tpc = new TfsTeamProjectCollection(path);
+                vcServer = tpc.GetService<VersionControlServer>();
 
-            workSpaceInfo = Workstation.Current.GetLocalWorkspaceInfo(vcServer, Environment.MachineName, vcServer.AuthorizedUser);
-            workSpace = vcServer.GetWorkspace(workSpaceInfo);
+                workSpaceInfo = Workstation.Current.GetLocalWorkspaceInfo(vcServer, Environment.MachineName,
+                    vcServer.AuthorizedUser);
+                workSpace = vcServer.GetWorkspace(workSpaceInfo);
+
+                IsConnected = true;
+
+            }
+            catch (Exception exception)
+            {
+                IsConnected = false;
+                logger.Error(exception, $"couldn't connect to Server: {TeamFoundationServerUrl}");
+                OutputService.WriteOutput($"couldn't connect to Server: {TeamFoundationServerUrl} Error:{exception.Message}");
+            }
 
         }
 
         public void UpdateProject(string path)
         {
+            var status = workSpace.Get(new[] { path }, VersionSpec.Latest, RecursionType.Full,
+                GetOptions.GetAll | GetOptions.Overwrite);
 
-            var status = workSpace.Get(new[] { path }, VersionSpec.Latest, RecursionType.Full, GetOptions.GetAll | GetOptions.Overwrite);
-
-           if (status.NoActionNeeded) { OutputService.WriteOutput($"<TFS>No Actions needed on: {path}"); }
+            if (status.NoActionNeeded) OutputService.WriteOutput($"<TFS>No Actions needed on: {path}");
 
             if (status.NumFailures > 0)
-            {
                 Failures = status.GetFailures();
-            }
         }
 
         public void GetFileListOutput()
         {
-
             var items = vcServer.GetItems("$/", RecursionType.Full);
             foreach (var item in items.Items)
-            {
                 OutputService.WriteOutput(item.ServerItem);
-            }
-
         }
-
     }
 }

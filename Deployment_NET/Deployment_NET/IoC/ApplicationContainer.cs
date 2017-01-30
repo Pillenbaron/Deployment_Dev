@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using awinta.Deployment_NET.Logging;
 
 namespace awinta.Deployment_NET.IoC
 {
-    internal class ApplicationContainer
+    internal class ApplicationContainer : LoggingBase
     {
-
         private static readonly IDictionary<Type, Type> types = new Dictionary<Type, Type>();
 
         private static readonly IDictionary<Type, object> typeInstances = new Dictionary<Type, object>();
@@ -28,32 +28,34 @@ namespace awinta.Deployment_NET.IoC
 
         public static object GetInstance(Type contract)
         {
-            if (typeInstances.ContainsKey(contract))
+            try
             {
-                return typeInstances[contract];
-            }
-            var implementation = types[contract];
-            var constructor = implementation.GetConstructors()[0];
-            var constructorParameters = constructor.GetParameters();
+                if (typeInstances.ContainsKey(contract))
+                    return typeInstances[contract];
+                var implementation = types[contract];
+                var constructor = implementation.GetConstructors()[0];
+                var constructorParameters = constructor.GetParameters();
 
-            if (constructorParameters.Length == 0)
+                if (constructorParameters.Length == 0)
+                    return Activator.CreateInstance(implementation);
+
+                var parameters = new List<object>(constructorParameters.Length);
+                parameters.AddRange(constructorParameters.Select(parameterInfo => GetInstance(parameterInfo.ParameterType)));
+
+                return constructor.Invoke(parameters.ToArray());
+            }
+            catch (Exception exception)
             {
-                return Activator.CreateInstance(implementation);
+                Console.WriteLine(exception);
+                throw;
             }
 
-            var parameters = new List<object>(constructorParameters.Length);
-            parameters.AddRange(constructorParameters.Select(parameterInfo => GetInstance(parameterInfo.ParameterType)));
-
-            return constructor.Invoke(parameters.ToArray());
         }
 
         public static void Release()
         {
-
             types.Clear();
             typeInstances.Clear();
-
         }
-
     }
 }

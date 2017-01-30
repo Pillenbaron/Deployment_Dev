@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Windows.Data;
 
 namespace awinta.Deployment_NET.Converter
@@ -8,32 +9,20 @@ namespace awinta.Deployment_NET.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-
             var uri = value as Uri;
 
             return uri != null ? uri.LocalPath : string.Empty;
-
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-
             var path = value as string;
             Uri deployPath;
 
-            if (string.IsNullOrWhiteSpace(path) && Uri.TryCreate(path, UriKind.Absolute, out deployPath) && System.IO.Directory.Exists(deployPath.LocalPath))
-            {
-
+            if (string.IsNullOrWhiteSpace(path) && Uri.TryCreate(path, UriKind.Absolute, out deployPath) &&
+                Directory.Exists(deployPath.LocalPath))
                 return deployPath;
-
-            }
-            else
-            {
-
-                return null;
-
-            }
-
+            return null;
         }
     }
 }
