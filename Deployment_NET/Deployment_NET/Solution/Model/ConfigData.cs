@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace awinta.Deployment_NET.Solution.Model
 {
-    internal class ConfigData : BaseData
+    public class ConfigData : BaseData
     {
         public ConfigData()
         {

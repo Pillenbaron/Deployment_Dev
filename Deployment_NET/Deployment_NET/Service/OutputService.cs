@@ -34,8 +34,13 @@ namespace awinta.Deployment_NET.Service
 
             if (service == null) return;
             service.Activate();
-            service.OutputStringThreadSafe(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + ": " + text +
-                                           Environment.NewLine);
+            service.OutputStringThreadSafe($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}: {text}{Environment.NewLine}");
         }
+
+        public static void WriteOutputWithContext(string text)
+        {
+            WriteOutput($"<Thread: {System.Threading.Thread.CurrentThread.ManagedThreadId}>{text}");
+        }
+
     }
 }

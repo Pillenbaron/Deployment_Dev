@@ -41,7 +41,7 @@
             <Setter Property="Width" Value="50" />
         </Style>
     </UserControl.Resources>
-    <Grid IsEnabled="{Binding Working}">
+    <Grid IsEnabled="{Binding IsEnabled}">
         <Grid.RowDefinitions>
             <RowDefinition Height="75" />
             <RowDefinition />
@@ -105,8 +105,8 @@
         <DockPanel Grid.Row="3" Height="25" FlowDirection="RightToLeft">
             <StatusBar>
                 <StatusBarItem>
-                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressCount}" Width="90" Height="16"
-                                 Margin="2,2,2,2" />
+                    <ProgressBar Minimum="0" Maximum="100" Width="90" Height="16"
+                                 Margin="2,2,2,2" IsIndeterminate="{Binding Working}"/>
                 </StatusBarItem>
             </StatusBar>
         </DockPanel>

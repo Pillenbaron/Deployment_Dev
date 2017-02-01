@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Xml.Serialization;
 
 namespace awinta.Deployment_NET.IO.XML.Serialization
@@ -40,7 +41,7 @@ namespace awinta.Deployment_NET.IO.XML.Serialization
         /// <remarks></remarks>
         public static T FromXml<T>(FileInfo file)
         {
-            var objReturn = default(T);
+            var objReturn = Activator.CreateInstance<T>();
 
             if (!file.Exists) return objReturn;
             var objReader = new StreamReader(file.FullName);

@@ -84,6 +84,7 @@
       <DependentUpon>ConfigurationViewControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ConfigurationViewPackage.cs" />
+    <Compile Include="Working\WorkingBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

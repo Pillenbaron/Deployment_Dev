@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using EnvDTE;
 
 namespace awinta.Deployment_NET.Extensions
@@ -33,6 +34,12 @@ namespace awinta.Deployment_NET.Extensions
                 action(item);
         }
 
+        public static async Task ForEachAsync<T>(this IEnumerable<T> value, Action<T> action)
+        {
+            foreach (var item in value)
+                await Task.Run(() => action(item));
+        }
+
         public static string ToFileHash(this FileInfo value)
         {
             byte[] result;
@@ -49,5 +56,6 @@ namespace awinta.Deployment_NET.Extensions
         public static void ToXml<T>(this T value)
         {
         }
+
     }
 }

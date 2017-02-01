@@ -7,7 +7,7 @@ using awinta.Deployment_NET.Logging;
 
 namespace awinta.Deployment_NET.Solution.Model
 {
-    internal abstract class BaseData : LoggingBase , INotifyPropertyChanged, INotifyDataErrorInfo
+    public abstract class BaseData : LoggingBase , INotifyPropertyChanged, INotifyDataErrorInfo
     {
         #region Member
 

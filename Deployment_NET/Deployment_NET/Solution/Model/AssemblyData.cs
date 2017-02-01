@@ -1,6 +1,6 @@
 ﻿namespace awinta.Deployment_NET.Solution.Model
 {
-    internal class AssemblyData : BaseData
+    public class AssemblyData : BaseData
     {
         private VersionData assemblyVersion;
 

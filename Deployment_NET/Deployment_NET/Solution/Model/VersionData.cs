@@ -2,7 +2,7 @@
 
 namespace awinta.Deployment_NET.Solution.Model
 {
-    internal class VersionData : BaseData
+    public class VersionData : BaseData
     {
         private int buildnummer;
 
