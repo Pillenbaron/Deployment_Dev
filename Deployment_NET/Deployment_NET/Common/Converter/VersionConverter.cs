@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Data;
 using awinta.Deployment_NET.Data;
 
-namespace awinta.Deployment_NET.Converter
+namespace awinta.Deployment_NET.Common.Converter
 {
     internal class VersionConverter : IValueConverter
     {

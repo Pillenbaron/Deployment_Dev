@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 
-namespace awinta.Deployment_NET.View
+namespace awinta.Deployment_NET.Presentation.View
 {
     /// <summary>
     ///     This is the class that implements the package exposed by this assembly.

@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // <copyright file="ConfigurationViewControl.xaml.cs" company="Company">
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
@@ -7,7 +7,7 @@
 using System.Windows.Controls;
 using awinta.Deployment_NET.Business.ViewModel;
 
-namespace awinta.Deployment_NET.View
+namespace awinta.Deployment_NET.Presentation.View
 {
     /// <summary>
     ///     Interaction logic for ConfigurationViewControl.
@@ -23,5 +23,6 @@ namespace awinta.Deployment_NET.View
 
             DataContext = new MainViewModel();
         }
+
     }
 }

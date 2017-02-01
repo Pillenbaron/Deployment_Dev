@@ -23,7 +23,7 @@ namespace awinta.Deployment_NET.Common
 
         public static T GetInstance<T>()
         {
-            return (T)GetInstance(typeof(T));
+            return (T) GetInstance(typeof(T));
         }
 
         public static object GetInstance(Type contract)
@@ -40,7 +40,8 @@ namespace awinta.Deployment_NET.Common
                     return Activator.CreateInstance(implementation);
 
                 var parameters = new List<object>(constructorParameters.Length);
-                parameters.AddRange(constructorParameters.Select(parameterInfo => GetInstance(parameterInfo.ParameterType)));
+                parameters.AddRange(
+                    constructorParameters.Select(parameterInfo => GetInstance(parameterInfo.ParameterType)));
 
                 return constructor.Invoke(parameters.ToArray());
             }
@@ -49,7 +50,6 @@ namespace awinta.Deployment_NET.Common
                 Console.WriteLine(exception);
                 throw;
             }
-
         }
 
         public static void Release()

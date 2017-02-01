@@ -139,6 +139,42 @@ namespace awinta.Deployment_NET.Data
             }
         }
 
+        private bool doCheckout;
+
+        public bool DoCheckout
+        {
+            get { return doCheckout; }
+            set
+            {
+                doCheckout = value;
+                OnNotifyPropertyChanged();
+            }
+        }
+
+        private bool copyToSmart;
+
+        public bool CopyToSmart
+        {
+            get { return copyToSmart; }
+            set
+            {
+                copyToSmart = value;
+                OnNotifyPropertyChanged();
+            }
+        }
+
+        private bool copyToBin;
+
+        public bool CopyToBin
+        {
+            get { return copyToBin; }
+            set
+            {
+                copyToBin = value;
+                OnNotifyPropertyChanged();
+            }
+        }
+
         #endregion
     }
 }

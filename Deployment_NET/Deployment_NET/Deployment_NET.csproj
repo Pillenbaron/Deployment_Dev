@@ -56,9 +56,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Converter\NumericConverter.cs" />
-    <Compile Include="Converter\UriConverter.cs" />
-    <Compile Include="Converter\VersionConverter.cs" />
+    <Compile Include="Common\Converter\NumericConverter.cs" />
+    <Compile Include="Common\Converter\UriConverter.cs" />
+    <Compile Include="Common\Converter\VersionConverter.cs" />
     <Compile Include="Common\Extensions\DataExtension.cs" />
     <Compile Include="Common\ApplicationProvider.cs" />
     <Compile Include="Common\Service\SerializationService.cs" />
@@ -78,12 +78,12 @@
     <Compile Include="Common\Validation\NumericValidation.cs" />
     <Compile Include="Common\Validation\UriValidation.cs" />
     <Compile Include="Business\ViewModel\MainViewModel.cs" />
-    <Compile Include="View\ConfigurationView.cs" />
-    <Compile Include="View\ConfigurationViewCommand.cs" />
-    <Compile Include="View\ConfigurationViewControl.xaml.cs">
+    <Compile Include="Presentation\View\ConfigurationView.cs" />
+    <Compile Include="Presentation\View\ConfigurationViewCommand.cs" />
+    <Compile Include="Presentation\View\ConfigurationViewControl.xaml.cs">
       <DependentUpon>ConfigurationViewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ConfigurationViewPackage.cs" />
+    <Compile Include="Presentation\View\ConfigurationViewPackage.cs" />
     <Compile Include="Business\Working\WorkingBase.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -103,11 +103,11 @@
   <ItemGroup>
     <Content Include="index.html" />
     <Content Include="stylesheet.css" />
-    <VSCTCompile Include="View\ConfigurationViewPackage.vsct">
+    <VSCTCompile Include="Presentation\View\ConfigurationViewPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
-    <Content Include="View\Resources\ConfigurationViewCommand.png" />
-    <Content Include="View\Resources\ConfigurationViewPackage.ico" />
+    <Content Include="Presentation\View\Resources\ConfigurationViewCommand.png" />
+    <Content Include="Presentation\View\Resources\ConfigurationViewPackage.ico" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -465,13 +465,13 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="View\ConfigurationViewControl.xaml">
+    <Page Include="Presentation\View\ConfigurationViewControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="View\VSPackage.resx">
+    <EmbeddedResource Include="Presentation\View\VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>
       <SubType>Designer</SubType>

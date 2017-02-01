@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable"
+              xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
   <!--  This is the file that defines the actual layout and type of the commands.
         It is divided in different sections (e.g. command definition, command
@@ -15,10 +17,10 @@
         defining some of the constants that we will use inside the file. -->
 
   <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
-  <Extern href="stdidcmd.h"/>
+  <Extern href="stdidcmd.h" />
 
   <!--This header contains the command ids for the menus provided by the shell. -->
-  <Extern href="vsshlids.h"/>
+  <Extern href="vsshlids.h" />
 
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
@@ -33,40 +35,41 @@
 
     <Groups>
       <Group guid="guidConfigurationViewPackageCmdSet" id="ConfigurationViewCommandId" priority="0x0100">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE"/>
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE" />
       </Group>
     </Groups>
 
-      <!--Buttons section. -->
-      <!--This section defines the elements the user can interact with, like a menu command or a button
+    <!--Buttons section. -->
+    <!--This section defines the elements the user can interact with, like a menu command or a button
         or combo box in a toolbar. -->
-      <Buttons>
-        <!--To define a menu group you have to specify its ID, the parent menu and its display priority.
+    <Buttons>
+      <!--To define a menu group you have to specify its ID, the parent menu and its display priority.
           The command is visible and enabled by default. If you need to change the visibility, status, etc, you can use
           the CommandFlag node.
           You can add more than one CommandFlag node e.g.:
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-        <Button guid="guidConfigurationViewPackageCmdSet" id="ConfigurationViewCommandId" priority="0x0100" type="Button">
-          <Parent guid="guidConfigurationViewPackageCmdSet" id="ConfigurationViewCommandId"/>
-          <Icon guid="guidImages" id="bmpPic1" />
-          <Strings>
-            <ButtonText>Deploy</ButtonText>
-          </Strings>
-        </Button>
-      </Buttons>
+      <Button guid="guidConfigurationViewPackageCmdSet" id="ConfigurationViewCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidConfigurationViewPackageCmdSet" id="ConfigurationViewCommandId" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Deploy</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
 
-      <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
-      <Bitmaps>
-        <!--  The bitmap id is defined in a way that is a little bit different from the others:
+    <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
+    <Bitmaps>
+      <!--  The bitmap id is defined in a way that is a little bit different from the others:
             the declaration starts with a guid for the bitmap strip, then there is the resource id of the
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-        <Bitmap guid="guidImages" href="Resources\ConfigurationViewCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
-      </Bitmaps>
-    </Commands>
+      <Bitmap guid="guidImages" href="Resources\ConfigurationViewCommand.png"
+              usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+    </Bitmaps>
+  </Commands>
 
   <Symbols>
     <!-- This is the package guid. -->
@@ -77,7 +80,7 @@
       <IDSymbol name="ConfigurationViewCommandId" value="0x0100" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidImages" value="{7c9e7059-56b8-462e-8276-2a90c9449109}" >
+    <GuidSymbol name="guidImages" value="{7c9e7059-56b8-462e-8276-2a90c9449109}">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />

@@ -14,6 +14,8 @@ namespace awinta.Deployment_NET.Data
 
         private bool hasToRegister;
 
+        private bool include;
+
         private string name = string.Empty;
 
         public ProjectData()
@@ -83,6 +85,16 @@ namespace awinta.Deployment_NET.Data
             }
         }
 
+        public bool Include
+        {
+            get { return include; }
+            set
+            {
+                include = value;
+                OnNotifyPropertyChanged();
+            }
+        }
+
         public bool Equals(ProjectData other)
         {
             return other != null && Name.Equals(other.Name) && AssemblyName.Equals(other.AssemblyName) &&
@@ -102,6 +114,5 @@ namespace awinta.Deployment_NET.Data
             //return $"{Name}{AssemblyName}{FullPath}{AssemblyPath}{FullAssemblyPath}{HasToRegister}".GetHashCode();
             return $"{Name}{AssemblyName}{FullPath}{AssemblyPath}{FullAssemblyPath}".GetHashCode();
         }
-
     }
 }

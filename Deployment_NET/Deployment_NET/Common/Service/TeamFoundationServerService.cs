@@ -13,12 +13,12 @@ namespace awinta.Deployment_NET.Common.Service
         private Workspace workSpace;
         private WorkspaceInfo workSpaceInfo;
 
-        public bool IsConnected { get; private set; }
-
         public TeamFoundationServerService()
         {
             Connect();
         }
+
+        public bool IsConnected { get; private set; }
 
         public Failure[] Failures { get; private set; }
 
@@ -34,7 +34,6 @@ namespace awinta.Deployment_NET.Common.Service
 
         public void Connect(Uri path)
         {
-
             try
             {
                 // Connect to the team project collection and the server that hosts the version-control repository. 
@@ -46,20 +45,19 @@ namespace awinta.Deployment_NET.Common.Service
                 workSpace = vcServer.GetWorkspace(workSpaceInfo);
 
                 IsConnected = true;
-
             }
             catch (Exception exception)
             {
                 IsConnected = false;
                 logger.Error(exception, $"couldn't connect to Server: {TeamFoundationServerUrl}");
-                OutputService.WriteOutput($"couldn't connect to Server: {TeamFoundationServerUrl} Error:{exception.Message}");
+                OutputService.WriteOutput(
+                    $"couldn't connect to Server: {TeamFoundationServerUrl} Error:{exception.Message}");
             }
-
         }
 
         public void UpdateProject(string path)
         {
-            var status = workSpace.Get(new[] { path }, VersionSpec.Latest, RecursionType.Full,
+            var status = workSpace.Get(new[] {path}, VersionSpec.Latest, RecursionType.Full,
                 GetOptions.GetAll | GetOptions.Overwrite);
 
             if (status.NoActionNeeded) OutputService.WriteOutput($"<TFS>No Actions needed on: {path}");

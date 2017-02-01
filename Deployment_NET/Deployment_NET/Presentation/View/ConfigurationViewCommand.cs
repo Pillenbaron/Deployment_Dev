@@ -14,7 +14,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace awinta.Deployment_NET.View
+namespace awinta.Deployment_NET.Presentation.View
 {
     /// <summary>
     ///     Command handler

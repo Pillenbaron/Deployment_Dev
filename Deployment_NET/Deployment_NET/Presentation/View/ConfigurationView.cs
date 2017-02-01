@@ -7,7 +7,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 
-namespace awinta.Deployment_NET.View
+namespace awinta.Deployment_NET.Presentation.View
 {
     /// <summary>
     ///     This class implements the tool window exposed by this package and hosts a user control.

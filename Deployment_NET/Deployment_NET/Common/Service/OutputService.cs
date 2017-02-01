@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Threading;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace awinta.Deployment_NET.Common.Service
 {
     public static class OutputService
     {
-
         //private void MenuItemCallback(object sender, EventArgs e)
         //{
         //    try
@@ -38,8 +38,7 @@ namespace awinta.Deployment_NET.Common.Service
 
         public static void WriteOutputWithContext(string text)
         {
-            WriteOutput($"<Thread: {System.Threading.Thread.CurrentThread.ManagedThreadId}>{text}");
+            WriteOutput($"<Thread: {Thread.CurrentThread.ManagedThreadId}>{text}");
         }
-
     }
 }

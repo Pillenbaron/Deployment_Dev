@@ -56,6 +56,5 @@ namespace awinta.Deployment_NET.Common.Extensions
         public static void ToXml<T>(this T value)
         {
         }
-
     }
 }

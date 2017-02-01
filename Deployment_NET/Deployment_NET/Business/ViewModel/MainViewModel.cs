@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -32,6 +32,9 @@ namespace awinta.Deployment_NET.Business.ViewModel
 
             service = ApplicationProvider.GetInstance<DTE>();
             tfsServer = ApplicationProvider.GetInstance<ITeamFoundationServerService>();
+
+            service.Events.SolutionEvents.Opened += _Opened;
+
         }
 
         #region Member
@@ -50,8 +53,8 @@ namespace awinta.Deployment_NET.Business.ViewModel
         private const string Trademark = "Trademark";
         private const string TargetRegDir = "DotNetReg";
         private const string TargetAppDir = @"AppPath\DotNet";
-
-        private static readonly string[] UsedProperties =
+        private const string Release = "Release";
+        private static readonly string[] usedProperties =
         {
             AssemblyVersion,
             AssemblyFileVersion,
@@ -111,11 +114,12 @@ namespace awinta.Deployment_NET.Business.ViewModel
 
         #region Methode
 
+        #region Load
+
         public async Task LoadAsync()
         {
             try
             {
-
                 WorkingStart();
 
                 OutputService.WriteOutputWithContext("Start load Projectinformation.");
@@ -124,7 +128,8 @@ namespace awinta.Deployment_NET.Business.ViewModel
 
                 if (solutionPath?.DirectoryName != null)
                 {
-                    var xmlFile = Path.Combine(solutionPath.DirectoryName, solutionPath.Name.Replace(solutionPath.Extension, string.Empty));
+                    var xmlFile = Path.Combine(solutionPath.DirectoryName,
+                        solutionPath.Name.Replace(solutionPath.Extension, string.Empty));
 
                     Configuration = SerializationService.FromXml<ConfigData>($"{xmlFile}ConfigData.xml");
                     Data = SerializationService.FromXml<ObservableCollection<ProjectData>>($"{xmlFile}ProjectData.xml");
@@ -136,29 +141,25 @@ namespace awinta.Deployment_NET.Business.ViewModel
 
                 var result = task.Result;
 
-                Data = new ObservableCollection<ProjectData>(Data.Concat(result.Select(item => item).Where(item => !Data.Contains(item))));
+                Data =
+                    new ObservableCollection<ProjectData>(
+                        Data.Concat(result.Select(item => item).Where(item => !Data.Contains(item))));
 
                 OutputService.WriteOutputWithContext("Finshed load Projectinformation.");
-
             }
             catch (Exception exception)
             {
                 OutputService.WriteOutputWithContext($"Error: {exception.Message}");
                 logger.Error(exception, exception.Message);
-
             }
             finally
             {
-
                 WorkingStop();
-
             }
-
         }
 
         private ObservableCollection<ProjectData> Load()
         {
-
             OutputService.WriteOutputWithContext("Start: Load");
 
             var result = new ObservableCollection<ProjectData>();
@@ -173,7 +174,7 @@ namespace awinta.Deployment_NET.Business.ViewModel
                 if (project?.Properties != null)
                 {
                     var queryProperties = from projectProperty in project.Properties.ToDictionary().AsEnumerable()
-                                          where UsedProperties.Contains(projectProperty.Key)
+                                          where usedProperties.Contains(projectProperty.Key)
                                           select projectProperty;
 
                     var dictionaryProperties = queryProperties.ToDictionary(x => x.Key, x => x.Value);
@@ -218,8 +219,46 @@ namespace awinta.Deployment_NET.Business.ViewModel
             OutputService.WriteOutputWithContext("Finished: Load");
 
             return new ObservableCollection<ProjectData>(result.Distinct());
-
         }
+
+        private async Task LoadLatestVersionAsync()
+        {
+            await Task.Run(() => LoadLatestVersion());
+        }
+
+        private void LoadLatestVersion()
+        {
+            if (!configuration.DoCheckout) return;
+            try
+            {
+                var solution = service.Solution;
+                var solutionFile = solution.FullName;
+
+                solution.Close(true);
+
+                OutputService.WriteOutputWithContext($"<TFS>Get latest Version of: {solutionPath.DirectoryName}");
+                tfsServer.UpdateProject(solutionPath.DirectoryName);
+
+                if (tfsServer.Failures?.Length > 0)
+                {
+                    OutputService.WriteOutputWithContext($"<TFS>Sync failed: {solutionPath.DirectoryName}");
+
+                    foreach (var fail in tfsServer.Failures)
+                        OutputService.WriteOutputWithContext($"<TFS>{fail.GetFormattedMessage()}");
+                }
+
+                solution.Open(solutionFile);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, ex.Message);
+                OutputService.WriteOutputWithContext($"Error: {ex.Message}");
+            }
+        }
+
+        #endregion
+
+        #region Save
 
         public void Save()
         {
@@ -269,32 +308,14 @@ namespace awinta.Deployment_NET.Business.ViewModel
             }
         }
 
-        public async Task DeployAsync()
-        {
-            try
-            {
-
-                await Task.Run(() => SaveConfigToXml());
-
-                await data.ForEachAsync(CopyAssembly);
-
-            }
-            catch (Exception ex)
-            {
-                OutputService.WriteOutputWithContext($"Error: {ex.Message}");
-                throw;
-            }
-        }
-
         private void SaveConfigToXml()
         {
-
             OutputService.WriteOutputWithContext("Start: Saving Config to Xml.");
 
             if (solutionPath?.DirectoryName != null)
             {
-
-                var xmlFile = Path.Combine(solutionPath.DirectoryName, solutionPath.Name.Replace(solutionPath.Extension, string.Empty));
+                var xmlFile = Path.Combine(solutionPath.DirectoryName,
+                    solutionPath.Name.Replace(solutionPath.Extension, string.Empty));
 
                 OutputService.WriteOutputWithContext($"Prossesing: Saving Config to Xml => {xmlFile}");
 
@@ -303,12 +324,38 @@ namespace awinta.Deployment_NET.Business.ViewModel
             }
 
             OutputService.WriteOutputWithContext("Finished: Saving Config to Xml.");
-
         }
+
+        #endregion
+
+        #region Deploy
+
+        public async Task DeployAsync()
+        {
+            try
+            {
+                await Task.Run(() => SaveConfigToXml());
+
+                await data.ForEachAsync(CopyAssembly);
+
+                if (configuration.CopyToBin)
+                    await Data.ForEachAsync(CopyBin);
+
+                if (configuration.CopyToSmart)
+                    await Data.ForEachAsync(CopySmart);
+            }
+            catch (Exception ex)
+            {
+                OutputService.WriteOutputWithContext($"Error: {ex.Message}");
+            }
+        }
+
+        #endregion
+
+        #region Build
 
         public async Task BuildSolutionAsync()
         {
-
             WorkingStart();
 
             await LoadLatestVersionAsync();
@@ -316,54 +363,28 @@ namespace awinta.Deployment_NET.Business.ViewModel
 
             var solBuild = service.Solution.SolutionBuild;
             service.Events.BuildEvents.OnBuildDone += _BuildDone;
-            solBuild.ActiveConfiguration.Activate();
+
+            //solBuild.ActiveConfiguration.Activate();
+
+            //foreach (SolutionConfiguration variable in solBuild.SolutionConfigurations)
+            //{
+            //    OutputService.WriteOutputWithContext(variable.Name);
+            //}
+
+            solBuild.SolutionConfigurations.Item(Release).Activate();
+
             solBuild.Build();
         }
 
-        private async Task LoadLatestVersionAsync()
-        {
+        #endregion
 
-            await Task.Run(() => LoadLatestVersion());
-
-        }
-
-        private void LoadLatestVersion()
-        {
-            try
-            {
-                var solution = service.Solution;
-                var solutionFile = solution.FullName;
-
-                solution.Close(true);
-
-                OutputService.WriteOutputWithContext($"<TFS>Get latest Version of: {solutionPath.DirectoryName}");
-                tfsServer.UpdateProject(solutionPath.DirectoryName);
-
-                if (tfsServer.Failures?.Length > 0)
-                {
-                    OutputService.WriteOutputWithContext($"<TFS>Sync failed: {solutionPath.DirectoryName}");
-
-                    foreach (var fail in tfsServer.Failures)
-                        OutputService.WriteOutputWithContext($"<TFS>{fail.GetFormattedMessage()}");
-                }
-
-                solution.Open(solutionFile);
-
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, ex.Message);
-                OutputService.WriteOutputWithContext($"Error: {ex.Message}");
-                throw;
-            }
-
-        }
+        #region Copy
 
         private void CopyAssembly(ProjectData project)
         {
             try
             {
-                OutputService.WriteOutputWithContext($"Deploy: {project.Name}");
+                OutputService.WriteOutputWithContext($"Start copy to Update: {project.Name}");
 
                 var dynamicPart = project.HasToRegister ? TargetRegDir : TargetAppDir;
 
@@ -383,21 +404,36 @@ namespace awinta.Deployment_NET.Business.ViewModel
                 }
                 else
                 {
-                    if (!assembly.Exists) OutputService.WriteOutputWithContext($"Build is missing: {assembly.FullName}");
-                    if (!targetPath.Exists) OutputService.WriteOutputWithContext($"targetPath is missing: {targetPath.FullName}");
+                    if (!assembly.Exists)
+                        OutputService.WriteOutputWithContext($"Build is missing: {assembly.FullName}");
+                    if (!targetPath.Exists)
+                        OutputService.WriteOutputWithContext($"targetPath is missing: {targetPath.FullName}");
                 }
             }
             catch (Exception ex)
             {
                 OutputService.WriteOutputWithContext($"Error: {ex.Message}");
-                throw;
             }
         }
+
+        private void CopyBin(ProjectData project)
+        {
+        }
+
+        private void CopySmart(ProjectData project)
+        {
+        }
+
+        #endregion
+
+        #region Close
 
         private static void CloseMainView()
         {
             Application.Current.MainWindow.Close();
         }
+
+        #endregion
 
         #endregion
 
@@ -438,11 +474,16 @@ namespace awinta.Deployment_NET.Business.ViewModel
             }
         }
 
+        public void _Opened()
+        {
+            LoadCommand.Execute(null);
+        }
+
         private void SetDeployPath()
         {
             var dialog = new FolderBrowserDialog
             {
-                Description = "Wählen sie den Root-Ordner der Updates aus",
+                Description = "W�hlen sie den Root-Ordner der Updates aus",
                 //RootFolder = Environment.SpecialFolder.NetworkShortcuts,
                 SelectedPath = configuration.DeployPath
             };
@@ -453,9 +494,7 @@ namespace awinta.Deployment_NET.Business.ViewModel
 
         private async Task SetVersionNumberAsync()
         {
-
             await Task.Run(() => SetVersionNumber());
-
         }
 
         private void SetVersionNumber()

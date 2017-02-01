@@ -6,7 +6,6 @@ namespace awinta.Deployment_NET.Common.Service
 {
     internal static class SerializationService
     {
-
         /// <summary>
         ///     Serialisiert ein Objekt vom Typ 'T' im XML-Format in die angegebene Datei
         /// </summary>
@@ -47,7 +46,7 @@ namespace awinta.Deployment_NET.Common.Service
             var objReader = new StreamReader(file.FullName);
             var objSerialize = new XmlSerializer(typeof(T));
 
-            objReturn = (T)objSerialize.Deserialize(objReader);
+            objReturn = (T) objSerialize.Deserialize(objReader);
 
             objReader.Close();
 

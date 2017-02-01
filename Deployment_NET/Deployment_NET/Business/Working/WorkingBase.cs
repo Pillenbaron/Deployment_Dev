@@ -1,11 +1,14 @@
-﻿using awinta.Deployment_NET.Data;
+using awinta.Deployment_NET.Data;
 
 namespace awinta.Deployment_NET.Business.Working
 {
     public class WorkingBase : BaseData
     {
+        protected bool isEnabled;
 
         protected int progressCount;
+
+        protected bool working;
 
         public int ProgressCount
         {
@@ -17,8 +20,6 @@ namespace awinta.Deployment_NET.Business.Working
             }
         }
 
-        protected bool working;
-
         public bool Working
         {
             get { return working; }
@@ -29,7 +30,6 @@ namespace awinta.Deployment_NET.Business.Working
             }
         }
 
-        protected bool isEnabled;
         public bool IsEnabled
         {
             get { return isEnabled; }
@@ -42,30 +42,23 @@ namespace awinta.Deployment_NET.Business.Working
 
         protected void WorkingStart()
         {
-
             Working = true;
             IsEnabled = false;
             ProgressCount = 0;
-
         }
 
         protected void WorkingStop()
         {
-
             ProgressCount = 100;
             Working = false;
             IsEnabled = true;
-
         }
 
         protected void WorkingProgress(int state)
         {
-
             ProgressCount = state;
             Working = true;
             IsEnabled = false;
-
         }
-
     }
 }
