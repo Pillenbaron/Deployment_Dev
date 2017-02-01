@@ -6,9 +6,9 @@
 
 using System;
 using System.ComponentModel.Design;
-using awinta.Deployment_NET.Interfaces;
-using awinta.Deployment_NET.IoC;
-using awinta.Deployment_NET.Service;
+using awinta.Deployment_NET.Common;
+using awinta.Deployment_NET.Common.Interfaces;
+using awinta.Deployment_NET.Common.Service;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -48,11 +48,11 @@ namespace awinta.Deployment_NET.View
 
             this.package = package;
 
-            ApplicationContainer.Register<DTE, DTE>((DTE) ServiceProvider.GetService(typeof(DTE)));
-            ApplicationContainer.Register<IVsOutputWindowPane, IVsOutputWindowPane>(
+            ApplicationProvider.Register<DTE, DTE>((DTE) ServiceProvider.GetService(typeof(DTE)));
+            ApplicationProvider.Register<IVsOutputWindowPane, IVsOutputWindowPane>(
                 (IVsOutputWindowPane) ServiceProvider.GetService(typeof(SVsGeneralOutputWindowPane)));
-            ApplicationContainer.Register<ITeamFoundationServerService, TeamFoundationServerService>();
-            ApplicationContainer.Register<IVsStatusbar, IVsStatusbar>(
+            ApplicationProvider.Register<ITeamFoundationServerService, TeamFoundationServerService>();
+            ApplicationProvider.Register<IVsStatusbar, IVsStatusbar>(
                 (IVsStatusbar) ServiceProvider.GetService(typeof(SVsStatusbar)));
 
             var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;

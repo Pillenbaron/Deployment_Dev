@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("awinta GmbH")]
 [assembly: AssemblyProduct("awinta Deployment_NET")]
-[assembly: AssemblyCopyright("Copyright © 2016 awinta GmbH")]
+[assembly: AssemblyCopyright("Copyright © 2017 awinta GmbH")]
 [assembly: AssemblyTrademark("DWA")]
 [assembly: AssemblyCulture("")]
 

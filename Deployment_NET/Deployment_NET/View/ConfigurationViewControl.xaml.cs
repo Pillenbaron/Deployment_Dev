@@ -5,7 +5,7 @@
 //------------------------------------------------------------------------------
 
 using System.Windows.Controls;
-using awinta.Deployment_NET.ViewModel;
+using awinta.Deployment_NET.Business.ViewModel;
 
 namespace awinta.Deployment_NET.View
 {

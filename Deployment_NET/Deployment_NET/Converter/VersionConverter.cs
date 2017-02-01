@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
-using awinta.Deployment_NET.Solution.Model;
+using awinta.Deployment_NET.Data;
 
 namespace awinta.Deployment_NET.Converter
 {
