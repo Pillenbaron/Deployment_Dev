@@ -5,7 +5,7 @@
 //------------------------------------------------------------------------------
 
 using System.Windows.Controls;
-using awinta.Deployment_NET.Business.ViewModel;
+using awinta.Deployment_NET.Application.ViewModel;
 
 namespace awinta.Deployment_NET.Presentation.View
 {
@@ -23,6 +23,5 @@ namespace awinta.Deployment_NET.Presentation.View
 
             DataContext = new MainViewModel();
         }
-
     }
 }

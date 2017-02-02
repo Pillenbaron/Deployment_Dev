@@ -2,9 +2,9 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
-using awinta.Deployment_NET.Data;
+using awinta.Deployment_NET.Application.Data;
 
-namespace awinta.Deployment_NET.Common.Converter
+namespace awinta.Deployment_NET.Presentation.Converter
 {
     internal class VersionConverter : IValueConverter
     {

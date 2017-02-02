@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
+using awinta.Deployment_NET.Common;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace awinta.Deployment_NET.Common.Service
+namespace awinta.Deployment_NET.Application.Service
 {
     public static class OutputService
     {

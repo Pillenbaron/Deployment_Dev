@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace awinta.Deployment_NET.Common.Service
+namespace awinta.Deployment_NET.Application.Service
 {
     internal static class ValidationService
     {

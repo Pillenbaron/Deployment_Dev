@@ -6,9 +6,9 @@
 
 using System;
 using System.ComponentModel.Design;
+using awinta.Deployment_NET.Application.Interfaces;
+using awinta.Deployment_NET.Application.Service;
 using awinta.Deployment_NET.Common;
-using awinta.Deployment_NET.Common.Interfaces;
-using awinta.Deployment_NET.Common.Service;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;

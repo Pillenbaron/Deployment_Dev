@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace awinta.Deployment_NET.Data
+namespace awinta.Deployment_NET.Application.Data
 {
     public class ConfigData : BaseData
     {
@@ -17,6 +17,7 @@ namespace awinta.Deployment_NET.Data
 
             switch (propertyName)
             {
+                case "BinPath":
                 case "DeployPath":
 
                     var path = value as string;
@@ -85,7 +86,7 @@ namespace awinta.Deployment_NET.Data
 
         #region Properties
 
-        public string SolutionPath { get; set; }
+        public bool IsFeature { get; set; }
 
         private VersionData version;
 
@@ -94,6 +95,7 @@ namespace awinta.Deployment_NET.Data
             get { return version; }
             set
             {
+                if (version == value) return;
                 version = value;
                 OnNotifyPropertyChanged();
             }
@@ -106,11 +108,30 @@ namespace awinta.Deployment_NET.Data
             get { return deployPath; }
             set
             {
+                if (deployPath == value) return;
                 Validate(value);
                 deployPath = value;
                 OnNotifyPropertyChanged();
             }
         }
+
+        private string binPath;
+
+        public string BinPath
+        {
+            get { return binPath; }
+            set
+            {
+                if (binPath == value) return;
+                Validate(value);
+                binPath = value;
+                OnNotifyPropertyChanged();
+            }
+        }
+
+        public string DynamicBinPath
+            => IsFeature ? binPath.Replace("\\Dev\\", "\\Dev-Feature\\") : binPath.Replace("\\Dev-Feature\\", "\\Dev\\")
+        ;
 
         public string FullDeployPath => Path.Combine(DeployPath, $"SMART PharmaComp Update 5.0.0.{DeployPathVersion}");
 
@@ -134,6 +155,7 @@ namespace awinta.Deployment_NET.Data
             get { return isLocked; }
             set
             {
+                if (isLocked == value) return;
                 isLocked = value;
                 OnNotifyPropertyChanged();
             }
@@ -146,7 +168,21 @@ namespace awinta.Deployment_NET.Data
             get { return doCheckout; }
             set
             {
+                if (doCheckout == value) return;
                 doCheckout = value;
+                OnNotifyPropertyChanged();
+            }
+        }
+
+        private bool copyToUpdate;
+
+        public bool CopyToUpdate
+        {
+            get { return copyToUpdate; }
+            set
+            {
+                if (copyToUpdate == value) return;
+                copyToUpdate = value;
                 OnNotifyPropertyChanged();
             }
         }
@@ -158,6 +194,7 @@ namespace awinta.Deployment_NET.Data
             get { return copyToSmart; }
             set
             {
+                if (copyToSmart == value) return;
                 copyToSmart = value;
                 OnNotifyPropertyChanged();
             }
@@ -170,6 +207,7 @@ namespace awinta.Deployment_NET.Data
             get { return copyToBin; }
             set
             {
+                if (copyToBin == value) return;
                 copyToBin = value;
                 OnNotifyPropertyChanged();
             }

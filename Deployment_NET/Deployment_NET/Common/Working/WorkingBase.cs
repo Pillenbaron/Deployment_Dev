@@ -1,6 +1,6 @@
-using awinta.Deployment_NET.Data;
+using awinta.Deployment_NET.Application.Data;
 
-namespace awinta.Deployment_NET.Business.Working
+namespace awinta.Deployment_NET.Common.Working
 {
     public class WorkingBase : BaseData
     {
@@ -52,6 +52,13 @@ namespace awinta.Deployment_NET.Business.Working
             ProgressCount = 100;
             Working = false;
             IsEnabled = true;
+        }
+
+        protected void WorkingLocked()
+        {
+            ProgressCount = 0;
+            Working = false;
+            IsEnabled = false;
         }
 
         protected void WorkingProgress(int state)

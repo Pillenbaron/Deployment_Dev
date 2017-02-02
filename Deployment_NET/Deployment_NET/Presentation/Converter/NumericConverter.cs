@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace awinta.Deployment_NET.Common.Converter
+namespace awinta.Deployment_NET.Presentation.Converter
 {
     internal class NumericConverter : IValueConverter
     {

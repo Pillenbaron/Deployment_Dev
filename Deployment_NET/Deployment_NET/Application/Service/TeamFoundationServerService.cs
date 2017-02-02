@@ -1,10 +1,10 @@
 ﻿using System;
-using awinta.Deployment_NET.Common.Interfaces;
+using awinta.Deployment_NET.Application.Interfaces;
 using awinta.Deployment_NET.Common.Logging;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;
 
-namespace awinta.Deployment_NET.Common.Service
+namespace awinta.Deployment_NET.Application.Service
 {
     public sealed class TeamFoundationServerService : LoggingBase, ITeamFoundationServerService
     {

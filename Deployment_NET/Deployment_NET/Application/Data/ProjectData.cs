@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace awinta.Deployment_NET.Data
+namespace awinta.Deployment_NET.Application.Data
 {
     public class ProjectData : BaseData, IEquatable<ProjectData>
     {

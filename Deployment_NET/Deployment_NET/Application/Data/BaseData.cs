@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using awinta.Deployment_NET.Common.Logging;
 
-namespace awinta.Deployment_NET.Data
+namespace awinta.Deployment_NET.Application.Data
 {
     public abstract class BaseData : LoggingBase, INotifyPropertyChanged, INotifyDataErrorInfo
     {

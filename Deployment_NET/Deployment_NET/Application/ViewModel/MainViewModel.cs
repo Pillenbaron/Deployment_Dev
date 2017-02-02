@@ -5,17 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
-using awinta.Deployment_NET.Business.Working;
+using awinta.Deployment_NET.Application.Data;
+using awinta.Deployment_NET.Application.Interfaces;
+using awinta.Deployment_NET.Application.Service;
 using awinta.Deployment_NET.Common;
 using awinta.Deployment_NET.Common.Extensions;
-using awinta.Deployment_NET.Common.Interfaces;
-using awinta.Deployment_NET.Common.Service;
-using awinta.Deployment_NET.Data;
+using awinta.Deployment_NET.Common.Working;
 using awinta.Deployment_NET.Presentation.UICommands;
 using EnvDTE;
-using Application = System.Windows.Application;
 
-namespace awinta.Deployment_NET.Business.ViewModel
+namespace awinta.Deployment_NET.Application.ViewModel
 {
     public class MainViewModel : WorkingBase
     {
@@ -25,7 +24,7 @@ namespace awinta.Deployment_NET.Business.ViewModel
             SaveCommand = new DefaultCommand(Save);
             DeploayCommand = new AsyncCommand(DeployAsync);
             BuildSolutionCommand = new AsyncCommand(BuildSolutionAsync);
-            DirCommand = new DefaultCommand(SetDeployPath);
+            DirCommand = new ParamCommand<string>(SetDeployPath);
 
             Configuration = new ConfigData();
             Data = new ObservableCollection<ProjectData>();
@@ -34,6 +33,7 @@ namespace awinta.Deployment_NET.Business.ViewModel
             tfsServer = ApplicationProvider.GetInstance<ITeamFoundationServerService>();
 
             service.Events.SolutionEvents.Opened += _Opened;
+            service.Events.SolutionEvents.BeforeClosing += _BeforeClosing;
 
         }
 
@@ -54,6 +54,8 @@ namespace awinta.Deployment_NET.Business.ViewModel
         private const string TargetRegDir = "DotNetReg";
         private const string TargetAppDir = @"AppPath\DotNet";
         private const string Release = "Release";
+        private const string SmartDirectory = @"C:\Program Files\ASYS\SMART PharmaComp\dotnet";
+
         private static readonly string[] usedProperties =
         {
             AssemblyVersion,
@@ -135,6 +137,8 @@ namespace awinta.Deployment_NET.Business.ViewModel
                     Data = SerializationService.FromXml<ObservableCollection<ProjectData>>($"{xmlFile}ProjectData.xml");
                 }
 
+                if (solutionPath.FullName.Contains("Dev-Feature")) Configuration.IsFeature = true;
+
                 var task = Task.Run(() => Load());
 
                 await task;
@@ -171,15 +175,13 @@ namespace awinta.Deployment_NET.Business.ViewModel
             {
                 var project = projects.Item(i);
 
-                if (project?.Properties != null)
+                if (project?.Properties != null && !project.Name.ToLower().Contains(".test") && Data.FirstOrDefault(x => x.Name == project.Name) == null)
                 {
                     var queryProperties = from projectProperty in project.Properties.ToDictionary().AsEnumerable()
                                           where usedProperties.Contains(projectProperty.Key)
                                           select projectProperty;
 
                     var dictionaryProperties = queryProperties.ToDictionary(x => x.Key, x => x.Value);
-                    var assemblyVersionTemp = dictionaryProperties[AssemblyVersion].Split('.');
-                    var dateiVersionTemp = dictionaryProperties[AssemblyFileVersion].Split('.');
 
                     var queryBuildConfig =
                         from projectBuildConfig in
@@ -188,6 +190,10 @@ namespace awinta.Deployment_NET.Business.ViewModel
                         select projectBuildConfig;
 
                     var dictionaryBuildConfig = queryBuildConfig.ToDictionary(x => x.Key, x => x.Value);
+
+                    if (dictionaryBuildConfig.Count == 0 || dictionaryProperties.Count == 0) continue;
+                    var assemblyVersionTemp = dictionaryProperties[AssemblyVersion].Split('.');
+                    var dateiVersionTemp = dictionaryProperties[AssemblyFileVersion].Split('.');
 
                     var currentProject = new ProjectData
                     {
@@ -204,7 +210,8 @@ namespace awinta.Deployment_NET.Business.ViewModel
                             Copyright = dictionaryProperties[Copyright],
                             Marke = dictionaryProperties[Trademark],
                             AssemblyVersion =
-                                new VersionData(assemblyVersionTemp[0], assemblyVersionTemp[1], assemblyVersionTemp[2],
+                                new VersionData(assemblyVersionTemp[0], assemblyVersionTemp[1],
+                                    assemblyVersionTemp[2],
                                     assemblyVersionTemp[3]),
                             Dateiversion =
                                 new VersionData(dateiVersionTemp[0], dateiVersionTemp[1], dateiVersionTemp[2],
@@ -336,7 +343,8 @@ namespace awinta.Deployment_NET.Business.ViewModel
             {
                 await Task.Run(() => SaveConfigToXml());
 
-                await data.ForEachAsync(CopyAssembly);
+                if (configuration.CopyToUpdate)
+                    await data.ForEachAsync(CopyAssembly);
 
                 if (configuration.CopyToBin)
                     await Data.ForEachAsync(CopyBin);
@@ -384,8 +392,8 @@ namespace awinta.Deployment_NET.Business.ViewModel
         {
             try
             {
+                if (!project.Include) return;
                 OutputService.WriteOutputWithContext($"Start copy to Update: {project.Name}");
-
                 var dynamicPart = project.HasToRegister ? TargetRegDir : TargetAppDir;
 
                 var assembly = new FileInfo(project.FullAssemblyPath);
@@ -409,6 +417,8 @@ namespace awinta.Deployment_NET.Business.ViewModel
                     if (!targetPath.Exists)
                         OutputService.WriteOutputWithContext($"targetPath is missing: {targetPath.FullName}");
                 }
+
+                OutputService.WriteOutputWithContext($"Finished copy to Update: {project.Name}");
             }
             catch (Exception ex)
             {
@@ -418,10 +428,66 @@ namespace awinta.Deployment_NET.Business.ViewModel
 
         private void CopyBin(ProjectData project)
         {
+            if (!project.Include) return;
+            OutputService.WriteOutputWithContext($"Start copy to Bin: {project.Name}");
+            var binDirectory = new DirectoryInfo(configuration.DynamicBinPath);
+
+            if (!binDirectory.Exists)
+            {
+                OutputService.WriteOutputWithContext(
+                    $"Copy to Bin failed: Path does not Exists -> {binDirectory.FullName}");
+            }
+            else
+            {
+                var assembly = new FileInfo(project.FullAssemblyPath);
+                var targetAssembly = new FileInfo(Path.Combine(binDirectory.FullName, assembly.Name));
+
+                assembly.CopyTo(targetAssembly.FullName, true);
+
+                if (assembly.ToFileHash() != targetAssembly.ToFileHash())
+                {
+
+                    OutputService.WriteOutputWithContext($"Error: the File {assembly.Name} doesn't match the Source.");
+                    OutputService.WriteOutputWithContext(
+                        $"Hash: Source {assembly.ToFileHash()} <> Target {targetAssembly.ToFileHash()}");
+
+                }
+
+
+            }
+
+            OutputService.WriteOutputWithContext($"Finished copy to Bin: {project.Name}");
         }
 
         private void CopySmart(ProjectData project)
         {
+            if (!project.Include) return;
+            OutputService.WriteOutputWithContext($"Start copy to Smart: {project.Name}");
+            var smartDirectory = new DirectoryInfo(SmartDirectory);
+
+            if (!smartDirectory.Exists)
+            {
+                OutputService.WriteOutputWithContext($"Copy to Smart failed: Path does not Exists -> {smartDirectory.FullName}");
+            }
+            else
+            {
+                var assembly = new FileInfo(project.FullAssemblyPath);
+                var targetAssembly = new FileInfo(Path.Combine(smartDirectory.FullName, assembly.Name));
+
+                assembly.CopyTo(targetAssembly.FullName, true);
+
+                if (assembly.ToFileHash() != targetAssembly.ToFileHash())
+                {
+
+                    OutputService.WriteOutputWithContext($"Error: the File {assembly.Name} doesn't match the Source.");
+                    OutputService.WriteOutputWithContext(
+                        $"Hash: Source {assembly.ToFileHash()} <> Target {targetAssembly.ToFileHash()}");
+
+                }
+
+            }
+
+            OutputService.WriteOutputWithContext($"Finished copy to Smart: {project.Name}");
         }
 
         #endregion
@@ -430,7 +496,7 @@ namespace awinta.Deployment_NET.Business.ViewModel
 
         private static void CloseMainView()
         {
-            Application.Current.MainWindow.Close();
+            System.Windows.Application.Current.MainWindow.Close();
         }
 
         #endregion
@@ -479,17 +545,28 @@ namespace awinta.Deployment_NET.Business.ViewModel
             LoadCommand.Execute(null);
         }
 
-        private void SetDeployPath()
+        public void _BeforeClosing()
+        {
+            WorkingLocked();
+            Configuration = null;
+            Data = null;
+
+        }
+
+        private void SetDeployPath(string caller)
         {
             var dialog = new FolderBrowserDialog
             {
                 Description = "Wählen sie den Root-Ordner der Updates aus",
                 //RootFolder = Environment.SpecialFolder.NetworkShortcuts,
-                SelectedPath = configuration.DeployPath
+                SelectedPath = caller == "DeployPath" ? configuration.DeployPath : configuration.BinPath
             };
 
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog() != DialogResult.OK) return;
+            if (caller == "DeployPath")
                 configuration.DeployPath = dialog.SelectedPath;
+            else
+                configuration.BinPath = dialog.SelectedPath;
         }
 
         private async Task SetVersionNumberAsync()

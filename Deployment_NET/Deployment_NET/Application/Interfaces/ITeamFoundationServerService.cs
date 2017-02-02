@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.TeamFoundation.VersionControl.Client;
 
-namespace awinta.Deployment_NET.Common.Interfaces
+namespace awinta.Deployment_NET.Application.Interfaces
 {
     public interface ITeamFoundationServerService
     {
