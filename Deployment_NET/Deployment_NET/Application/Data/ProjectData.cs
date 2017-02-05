@@ -16,19 +16,19 @@ namespace awinta.Deployment_NET.Application.Data
 
         private bool include;
 
-        private string name = string.Empty;
+        private string projectDataId = string.Empty;
 
         public ProjectData()
         {
             assemblyInfo = new AssemblyData();
         }
 
-        public string Name
+        public string ProjectDataId
         {
-            get { return name; }
+            get { return projectDataId; }
             set
             {
-                name = value;
+                projectDataId = value;
                 OnNotifyPropertyChanged();
             }
         }
@@ -97,7 +97,7 @@ namespace awinta.Deployment_NET.Application.Data
 
         public bool Equals(ProjectData other)
         {
-            return other != null && Name.Equals(other.Name) && AssemblyName.Equals(other.AssemblyName) &&
+            return other != null && ProjectDataId.Equals(other.ProjectDataId) && AssemblyName.Equals(other.AssemblyName) &&
                    FullPath.Equals(other.FullPath) && AssemblyPath.Equals(other.AssemblyPath) &&
                    FullAssemblyPath.Equals(other.FullAssemblyPath) /*&& HasToRegister.Equals(other.HasToRegister)*/;
         }
@@ -111,8 +111,8 @@ namespace awinta.Deployment_NET.Application.Data
 
         public override int GetHashCode()
         {
-            //return $"{Name}{AssemblyName}{FullPath}{AssemblyPath}{FullAssemblyPath}{HasToRegister}".GetHashCode();
-            return $"{Name}{AssemblyName}{FullPath}{AssemblyPath}{FullAssemblyPath}".GetHashCode();
+            //return $"{ProjectDataId}{AssemblyName}{FullPath}{AssemblyPath}{FullAssemblyPath}{HasToRegister}".GetHashCode();
+            return $"{ProjectDataId}{AssemblyName}{FullPath}{AssemblyPath}{FullAssemblyPath}".GetHashCode();
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="NLog" targetNamespace="http://www.nlog-project.org/schemas/NLog.xsd" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.nlog-project.org/schemas/NLog.xsd">
+<xs:schema id="NLog" targetProjectDataIdspace="http://www.nlog-project.org/schemas/NLog.xsd" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.nlog-project.org/schemas/NLog.xsd">
   <xs:element name="nlog" type="NLogConfiguration" />
   <xs:complexType name="NLogConfiguration">
     <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -98,7 +98,7 @@
     </xs:choice>
     <xs:attribute name="name" use="optional">
       <xs:annotation>
-        <xs:documentation>Name of the logger. May include '*' character which acts like a wildcard. Allowed forms are: *, Name, *Name, Name* and *Name*</xs:documentation>
+        <xs:documentation>ProjectDataId of the logger. May include '*' character which acts like a wildcard. Allowed forms are: *, ProjectDataId, *ProjectDataId, ProjectDataId* and *ProjectDataId*</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="levels" type="NLogLevelList">
@@ -174,7 +174,7 @@
   <xs:complexType name="NLogInclude">
     <xs:attribute name="file" type="SimpleLayoutAttribute" use="required">
       <xs:annotation>
-        <xs:documentation>Name of the file to be included. The name is relative to the name of the current config file.</xs:documentation>
+        <xs:documentation>ProjectDataId of the file to be included. The name is relative to the name of the current config file.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="ignoreErrors" type="xs:boolean" use="optional" default="false">
@@ -256,7 +256,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="batchSize" type="xs:integer">
@@ -298,7 +298,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="condition" type="Condition">
@@ -320,7 +320,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="bufferSize" type="xs:integer">
@@ -369,7 +369,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="encoding" type="xs:string">
@@ -517,7 +517,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -661,7 +661,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -703,12 +703,12 @@
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="connectionString" minOccurs="0" maxOccurs="1" type="Layout" />
-          <xs:element name="connectionStringName" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="connectionStringProjectDataId" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="dbDatabase" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="dbHost" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="dbPassword" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="dbProvider" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="dbUserName" minOccurs="0" maxOccurs="1" type="Layout" />
+          <xs:element name="dbUserProjectDataId" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="keepConnection" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="useTransactions" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="installConnectionString" minOccurs="0" maxOccurs="1" type="Layout" />
@@ -720,17 +720,17 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="connectionString" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Connection string. When provided, it overrides the values specified in DBHost, DBUserName, DBPassword, DBDatabase.</xs:documentation>
+            <xs:documentation>Connection string. When provided, it overrides the values specified in DBHost, DBUserProjectDataId, DBPassword, DBDatabase.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="connectionStringName" type="xs:string">
+        <xs:attribute name="connectionStringProjectDataId" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the connection string (as specified in &lt;connectionStrings&gt; configuration section.</xs:documentation>
+            <xs:documentation>ProjectDataId of the connection string (as specified in &lt;connectionStrings&gt; configuration section.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="dbDatabase" type="SimpleLayoutAttribute">
@@ -750,10 +750,10 @@
         </xs:attribute>
         <xs:attribute name="dbProvider" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the database provider.</xs:documentation>
+            <xs:documentation>ProjectDataId of the database provider.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="dbUserName" type="SimpleLayoutAttribute">
+        <xs:attribute name="dbUserProjectDataId" type="SimpleLayoutAttribute">
           <xs:annotation>
             <xs:documentation>Database user name. If the ConnectionString is not provided this value will be used to construct the "User ID=" part of the connection string.</xs:documentation>
           </xs:annotation>
@@ -867,7 +867,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -897,7 +897,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -917,7 +917,7 @@
           <xs:element name="category" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="eventId" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="log" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="machineName" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="machineProjectDataId" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="source" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="onOverflow" minOccurs="0" maxOccurs="1" type="NLog.Targets.EventLogTargetOverflowAction" />
           <xs:element name="entryType" minOccurs="0" maxOccurs="1" type="Layout" />
@@ -925,7 +925,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -945,12 +945,12 @@
         </xs:attribute>
         <xs:attribute name="log" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the Event Log to write to. This can be System, Application or any user-defined name.</xs:documentation>
+            <xs:documentation>ProjectDataId of the Event Log to write to. This can be System, Application or any user-defined name.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="machineName" type="xs:string">
+        <xs:attribute name="machineProjectDataId" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the machine on which Event Log service is running.</xs:documentation>
+            <xs:documentation>ProjectDataId of the machine on which Event Log service is running.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="source" type="SimpleLayoutAttribute">
@@ -992,7 +992,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="returnToFirstOnSuccess" type="xs:boolean">
@@ -1014,18 +1014,18 @@
           <xs:element name="encoding" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="lineEnding" minOccurs="0" maxOccurs="1" type="LineEndingMode" />
           <xs:element name="archiveNumbering" minOccurs="0" maxOccurs="1" type="NLog.Targets.ArchiveNumberingMode" />
-          <xs:element name="archiveFileName" minOccurs="0" maxOccurs="1" type="Layout" />
+          <xs:element name="archiveFileProjectDataId" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="archiveEvery" minOccurs="0" maxOccurs="1" type="NLog.Targets.FileArchivePeriod" />
           <xs:element name="archiveAboveSize" minOccurs="0" maxOccurs="1" type="xs:long" />
           <xs:element name="enableArchiveFileCompression" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="maxArchiveFiles" minOccurs="0" maxOccurs="1" type="xs:integer" />
           <xs:element name="forceManaged" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="archiveFileKind" minOccurs="0" maxOccurs="1" type="NLog.Targets.FilePathKind" />
-          <xs:element name="cleanupFileName" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="fileNameKind" minOccurs="0" maxOccurs="1" type="NLog.Targets.FilePathKind" />
+          <xs:element name="cleanupFileProjectDataId" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="fileProjectDataIdKind" minOccurs="0" maxOccurs="1" type="NLog.Targets.FilePathKind" />
           <xs:element name="forceMutexConcurrentWrites" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="writeFooterOnArchivingOnly" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="fileName" minOccurs="0" maxOccurs="1" type="Layout" />
+          <xs:element name="fileProjectDataId" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="archiveDateFormat" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="archiveOldFileOnStartup" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="createDirs" minOccurs="0" maxOccurs="1" type="xs:boolean" />
@@ -1046,7 +1046,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -1079,9 +1079,9 @@
             <xs:documentation>Way file archives are numbered.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="archiveFileName" type="SimpleLayoutAttribute">
+        <xs:attribute name="archiveFileProjectDataId" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Name of the file to be used for an archive.</xs:documentation>
+            <xs:documentation>ProjectDataId of the file to be used for an archive.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="archiveEvery" type="NLog.Targets.FileArchivePeriod">
@@ -1114,12 +1114,12 @@
             <xs:documentation>Is the  an absolute or relative path?</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="cleanupFileName" type="xs:boolean">
+        <xs:attribute name="cleanupFileProjectDataId" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Cleanup invalid values in a filename, e.g. slashes in a filename. If set to true, this can impact the performance of massive writes. If set to false, nothing gets written when the filename is wrong.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="fileNameKind" type="NLog.Targets.FilePathKind">
+        <xs:attribute name="fileProjectDataIdKind" type="NLog.Targets.FilePathKind">
           <xs:annotation>
             <xs:documentation>Is the  an absolute or relative path?</xs:documentation>
           </xs:annotation>
@@ -1134,9 +1134,9 @@
             <xs:documentation>Indicates whether the footer should be written only when the file is archived.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="fileName" type="SimpleLayoutAttribute">
+        <xs:attribute name="fileProjectDataId" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Name of the file to write to.</xs:documentation>
+            <xs:documentation>ProjectDataId of the file to write to.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="archiveDateFormat" type="xs:string">
@@ -1281,7 +1281,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="condition" type="Condition">
@@ -1303,11 +1303,11 @@
           <xs:element name="logOnType" minOccurs="0" maxOccurs="1" type="NLog.Targets.Wrappers.SecurityLogOnType" />
           <xs:element name="password" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="revertToSelf" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="userName" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="userProjectDataId" minOccurs="0" maxOccurs="1" type="xs:string" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="domain" type="xs:string">
@@ -1340,7 +1340,7 @@
             <xs:documentation>Indicates whether to revert to the credentials of the process instead of impersonating another user.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="userName" type="xs:string">
+        <xs:attribute name="userProjectDataId" type="xs:string">
           <xs:annotation>
             <xs:documentation>Username to change context to.</xs:documentation>
           </xs:annotation>
@@ -1381,7 +1381,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="interval" type="xs:string">
@@ -1403,7 +1403,7 @@
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="endpointAddress" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="endpointConfigurationName" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="endpointConfigurationProjectDataId" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="useOneWayContract" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="clientId" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="includeEventProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
@@ -1412,7 +1412,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="endpointAddress" type="xs:string">
@@ -1420,9 +1420,9 @@
             <xs:documentation>Endpoint address.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="endpointConfigurationName" type="xs:string">
+        <xs:attribute name="endpointConfigurationProjectDataId" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the endpoint configuration in WCF configuration file.</xs:documentation>
+            <xs:documentation>ProjectDataId of the endpoint configuration in WCF configuration file.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="useOneWayContract" type="xs:boolean">
@@ -1461,7 +1461,7 @@
     </xs:attribute>
     <xs:attribute name="name" type="xs:string">
       <xs:annotation>
-        <xs:documentation>Name of the parameter.</xs:documentation>
+        <xs:documentation>ProjectDataId of the parameter.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="type" type="xs:string">
@@ -1492,7 +1492,7 @@
           <xs:element name="timeout" minOccurs="0" maxOccurs="1" type="xs:integer" />
           <xs:element name="smtpServer" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="smtpAuthentication" minOccurs="0" maxOccurs="1" type="NLog.Targets.SmtpAuthenticationMode" />
-          <xs:element name="smtpUserName" minOccurs="0" maxOccurs="1" type="Layout" />
+          <xs:element name="smtpUserProjectDataId" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="smtpPassword" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="enableSsl" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="smtpPort" minOccurs="0" maxOccurs="1" type="xs:integer" />
@@ -1502,7 +1502,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -1590,7 +1590,7 @@
             <xs:documentation>SMTP Authentication mode.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="smtpUserName" type="SimpleLayoutAttribute">
+        <xs:attribute name="smtpUserProjectDataId" type="SimpleLayoutAttribute">
           <xs:annotation>
             <xs:documentation>Username used to connect to SMTP server (used when SmtpAuthentication is set to "basic").</xs:documentation>
           </xs:annotation>
@@ -1651,7 +1651,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -1678,7 +1678,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -1713,7 +1713,7 @@
         </xs:attribute>
         <xs:attribute name="queue" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Name of the queue to write to.</xs:documentation>
+            <xs:documentation>ProjectDataId of the queue to write to.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="recoverable" type="xs:boolean">
@@ -1729,23 +1729,23 @@
       <xs:extension base="Target">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="className" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="methodName" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="classProjectDataId" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="methodProjectDataId" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.MethodCallParameter" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="className" type="xs:string">
+        <xs:attribute name="classProjectDataId" type="xs:string">
           <xs:annotation>
             <xs:documentation>Class name.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="methodName" type="xs:string">
+        <xs:attribute name="methodProjectDataId" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Method name. The method must be public and static. Use the AssemblyQualifiedName , https://msdn.microsoft.com/en-us/library/system.type.assemblyqualifiedname(v=vs.110).aspx e.g.</xs:documentation>
+            <xs:documentation>Method name. The method must be public and static. Use the AssemblyQualifiedProjectDataId , https://msdn.microsoft.com/en-us/library/system.type.assemblyqualifiedname(v=vs.110).aspx e.g.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -1771,7 +1771,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -1865,7 +1865,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="encoding" type="xs:string">
@@ -1976,7 +1976,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -2001,7 +2001,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -2018,16 +2018,16 @@
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="autoCreate" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="categoryName" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="categoryProjectDataId" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="counterHelp" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="counterName" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="counterProjectDataId" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="counterType" minOccurs="0" maxOccurs="1" type="System.Diagnostics.PerformanceCounterType" />
           <xs:element name="incrementValue" minOccurs="0" maxOccurs="1" type="Layout" />
-          <xs:element name="instanceName" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="instanceProjectDataId" minOccurs="0" maxOccurs="1" type="xs:string" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="autoCreate" type="xs:boolean">
@@ -2035,9 +2035,9 @@
             <xs:documentation>Indicates whether performance counter should be automatically created.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="categoryName" type="xs:string">
+        <xs:attribute name="categoryProjectDataId" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the performance counter category.</xs:documentation>
+            <xs:documentation>ProjectDataId of the performance counter category.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="counterHelp" type="xs:string">
@@ -2045,9 +2045,9 @@
             <xs:documentation>Counter help text.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="counterName" type="xs:string">
+        <xs:attribute name="counterProjectDataId" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the performance counter.</xs:documentation>
+            <xs:documentation>ProjectDataId of the performance counter.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="counterType" type="System.Diagnostics.PerformanceCounterType">
@@ -2060,7 +2060,7 @@
             <xs:documentation>The value by which to increment the counter.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="instanceName" type="xs:string">
+        <xs:attribute name="instanceProjectDataId" type="xs:string">
           <xs:annotation>
             <xs:documentation>Performance counter instance name.</xs:documentation>
           </xs:annotation>
@@ -2110,7 +2110,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="defaultFilter" type="Condition">
@@ -2145,7 +2145,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -2160,7 +2160,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="repeatCount" type="xs:integer">
@@ -2181,7 +2181,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="retryCount" type="xs:integer">
@@ -2205,7 +2205,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -2219,7 +2219,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -2234,7 +2234,7 @@
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -2255,16 +2255,16 @@
           <xs:element name="encoding" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="escapeDataNLogLegacy" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="escapeDataRfc3986" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="methodName" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="methodProjectDataId" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="namespace" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="protocol" minOccurs="0" maxOccurs="1" type="NLog.Targets.WebServiceProtocol" />
           <xs:element name="url" minOccurs="0" maxOccurs="1" type="xs:anyURI" />
           <xs:element name="xmlRoot" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="xmlRootNamespace" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="xmlRootProjectDataIdspace" minOccurs="0" maxOccurs="1" type="xs:string" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the target.</xs:documentation>
+            <xs:documentation>ProjectDataId of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeBOM" type="xs:boolean">
@@ -2287,7 +2287,7 @@
             <xs:documentation>Value whether escaping be done according to Rfc3986 (Supports Internationalized Resource Identifiers - IRIs)</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="methodName" type="xs:string">
+        <xs:attribute name="methodProjectDataId" type="xs:string">
           <xs:annotation>
             <xs:documentation>Web service method name. Only used with Soap.</xs:documentation>
           </xs:annotation>
@@ -2309,10 +2309,10 @@
         </xs:attribute>
         <xs:attribute name="xmlRoot" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the root XML element, if POST of XML document chosen. If so, this property must not be null. (see  and ).</xs:documentation>
+            <xs:documentation>ProjectDataId of the root XML element, if POST of XML document chosen. If so, this property must not be null. (see  and ).</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="xmlRootNamespace" type="xs:string">
+        <xs:attribute name="xmlRootProjectDataIdspace" type="xs:string">
           <xs:annotation>
             <xs:documentation>(optional) root namespace of the XML document, if POST of XML document chosen. (see  and ).</xs:documentation>
           </xs:annotation>
@@ -2429,7 +2429,7 @@
     </xs:attribute>
     <xs:attribute name="name" type="xs:string">
       <xs:annotation>
-        <xs:documentation>Name of the column.</xs:documentation>
+        <xs:documentation>ProjectDataId of the column.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>
@@ -2484,7 +2484,7 @@
     </xs:attribute>
     <xs:attribute name="name" type="xs:string">
       <xs:annotation>
-        <xs:documentation>Name of the attribute.</xs:documentation>
+        <xs:documentation>ProjectDataId of the attribute.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>

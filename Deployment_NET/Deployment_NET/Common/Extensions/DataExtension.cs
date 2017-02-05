@@ -11,7 +11,7 @@ namespace awinta.Deployment_NET.Common.Extensions
 {
     internal static class DataExtension
     {
-        public static Dictionary<string, string> ToDictionary(this Properties value)
+        public static Dictionary<string, string> ToDictionary(this EnvDTE.Properties value)
         {
             var result = new Dictionary<string, string>();
 

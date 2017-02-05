@@ -169,44 +169,44 @@
             <StackPanel Orientation="Horizontal" Height="25">
                 <Label DockPanel.Dock="Left" Style="{StaticResource CaptionStyle}">Version</Label>
                 <TextBox DockPanel.Dock="Left" Style="{StaticResource VersionStyle}"
-                         Text="{Binding Path=Configuration.Version.Hauptversion, Converter={StaticResource NumericConverter}}" />
+                         Text="{Binding Path=DeployData.Config.Version.Hauptversion, Converter={StaticResource NumericConverter}}" />
                 <TextBox DockPanel.Dock="Left" Style="{StaticResource VersionStyle}"
-                         Text="{Binding Path=Configuration.Version.Nebenversion, Converter={StaticResource NumericConverter}}" />
+                         Text="{Binding Path=DeployData.Config.Version.Nebenversion, Converter={StaticResource NumericConverter}}" />
                 <TextBox DockPanel.Dock="Left" Style="{StaticResource VersionStyle}"
-                         Text="{Binding Path=Configuration.Version.Buildnummer, Converter={StaticResource NumericConverter}}" />
+                         Text="{Binding Path=DeployData.Config.Version.Buildnummer, Converter={StaticResource NumericConverter}}" />
                 <TextBox DockPanel.Dock="Left" Style="{StaticResource VersionStyle}"
-                         Text="{Binding Path=Configuration.Version.Revision, Converter={StaticResource NumericConverter}}" />
+                         Text="{Binding Path=DeployData.Config.Version.Revision, Converter={StaticResource NumericConverter}}" />
             </StackPanel>
             <DockPanel LastChildFill="True" Height="25">
                 <Label DockPanel.Dock="Left" Style="{StaticResource CaptionStyle}">Updatepfad:</Label>
                 <CheckBox Height="25" Width="25" Style="{DynamicResource CheckBoxStyle1}"
-                          IsChecked="{Binding Configuration.CopyToUpdate}" />
+                          IsChecked="{Binding DeployData.Config.CopyToUpdate}" />
                 <Button DockPanel.Dock="Right" Width="50" Command="{Binding DirCommand}" CommandParameter="DeployPath">...</Button>
                 <TextBox Style="{StaticResource PathStyle}"
-                         Text="{Binding Configuration.DeployPath ,NotifyOnValidationError=True}" />
+                         Text="{Binding DeployData.Config.DeployPath ,NotifyOnValidationError=True}" />
             </DockPanel>
             <StackPanel Orientation="Horizontal" Height="25">
                 <Label Style="{StaticResource CaptionStyle}">Update Nr.:</Label>
                 <TextBox DockPanel.Dock="Left" Style="{StaticResource VersionStyle}"
-                         Text="{Binding Path=Configuration.DeployPathVersion , Converter={StaticResource NumericConverter}}" />
+                         Text="{Binding Path=DeployData.Config.DeployPathVersion , Converter={StaticResource NumericConverter}}" />
             </StackPanel>
             <DockPanel LastChildFill="True" Height="25">
                 <Label Style="{StaticResource CaptionStyle}">Bin:</Label>
                 <CheckBox Height="25" Width="25" Style="{DynamicResource CheckBoxStyle1}"
-                          IsChecked="{Binding Configuration.CopyToBin}" />
+                          IsChecked="{Binding DeployData.Config.CopyToBin}" />
                 <Button DockPanel.Dock="Right" Width="50" Command="{Binding DirCommand}" CommandParameter="BinPath">...</Button>
                 <TextBox Style="{StaticResource PathStyle}"
-                         Text="{Binding Configuration.BinPath ,NotifyOnValidationError=True}" />
+                         Text="{Binding DeployData.Config.BinPath ,NotifyOnValidationError=True}" />
             </DockPanel>
             <StackPanel Orientation="Horizontal" Height="25">
                 <Label Style="{StaticResource CaptionStyle}">Smart:</Label>
                 <CheckBox Height="25" Width="25" Style="{DynamicResource CheckBoxStyle1}"
-                          IsChecked="{Binding Configuration.CopyToSmart}" />
+                          IsChecked="{Binding DeployData.Config.CopyToSmart}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Height="25">
                 <Label Style="{StaticResource CaptionStyle}">Checkout:</Label>
                 <CheckBox Height="25" Width="25" Style="{DynamicResource CheckBoxStyle1}"
-                          IsChecked="{Binding Configuration.DoCheckout}" />
+                          IsChecked="{Binding DeployData.Config.DoCheckout}" />
             </StackPanel>
         </StackPanel>
         <DockPanel LastChildFill="True" Grid.Row="1">
@@ -216,7 +216,7 @@
                           Grid.Row="1"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch"
-                          ItemsSource="{Binding Path=Data}"
+                          ItemsSource="{Binding Path=DeployData.Data}"
                           ColumnWidth="auto"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False">

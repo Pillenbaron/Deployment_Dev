@@ -2,6 +2,9 @@
 {
     public class AssemblyData : BaseData
     {
+
+        public int AssemblyDataId { get; set; }
+
         private VersionData assemblyVersion;
 
         private string beschreibung = string.Empty;

@@ -6,6 +6,7 @@
 
 using System;
 using System.ComponentModel.Design;
+using awinta.Deployment_NET.Application.Factory;
 using awinta.Deployment_NET.Application.Interfaces;
 using awinta.Deployment_NET.Application.Service;
 using awinta.Deployment_NET.Common;
@@ -54,15 +55,14 @@ namespace awinta.Deployment_NET.Presentation.View
             ApplicationProvider.Register<ITeamFoundationServerService, TeamFoundationServerService>();
             ApplicationProvider.Register<IVsStatusbar, IVsStatusbar>(
                 (IVsStatusbar) ServiceProvider.GetService(typeof(SVsStatusbar)));
-
+            ApplicationProvider.Register<IDeployDataFactory, DeployDataFactory>();
+            
             var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
-            if (commandService != null)
-            {
-                var menuCommandId = new CommandID(CommandSet, CommandId);
-                var menuItem = new MenuCommand(ShowToolWindow, menuCommandId);
-                commandService.AddCommand(menuItem);
-            }
+            if (commandService == null) return;
+            var menuCommandId = new CommandID(CommandSet, CommandId);
+            var menuItem = new MenuCommand(ShowToolWindow, menuCommandId);
+            commandService.AddCommand(menuItem);
         }
 
         /// <summary>

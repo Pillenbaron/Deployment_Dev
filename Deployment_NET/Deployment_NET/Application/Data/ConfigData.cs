@@ -5,6 +5,9 @@ namespace awinta.Deployment_NET.Application.Data
 {
     public class ConfigData : BaseData
     {
+
+        public int ConfigDataId { get; set; }
+
         public ConfigData()
         {
             Version = new VersionData();

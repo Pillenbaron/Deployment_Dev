@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using awinta.Deployment_NET.Application.Data;
+using awinta.Deployment_NET.Application.Factory;
 using awinta.Deployment_NET.Application.Interfaces;
 using awinta.Deployment_NET.Application.Service;
 using awinta.Deployment_NET.Common;
@@ -26,14 +27,25 @@ namespace awinta.Deployment_NET.Application.ViewModel
             BuildSolutionCommand = new AsyncCommand(BuildSolutionAsync);
             DirCommand = new ParamCommand<string>(SetDeployPath);
 
-            Configuration = new ConfigData();
-            Data = new ObservableCollection<ProjectData>();
-
             service = ApplicationProvider.GetInstance<DTE>();
             tfsServer = ApplicationProvider.GetInstance<ITeamFoundationServerService>();
+            deployDataFactory = ApplicationProvider.GetInstance<IDeployDataFactory>();
+
+            deployDataFactory.Add(new DeployData(service.Solution.FileName));
+            deployDataFactory.SaveChanges();
 
             service.Events.SolutionEvents.Opened += _Opened;
             service.Events.SolutionEvents.BeforeClosing += _BeforeClosing;
+
+            deployData = deployDataFactory.GetInstance(x => x.UserName == Environment.UserDomainName);
+
+            if (deployData == null)
+            {
+                deployData = new DeployData(service.Solution.FileName);
+                deployDataFactory.Add(deployData);
+            }
+
+            solutionPath = new FileInfo(service.Solution.FullName);
 
         }
 
@@ -72,32 +84,21 @@ namespace awinta.Deployment_NET.Application.ViewModel
 
         private readonly DTE service;
         private readonly ITeamFoundationServerService tfsServer;
-        private FileInfo solutionPath;
+        private readonly FileInfo solutionPath;
+        private readonly IDeployDataFactory deployDataFactory;
 
         #endregion
 
         #region Properties
 
-        private ConfigData configuration;
+        private DeployData deployData;
 
-        public ConfigData Configuration
+        public DeployData DeployData
         {
-            get { return configuration; }
+            get { return deployData; }
             set
             {
-                configuration = value;
-                OnNotifyPropertyChanged();
-            }
-        }
-
-        private ObservableCollection<ProjectData> data;
-
-        public ObservableCollection<ProjectData> Data
-        {
-            get { return data; }
-            set
-            {
-                data = value;
+                deployData = value;
                 OnNotifyPropertyChanged();
             }
         }
@@ -126,18 +127,7 @@ namespace awinta.Deployment_NET.Application.ViewModel
 
                 OutputService.WriteOutputWithContext("Start load Projectinformation.");
 
-                solutionPath = new FileInfo(service.Solution.FullName);
-
-                if (solutionPath?.DirectoryName != null)
-                {
-                    var xmlFile = Path.Combine(solutionPath.DirectoryName,
-                        solutionPath.Name.Replace(solutionPath.Extension, string.Empty));
-
-                    Configuration = SerializationService.FromXml<ConfigData>($"{xmlFile}ConfigData.xml");
-                    Data = SerializationService.FromXml<ObservableCollection<ProjectData>>($"{xmlFile}ProjectData.xml");
-                }
-
-                if (solutionPath.FullName.Contains("Dev-Feature")) Configuration.IsFeature = true;
+                if (solutionPath.FullName.Contains("Dev-Feature")) DeployData.Config.IsFeature = true;
 
                 var task = Task.Run(() => Load());
 
@@ -145,9 +135,8 @@ namespace awinta.Deployment_NET.Application.ViewModel
 
                 var result = task.Result;
 
-                Data =
-                    new ObservableCollection<ProjectData>(
-                        Data.Concat(result.Select(item => item).Where(item => !Data.Contains(item))));
+                DeployData.Data =
+                    new ObservableCollection<ProjectData>(DeployData.Data.Concat(result.Select(item => item).Where(item => !DeployData.Data.Contains(item))));
 
                 OutputService.WriteOutputWithContext("Finshed load Projectinformation.");
             }
@@ -169,13 +158,11 @@ namespace awinta.Deployment_NET.Application.ViewModel
             var result = new ObservableCollection<ProjectData>();
             var projects = service.Solution.Projects;
 
-            solutionPath = new FileInfo(service.Solution.FullName);
-
             for (var i = 1; i <= projects.Count; i++)
             {
                 var project = projects.Item(i);
 
-                if (project?.Properties != null && !project.Name.ToLower().Contains(".test") && Data.FirstOrDefault(x => x.Name == project.Name) == null)
+                if (project?.Properties != null && !project.Name.ToLower().Contains(".test") && DeployData.Data.FirstOrDefault(x => x.ProjectDataId == project.Name) == null)
                 {
                     var queryProperties = from projectProperty in project.Properties.ToDictionary().AsEnumerable()
                                           where usedProperties.Contains(projectProperty.Key)
@@ -197,7 +184,7 @@ namespace awinta.Deployment_NET.Application.ViewModel
 
                     var currentProject = new ProjectData
                     {
-                        Name = projects.Item(i).Name,
+                        ProjectDataId = projects.Item(i).Name,
                         AssemblyPath = dictionaryBuildConfig[CodeAnalysisInputAssembly],
                         AssemblyName = dictionaryProperties[AssemblyName],
                         FullPath = dictionaryProperties[FullPath],
@@ -235,7 +222,7 @@ namespace awinta.Deployment_NET.Application.ViewModel
 
         private void LoadLatestVersion()
         {
-            if (!configuration.DoCheckout) return;
+            if (!DeployData.Config.DoCheckout) return;
             try
             {
                 var solution = service.Solution;
@@ -273,7 +260,7 @@ namespace awinta.Deployment_NET.Application.ViewModel
 
             for (var i = 1; i <= projects.Count; i++)
             {
-                var project = Data.FirstOrDefault(x => x.Name == projects.Item(i).Name);
+                var project = DeployData.Data.FirstOrDefault(x => x.ProjectDataId == projects.Item(i).Name);
 
                 if (project != null)
                     for (var i2 = 1; i2 <= projects.Item(i).Properties.Count; i++)
@@ -309,28 +296,19 @@ namespace awinta.Deployment_NET.Application.ViewModel
                                     project.AssemblyInfo.AssemblyVersion.ToString();
                                 break;
                             case AssemblyFileVersion:
-                                projects.Item(i).Properties.Item(i2).Value = configuration.Version.ToString();
+                                projects.Item(i).Properties.Item(i2).Value = DeployData.Config.Version.ToString();
                                 break;
                         }
             }
         }
 
-        private void SaveConfigToXml()
+        private void SaveConfigToDataBase()
         {
-            OutputService.WriteOutputWithContext("Start: Saving Config to Xml.");
+            OutputService.WriteOutputWithContext("Start: Saving Config to Database.");
 
-            if (solutionPath?.DirectoryName != null)
-            {
-                var xmlFile = Path.Combine(solutionPath.DirectoryName,
-                    solutionPath.Name.Replace(solutionPath.Extension, string.Empty));
+            deployDataFactory.SaveChanges();
 
-                OutputService.WriteOutputWithContext($"Prossesing: Saving Config to Xml => {xmlFile}");
-
-                SerializationService.ToXml($"{xmlFile}ConfigData.xml", Configuration);
-                SerializationService.ToXml($"{xmlFile}ProjectData.xml", Data);
-            }
-
-            OutputService.WriteOutputWithContext("Finished: Saving Config to Xml.");
+            OutputService.WriteOutputWithContext("Finished: Saving Config to Database.");
         }
 
         #endregion
@@ -341,16 +319,16 @@ namespace awinta.Deployment_NET.Application.ViewModel
         {
             try
             {
-                await Task.Run(() => SaveConfigToXml());
+                await Task.Run(() => SaveConfigToDataBase());
 
-                if (configuration.CopyToUpdate)
-                    await data.ForEachAsync(CopyAssembly);
+                if (DeployData.Config.CopyToUpdate)
+                    await DeployData.Data.ForEachAsync(CopyAssembly);
 
-                if (configuration.CopyToBin)
-                    await Data.ForEachAsync(CopyBin);
+                if (DeployData.Config.CopyToBin)
+                    await DeployData.Data.ForEachAsync(CopyBin);
 
-                if (configuration.CopyToSmart)
-                    await Data.ForEachAsync(CopySmart);
+                if (DeployData.Config.CopyToSmart)
+                    await DeployData.Data.ForEachAsync(CopySmart);
             }
             catch (Exception ex)
             {
@@ -376,7 +354,7 @@ namespace awinta.Deployment_NET.Application.ViewModel
 
             //foreach (SolutionConfiguration variable in solBuild.SolutionConfigurations)
             //{
-            //    OutputService.WriteOutputWithContext(variable.Name);
+            //    OutputService.WriteOutputWithContext(variable.ProjectDataId);
             //}
 
             solBuild.SolutionConfigurations.Item(Release).Activate();
@@ -393,11 +371,11 @@ namespace awinta.Deployment_NET.Application.ViewModel
             try
             {
                 if (!project.Include) return;
-                OutputService.WriteOutputWithContext($"Start copy to Update: {project.Name}");
+                OutputService.WriteOutputWithContext($"Start copy to Update: {project.ProjectDataId}");
                 var dynamicPart = project.HasToRegister ? TargetRegDir : TargetAppDir;
 
                 var assembly = new FileInfo(project.FullAssemblyPath);
-                var targetPath = new DirectoryInfo(Path.Combine(configuration.FullDeployPath, dynamicPart));
+                var targetPath = new DirectoryInfo(Path.Combine(DeployData.Config.FullDeployPath, dynamicPart));
                 var targetAssembly = new FileInfo(Path.Combine(targetPath.FullName, assembly.Name));
 
                 if (assembly.Exists && targetPath.Exists)
@@ -418,7 +396,7 @@ namespace awinta.Deployment_NET.Application.ViewModel
                         OutputService.WriteOutputWithContext($"targetPath is missing: {targetPath.FullName}");
                 }
 
-                OutputService.WriteOutputWithContext($"Finished copy to Update: {project.Name}");
+                OutputService.WriteOutputWithContext($"Finished copy to Update: {project.ProjectDataId}");
             }
             catch (Exception ex)
             {
@@ -429,8 +407,8 @@ namespace awinta.Deployment_NET.Application.ViewModel
         private void CopyBin(ProjectData project)
         {
             if (!project.Include) return;
-            OutputService.WriteOutputWithContext($"Start copy to Bin: {project.Name}");
-            var binDirectory = new DirectoryInfo(configuration.DynamicBinPath);
+            OutputService.WriteOutputWithContext($"Start copy to Bin: {project.ProjectDataId}");
+            var binDirectory = new DirectoryInfo(DeployData.Config.DynamicBinPath);
 
             if (!binDirectory.Exists)
             {
@@ -456,13 +434,13 @@ namespace awinta.Deployment_NET.Application.ViewModel
 
             }
 
-            OutputService.WriteOutputWithContext($"Finished copy to Bin: {project.Name}");
+            OutputService.WriteOutputWithContext($"Finished copy to Bin: {project.ProjectDataId}");
         }
 
         private void CopySmart(ProjectData project)
         {
             if (!project.Include) return;
-            OutputService.WriteOutputWithContext($"Start copy to Smart: {project.Name}");
+            OutputService.WriteOutputWithContext($"Start copy to Smart: {project.ProjectDataId}");
             var smartDirectory = new DirectoryInfo(SmartDirectory);
 
             if (!smartDirectory.Exists)
@@ -487,20 +465,11 @@ namespace awinta.Deployment_NET.Application.ViewModel
 
             }
 
-            OutputService.WriteOutputWithContext($"Finished copy to Smart: {project.Name}");
+            OutputService.WriteOutputWithContext($"Finished copy to Smart: {project.ProjectDataId}");
         }
 
         #endregion
-
-        #region Close
-
-        private static void CloseMainView()
-        {
-            System.Windows.Application.Current.MainWindow.Close();
-        }
-
-        #endregion
-
+        
         #endregion
 
         #region _Events
@@ -548,8 +517,8 @@ namespace awinta.Deployment_NET.Application.ViewModel
         public void _BeforeClosing()
         {
             WorkingLocked();
-            Configuration = null;
-            Data = null;
+            DeployData.Config = null;
+            DeployData.Data = null;
 
         }
 
@@ -559,14 +528,14 @@ namespace awinta.Deployment_NET.Application.ViewModel
             {
                 Description = "Wählen sie den Root-Ordner der Updates aus",
                 //RootFolder = Environment.SpecialFolder.NetworkShortcuts,
-                SelectedPath = caller == "DeployPath" ? configuration.DeployPath : configuration.BinPath
+                SelectedPath = caller == "DeployPath" ? DeployData.Config.DeployPath : DeployData.Config.BinPath
             };
 
             if (dialog.ShowDialog() != DialogResult.OK) return;
             if (caller == "DeployPath")
-                configuration.DeployPath = dialog.SelectedPath;
+                DeployData.Config.DeployPath = dialog.SelectedPath;
             else
-                configuration.BinPath = dialog.SelectedPath;
+                DeployData.Config.BinPath = dialog.SelectedPath;
         }
 
         private async Task SetVersionNumberAsync()
@@ -576,8 +545,8 @@ namespace awinta.Deployment_NET.Application.ViewModel
 
         private void SetVersionNumber()
         {
-            foreach (var project in Data)
-                project.AssemblyInfo.Dateiversion = Configuration.Version;
+            foreach (var project in DeployData.Data)
+                project.AssemblyInfo.Dateiversion = DeployData.Config.Version;
 
             var projects = service.Solution.Projects;
 
@@ -592,7 +561,7 @@ namespace awinta.Deployment_NET.Application.ViewModel
 
                         if (property?.Name.Equals(AssemblyFileVersion) == true)
                         {
-                            property.Value = Configuration.Version.ToString();
+                            property.Value = DeployData.Config.Version.ToString();
                             break;
                         }
                     }
