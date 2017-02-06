@@ -6,7 +6,7 @@ namespace awinta.Deployment_NET.Common.DataContext
     public class DataContext : DbContext
     {
 
-        public DataContext() : base(awinta.Deployment_NET.Properties.Settings.Default.Deployment_NETConnectionString) { }
+        //public DataContext() : base($"name={awinta.Deployment_NET.Properties.Settings.Default.Deployment_NETConnectionString}") { }
       
         public DbSet<ProjectData> Projects { get; set; }
 

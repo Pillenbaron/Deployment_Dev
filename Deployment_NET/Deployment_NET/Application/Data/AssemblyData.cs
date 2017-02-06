@@ -106,5 +106,8 @@
                 OnNotifyPropertyChanged();
             }
         }
+
+        public ProjectData ProjectData { get; set; }
+
     }
 }

@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using awinta.Deployment_NET.Application.Data;
+using awinta.Deployment_NET.Application.Service;
 using awinta.Deployment_NET.Common.DataContext;
+using awinta.Deployment_NET.Common.Logging;
 
 namespace awinta.Deployment_NET.Application.Factory
 {
-    public class DeployDataFactory : IDeployDataFactory
+    public class DeployDataFactory : LoggingBase, IDeployDataFactory
     {
 
         private readonly DataContext dataBase;
@@ -25,12 +27,32 @@ namespace awinta.Deployment_NET.Application.Factory
 
         public void Add(DeployData value)
         {
-            dataBase.Deploys.Add(value);
+
+            try
+            {
+                dataBase.Deploys.Add(value);
+            }
+            catch (Exception e)
+            {
+                OutputService.WriteOutputWithContext($"Error: {e.Message}");
+                logger.Error(e, e.Message);
+            }
+
         }
 
         public void AddRange(IEnumerable<DeployData> values)
         {
-            dataBase.Deploys.AddRange(values);
+
+            try
+            {
+                dataBase.Deploys.AddRange(values);
+            }
+            catch (Exception e)
+            {
+                OutputService.WriteOutputWithContext($"Error: {e.Message}");
+                logger.Error(e, e.Message);
+            }
+
         }
 
         public DeployData GetInstance(Func<DeployData, bool> predicate)

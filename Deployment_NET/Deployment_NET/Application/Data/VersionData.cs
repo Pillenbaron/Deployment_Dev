@@ -4,6 +4,9 @@ namespace awinta.Deployment_NET.Application.Data
 {
     public class VersionData : BaseData
     {
+
+        public int VersionDataId { get; set; }
+
         private int buildnummer;
 
         private int hauptversion;
@@ -76,5 +79,10 @@ namespace awinta.Deployment_NET.Application.Data
         {
             return $"{Hauptversion}.{Nebenversion}.{Buildnummer}.{Revision}";
         }
+
+        public AssemblyData AssemblyData { get; set; }
+
+        public ConfigData ConfigData { get; set; }
+
     }
 }

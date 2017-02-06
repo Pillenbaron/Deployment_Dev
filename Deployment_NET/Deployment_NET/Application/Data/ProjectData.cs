@@ -114,5 +114,8 @@ namespace awinta.Deployment_NET.Application.Data
             //return $"{ProjectDataId}{AssemblyName}{FullPath}{AssemblyPath}{FullAssemblyPath}{HasToRegister}".GetHashCode();
             return $"{ProjectDataId}{AssemblyName}{FullPath}{AssemblyPath}{FullAssemblyPath}".GetHashCode();
         }
+
+        public DeployData DeployData { get; set; }
+
     }
 }

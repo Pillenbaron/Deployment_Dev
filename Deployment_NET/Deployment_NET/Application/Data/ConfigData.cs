@@ -216,6 +216,8 @@ namespace awinta.Deployment_NET.Application.Data
             }
         }
 
+        public DeployData DeployData { get; set; }
+
         #endregion
     }
 }
