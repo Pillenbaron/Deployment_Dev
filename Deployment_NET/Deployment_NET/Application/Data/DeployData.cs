@@ -7,39 +7,34 @@ namespace awinta.Deployment_NET.Application.Data
 {
     public class DeployData : BaseData
     {
-        private ConfigData config;
-        private ObservableCollection<ProjectData> data;
+        private ConfigData configData;
+        private ObservableCollection<ProjectData> projectDatas;
 
         public DeployData(string solution)
         {
-            UserName = Environment.UserName;
-            Solution = solution;
-            Config = new ConfigData();
-            Data = new ObservableCollection<ProjectData>();
+            DeployDataId = $"{Environment.UserDomainName}||{Environment.UserName}||{solution}";
+            ConfigData = new ConfigData();
+            ProjectDatas = new ObservableCollection<ProjectData>();
         }
 
-        [Key, Column(Order = 0)]
-        public string UserName { get; set; }
+        public string DeployDataId { get; set; }
 
-        [Key, Column(Order = 1)]
-        public string Solution { get; set; }
-
-        public ConfigData Config
+        public ConfigData ConfigData
         {
-            get { return config; }
+            get { return configData; }
             set
             {
-                config = value;
+                configData = value;
                 OnNotifyPropertyChanged();
             }
         }
 
-        public ObservableCollection<ProjectData> Data
+        public ObservableCollection<ProjectData> ProjectDatas
         {
-            get { return data; }
+            get { return projectDatas; }
             set
             {
-                data = value;
+                projectDatas = value;
                 OnNotifyPropertyChanged();
             }
         }

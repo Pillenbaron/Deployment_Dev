@@ -64,7 +64,7 @@ namespace awinta.Deployment_NET.Application.Factory
         {
             var query = from deployData in dataBase.Deploys
                         where predicate(deployData)
-                        orderby deployData.UserName
+                        orderby deployData.DeployDataId
                         select deployData;
 
             return query.ToList();

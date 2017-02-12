@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace awinta.Deployment_NET.Application.Data
 {
@@ -115,6 +117,8 @@ namespace awinta.Deployment_NET.Application.Data
             return $"{ProjectDataId}{AssemblyName}{FullPath}{AssemblyPath}{FullAssemblyPath}".GetHashCode();
         }
 
+        [Column(Order = 0), Key, ForeignKey("DeployData")]
+        public string DeployDataId { get; set; }
         public DeployData DeployData { get; set; }
 
     }

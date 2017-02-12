@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace awinta.Deployment_NET.Application.Data
@@ -216,6 +218,8 @@ namespace awinta.Deployment_NET.Application.Data
             }
         }
 
+        [Column(Order = 0), Key, ForeignKey("DeployData")]
+        public string DeployDataId { get; set; }
         public DeployData DeployData { get; set; }
 
         #endregion
