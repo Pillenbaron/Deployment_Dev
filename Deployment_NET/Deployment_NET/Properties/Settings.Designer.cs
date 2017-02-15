@@ -26,8 +26,8 @@ namespace awinta.Deployment_NET.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("ProjectDatas Source=sqlservice.database.windows.net;Initial Catalog=Deployment_NET;Persis" +
-            "t Security Info=True;User ID=wanka;Password=D1e2n3n4i5s6#")]
+        [global::System.Configuration.DefaultSettingValueAttribute("ProjectDatas Source=sqlservice.database.windows.net;Initial Catalog=Deployment_NE" +
+            "T;Persist Security Info=True;User ID=wanka;Password=D1e2n3n4i5s6#")]
         public string Deployment_NETConnectionString {
             get {
                 return ((string)(this["Deployment_NETConnectionString"]));
